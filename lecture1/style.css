@@ -1,3 +1,20 @@
+#angle {
+  height: 50px;
+}
+
+#angle .slider-text-1 {
+  position: relative;
+  height: 40px;
+  margin-top: -5px;
+  vertical-align: middle;
+}
+
+.angle-inner {
+  position: absolute;
+  top: 50%;
+  transform: translate(0%,-50%);
+}
+
 #math-outer {
   position: relative;
   width: 400px;
