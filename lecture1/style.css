@@ -1,0 +1,40 @@
+#math-outer {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  background: #ddd;
+  border: 1px solid black;
+  font-size: 20pt;
+  margin: 20px auto;
+}
+
+#math-surface {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+}
+
+/*
+#math-dot {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: yellow;
+  z-index: 90; 
+}
+*/
+
+#math {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  /*background: yellow;*/
+  opacity: 0.5;
+}
+
+.grid-line {
+  fill: none;
+  stroke: #555;
+  stroke-width: 2;
+}

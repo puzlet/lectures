@@ -7,35 +7,35 @@
 <link rel='icon' href='//puzlet.org/puzlet/images/favicon.ico'>
 <link rel='stylesheet' href='../css/vendor.css'>
 <link rel='stylesheet' href='../css/style.css?v=1'>
+<link rel='stylesheet' href='style.css?v=1'>
 </head>
 
 <body>
 
 <div id="container">
 
-<div class='box-2-1'>
-  Text 1.
-</div>
+<h2>Lecture</h2>
 
-<div class='box-2-2'>
-  Text 2.
-</div>
-
-<div class='clear'></div>
-
-<div class='box-2-1'>
-  Text 3.
-</div>
-
-<div class='box-2-2'>
-  Text 4.
+<div class='box-1-1'>
+  <div id='angle'></div>
+  <div id="math-outer">
+    <div id="math-surface"></div>
+    <div id="math"></div>
+  </div>
 </div>
 
 <div class='clear'></div>
 
-<p>
-Test content. $x$.
-</p>
+<div class='box-2-1'>
+  <div id='input' class='input-container'></div>
+  <div id='result'></div>
+</div>
+
+<div class='box-2-2'>
+  <div id='plot' class='plot-container'></div>
+</div>
+
+<div class='clear'></div>
 
 <div class="left">
   <div data-file="compute.coffee"></div>

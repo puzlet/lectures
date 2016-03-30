@@ -1,3 +1,9 @@
-console.log "&&&&&&& compute.coffee!"
+{input, result, plot} = $blab.ui
 
-2+2
+f = input()
+result f
+
+x = linspace(0, 1, 1000)  #;
+y = x*x * sin(2*pi*f*x)  #;
+
+plot x, y
