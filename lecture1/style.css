@@ -4,6 +4,7 @@
 
 #angle .slider-text-1 {
   position: relative;
+  width: 50px;
   height: 40px;
   margin-top: -5px;
   vertical-align: middle;
@@ -12,7 +13,23 @@
 .angle-inner {
   position: absolute;
   top: 50%;
+  width: 200px;
   transform: translate(0%,-50%);
+}
+
+.angle-slider-unit {
+  font-size: 10pt;
+  color: #aaa;
+}
+
+.angle-text {
+  font-size: 12pt;
+  color: #aaa;
+}
+
+.angle-text-special {
+  font-size: 20pt;
+  color: black;
 }
 
 #math-outer {
@@ -30,16 +47,6 @@
   width: 400px;
   height: 400px;
 }
-
-/*
-#math-dot {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  background: yellow;
-  z-index: 90; 
-}
-*/
 
 #math {
   position: absolute;

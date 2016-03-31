@@ -7,21 +7,26 @@ class AngleSlider
     @slider = new $blab.components.Slider
       container: @container
       prompt: "Angle"
+      unit: "radians"
       init: 0
       min: 0
       max: 96
       
     @textOuter = @slider.textDiv
     @textOuter.empty()
-    @textInner = $ "<div>", class: "angle-inner"
+    @textInner = $ "<div>", class: "angle-inner angle-text"
     @textOuter.append @textInner
     
-    @slider.set = (v) => @setMethod(v) #computeVector(v)
+    @slider.set = (v) => @setMethod(v)
     
-  set: (v, mathjax, css) ->
+  set: (v, mathjax, special) ->
     @slider.value = v
-    @textInner.css css  # ZZZ do via class?
-    @textInner.html mathjax
+    @textInner.toggleClass('angle-text-special', special)
+    #unit = $ "<span>",
+    #  class: "angle-slider-unit"
+    #  text: " radians"
+    @textInner.html(mathjax)
+    #@textInner.append unit
     processMathJax @textInner
 
 
@@ -74,8 +79,8 @@ class VectorAngle
   
   constructor: (@container, @x0, @y0) ->
   
-  set: (x, y, mathjax, css) ->
-    @container.css css
+  set: (x, y, mathjax, special) ->
+    @container.toggleClass('angle-text-special', special)
     @container.html mathjax
     processMathJax @container, => @pos(x, y)
   
@@ -115,11 +120,11 @@ class Main
     y = -z.y
     y = 0 unless y
     
-    {mathjax, css} = angleText(a)
+    {mathjax, special} = angleText(a)
     
-    @angleSlider.set v, mathjax, css
+    @angleSlider.set v, mathjax, special
     @vector.set(x, y)
-    @vectorAngle.set x, y, mathjax, css
+    @vectorAngle.set x, y, mathjax, special
 
 
 #!math-sugar
@@ -128,12 +133,12 @@ complexPolar = (r, theta) -> r*exp(j*theta)
 
 angleText = (a) ->
   
-  # a is in units pi/48 radians
+  # a is angle in pi/48 radians.
   
-  # Angle in radians
+  # Angle in radians.
   theta = pi*a/48
   
-  v =
+  specialAngles =
     0: '0'
     8: '\\frac{\\pi}{6}'
     12: '\\frac{\\pi}{4}'
@@ -161,23 +166,14 @@ angleText = (a) ->
   # Angle in pi-radians, rounded to two decimal places.
   piRad = Math.round(100*theta/pi)/100
   
-  # ZZZ use css classes.
-  if v[a]
-    mathjax = "$"+v[a]+"$"
-    css =
-      fontSize: '20pt'
-      color: 'black'
-  else
-    mathjax = "$"+piRad+"\\pi$"
-    css =
-      fontSize: '12pt'
-      color: '#aaa'
+  special = specialAngles[a]?
+  mj = if special then specialAngles[a] else piRad+"\\pi"
+  mathjax = "$#{mj}$"
   
-  {mathjax, css}
+  {mathjax, special}
 
 
 processMathJax = (element, callback) ->
-  #console.log "processMathJax", MathJax?
   return unless MathJax?
   Hub = MathJax.Hub
   queue = (x) -> Hub.Queue x
@@ -191,32 +187,32 @@ new Main
 
 #------------------------------------------------------#
 
-input = new $blab.components.Slider
-  container: $("#input")
-  prompt: "Frequency"
-  unit: "Hz"
-  init: 10
-  min: 0
-  max: 40
+extraStuff = ->
+  
+  input = new $blab.components.Slider
+    container: $("#input")
+    prompt: "Frequency"
+    unit: "Hz"
+    init: 10
+    min: 0
+    max: 40
+    
+  plot = new $blab.components.Plot
+    container: $("#plot")
+    title: "TEST PLOT, $f(x)$"
+    width: 500, height: 300
+    xlabel: "x", ylabel: "y"
+    # xaxis: {min: 0, max: 1}
+    # yaxis: {min: 0, max: 1}
+    series: {lines: lineWidth: 2}
+    colors: ["red", "blue"]
+    grid: {backgroundColor: "white"}
+    
+  compute = $blab.resources.find "compute.coffee"
+  input.change -> compute.compile()  # Does not compile if code unchanged
+  
+  $blab.ui =
+    input: -> parseFloat(input.getVal())
+    result: (f) -> $("#result").html("Frequency " + f + " Hz")
+    plot: (x, y) -> plot.setVal([x, y])
 
-plot = new $blab.components.Plot
-  container: $("#plot")
-  title: "TEST PLOT, $f(x)$"
-  width: 500, height: 300
-  xlabel: "x", ylabel: "y"
-  # xaxis: {min: 0, max: 1}
-  # yaxis: {min: 0, max: 1}
-  series: {lines: lineWidth: 2}
-  colors: ["red", "blue"]
-  grid: {backgroundColor: "white"}
-
-compute = $blab.resources.find "compute.coffee"
-input.change -> compute.compile()  # Does not compile if code unchanged
-
-$blab.ui =
-  input: -> parseFloat(input.getVal())
-  result: (f) -> $("#result").html("Frequency " + f + " Hz")
-  plot: (x, y) -> plot.setVal([x, y])
-
-
- 
