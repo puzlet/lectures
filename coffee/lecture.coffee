@@ -19,6 +19,9 @@
 class $blab.Lecture
   
   constructor: ->
+    
+    KeyHandler.init(null)
+    
     @startButton = new StartButton(this)
     @guide = new Guide()
     @progress = new Progress()
@@ -30,7 +33,7 @@ class $blab.Lecture
     
   start: ->
     @startButton.hide()
-    KeyHandler.init(this)
+    KeyHandler.lecture = this
     @steps = []
     @stepIdx = -1
     @init()
@@ -50,7 +53,7 @@ class $blab.Lecture
     # Override in subclass.
   
   reset: ->
-    KeyHandler.init(null)
+    KeyHandler.lecture = null
     @guide.hide()
     @progress.clear()
     @pointer.hide()

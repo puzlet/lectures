@@ -4,6 +4,7 @@
 
   $blab.Lecture = (function() {
     function Lecture() {
+      KeyHandler.init(null);
       this.startButton = new StartButton(this);
       this.guide = new Guide();
       this.progress = new Progress();
@@ -15,7 +16,7 @@
 
     Lecture.prototype.start = function() {
       this.startButton.hide();
-      KeyHandler.init(this);
+      KeyHandler.lecture = this;
       this.steps = [];
       this.stepIdx = -1;
       this.init();
@@ -40,7 +41,7 @@
     Lecture.prototype.content = function() {};
 
     Lecture.prototype.reset = function() {
-      KeyHandler.init(null);
+      KeyHandler.lecture = null;
       this.guide.hide();
       this.progress.clear();
       this.pointer.hide();
