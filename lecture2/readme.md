@@ -23,7 +23,7 @@
 * @action can be used for custom actions for interactive components.  To be enhanced.
 
 ## tables.json
-* Initialization data for interative table widget.
+* Initialization data for interactive table widget.
 
 ## resources.coffee
 * Defines filenames for key resources -- Puzlet libraries and files listed above.
