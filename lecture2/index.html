@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+<meta charset='utf-8'>
+<title>Lecture Example</title>
+<link rel='icon' href='//puzlet.org/puzlet/images/favicon.ico'>
+<link rel='stylesheet' href='../css/vendor.css'>
+<link rel='stylesheet' href='../css/style.css?v=1'>
+<link rel='stylesheet' href='style.css?v=1'>
+</head>
+
+<body>
+
+<div id='outer-container'>
+
+<div id='container'>
+
+<h2 id="lecture-heading">Lecture Example</h2>
+
+<div class='box-1-1'>
+  
+  <div class='test-style' id='lecture-text-1'>
+    TEST
+  </div>
+  
+  <div id='lecture-text-2'>
+    <p>TEST TEXT 2</p>
+    <p>This is some math: $\Psi(t) = x^2$.</p>
+  </div>
+  
+  <p id='lecture-math-1' class='test-style'>
+    $\frac{x^3}{y^2} = \Psi(t) + \gamma(n^2)$
+  </p>
+</div>
+
+<div class='clear'></div>
+
+<div class='box-2-1'>
+  <div id='lecture-slider-1' class='slider-container'></div>
+  <div id='lecture-menu-1' class='menu-container'></div>
+  <div id='lecture-offset-text'>
+    <div data-val=0>The quadratic has no offset.</div>
+    <div data-val=5 class='hide'>The quadratic has a small offset.</div>
+    <div data-val=20 class='hide'>The quadratic has a large offset.</div>
+  </div>
+  <div id='lecture-table-1' class='table-container'></div>
+</div>
+
+<div class='box-2-2'>
+  <div id='lecture-plot-1' class='plot-container'></div>
+  <div id='lecture-text-3' class='hide'>
+    Some more text.
+  </div>
+  <div id='lecture-text-4'>
+  Replacement text.
+  </div>
+</div>
+
+<div class='clear'></div>
+
+<div id="demo-guide"></div>
+
+</div>  <!--#container-->
+
+</div>  <!--#outer-container-->
+
+<script src='../js/vendor.js'></script>
+<script src='//puzlet.org/puzlet.js' data-puzlet data-resources='resources.coffee'></script>
+
+</body>
+
+</html>
