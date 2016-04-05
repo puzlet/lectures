@@ -1,6 +1,7 @@
 k = slider()
-offset = 0 #menu()
-#showText "lecture-offset-text", offset
+offset = menu()
+
+textOffset offset
 
 x = linspace 0, 10, 100 #;
 y = k*x*x + offset #;

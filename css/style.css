@@ -54,6 +54,7 @@ body {
   float: left;
   width: 470px;
 }
+
 .right {
    float: right;
    width: 470px;
@@ -65,7 +66,7 @@ body {
 
 .box-2-1 {
   float: left;
-  width: 470px;	
+  width: 470px;
 }
 
 .box-2-2 {
@@ -143,6 +144,31 @@ button {
   display: none;
 }
 
+#lecture-guide {
+  
+  position: fixed;
+  display: none;
+  text-align: center;
+  
+  width: 150px;
+  /*height: 100px;*/
+  
+  top: 30px;
+  left: 0;
+  
+  padding: 10px 20px 10px 20px;
+  z-index: 100;
+  
+  background: #ff9;
+  opacity: 0.95;
+  
+  border: 2px solid #555;
+  border-radius: 10px;
+  box-shadow: 10px 10px 20px -8px #aaa;
+  
+  cursor: move;
+}
+
 .progress-outer {
   position: fixed;
   bottom: 15px;
@@ -168,32 +194,15 @@ button {
 }
 
 .step-circle-filled {
- background: #555;
+  background: #555;
 }
 
 .lecture-pointer {
- position: absolute;
- top: 0;
- left: 0;
- height: 50px;
- z-index: 100;
- opacity: 0.8;
-}
-
-#demo-guide {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
+  height: 50px;
   z-index: 100;
-  /*width: 200px;
-  height: 100px;*/
-  padding: 10px 20px 10px 20px;
-  border: 2px solid #555;
-  border-radius: 10px;
-  box-shadow: 10px 10px 20px -8px #aaa;
-  background: #ff9;
-  opacity: 0.95;
-  display: none;
-  cursor: move;
+  opacity: 0.8;
 }
 

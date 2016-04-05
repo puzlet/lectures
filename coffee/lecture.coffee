@@ -1,8 +1,8 @@
 # TODO
 
-# TUE 5 APRIL, 2016
 # Disable keys if lecture hasn't started.
-#-------------------------------------
+
+# step function:  option to pass array/obj for first arg.  then can do multiple transitions.
 
 # lecture button should appear only once all audio loaded.
 # load audio in defs section?  search for data-audio attributes?  do via lecture.coffee?
@@ -15,34 +15,6 @@
 # Audio should be tied to transitions, rather than ion html.  But then how will load all?
 # Answer: once layout done, run lecture constructor.  Will not run init method (or whatever it's called).
 # This will find all audio.
-
-Widgets = null
-Widgets = $blab.Widgets  # Does not exist
-
-$blab.computation = (computeFile, components) ->
-  
-  ui = {}
-  
-  compute = $blab.resources.find computeFile
-  
-  for name, component of components
-    ui[name] = component.ui?()
-    component.change?(-> compute.compile())  # Does not compile if code unchanged
-  $blab.ui = ui
-  
-  $blab.postProcessing = ->
-    # Currently only for tables
-    component.setFunctions?() for name, component of components
-    
-  $(document).on "preCompileCoffee", (evt, data) =>
-    return unless data.resource?.url is computeFile
-    names = (name for name of components)
-    list = names.join ", "
-    precompile = {}
-    precompile[computeFile] =
-      preamble: "{#{list}} = $blab.ui\n"
-      postamble: "$blab.postProcessing()\n"
-    $blab.precompile(precompile)
 
 class $blab.Lecture
   
@@ -70,7 +42,6 @@ class $blab.Lecture
     @doStep()
     
   init: ->
-    console.log "******** OBJECTS", $("[id|=lecture]").css("display")
     # Can override in lecture blab.
     @hideElements()
     @guide.init()
@@ -89,30 +60,23 @@ class $blab.Lecture
     
   step: (obj, spec={}) ->
     
-    # option to pass array/obj for first arg.  then can do multiple transitions.
+    obj = $("#"+obj) if typeof obj is "string"
     
-    if typeof obj is "string"
-      obj = $("#"+obj)
-    
-    # Use parent object for specified widgets
-    #if obj.hasClass("blab-input") or obj.hasClass("blab-menu") or obj.hasClass("puzlet-plot") #or obj.hasClass("widget")
-      # ZZZ do for table, plot2, etc.  way to detect any widget?
-    #  origObj = obj
-    #  obj = obj.parent()
-    
-    #console.log "OBJ", obj.data(), obj
-    
+    # Specified action
     action = spec.action
     
+    # Default action
     action ?= (o) ->
       f: -> o.show()
       b: -> o.hide()
     
+    # Fade action
     if action is "fade"
       action = (o) ->
         f: -> o.fadeIn()
         b: -> o.fadeOut()
     
+    # Replace action
     # ZZZ options for replace
     if spec.replace
       rObj = spec.replace
@@ -120,25 +84,11 @@ class $blab.Lecture
         f: -> rObj.fadeOut(300, -> o.fadeIn())
         b: -> o.hide(0, -> rObj.show())
     
-    if action is "menu"
-      # ZZZ DUP code
-      domId = origObj.attr "id"
-      origVal = Widgets.widgets[domId].getVal()
-      action = (o) =>
-        console.log "origVal", origVal
-        f: => @setMenu origObj, spec.val
-        b: => @setMenu origObj, origVal  # ZZZ should be original val?
-          
-    if action is "table"
-      #domId = obj.attr "id"
-      action = (o) =>
-        f: => @tablePopulate obj, spec.col, spec.vals, ->
-        b: => #no reverse action yet
-          
+    # Audio element
     audio = spec.audio
-    if audio and not $("audio#{audio}").length
-      $(document.body).append "<audio id='#{audio}' src='#{@audioServer}/#{audio}.mp3'></audio>\n"
+    @appendAudio audio
       
+    # Lecture pointer
     pointer = spec.pointer
       
     @steps = @steps.concat {obj, action, audio, pointer}
@@ -146,9 +96,9 @@ class $blab.Lecture
     obj
     
   doStep: ->
-    if @stepIdx<@steps.length
-      @stepIdx++
-      
+     
+    @stepIdx++ if @stepIdx<@steps.length
+     
     @progress.draw @stepIdx+1, @steps.length
     
     if @stepIdx>=0 and @stepIdx<@steps.length
@@ -171,12 +121,13 @@ class $blab.Lecture
       @guide.show()
       @pointer.hide()
     else
-      @guide.hide() #if @guide.guide.is(":visible")
+      @guide.hide()
     
     console.log "stepIdx", @stepIdx
     
   back: ->
-    console.log "BACK STEP"
+    
+    console.log "Back step"
     
     if @stepIdx>=0 and @stepIdx<@steps.length
       step = @steps[@stepIdx]
@@ -197,79 +148,36 @@ class $blab.Lecture
     else
       @guide.hide()
       
+  # Component action
   action: (spec) ->
     (o) =>
       component = o.data("blab-component")
       component?.lectureAction?(spec)
   
-  setMenu: (obj, val, cb) ->
-    console.log "**** SET MENU", obj, val
-    domId = obj.attr "id"
-    #obj.slider 'option', 'value', v  # ZZZ
-    Widgets.widgets[domId].setVal val
-    Widgets.widgets[domId].menu.val(val).trigger "change"
-    Widgets.compute()
-    cb?()
-        
-  tablePopulate: (obj, col, vals, cb) ->
-    delay = 1000
-    idx = 0
-    domId = obj.attr "id"
-    setTable = (cb) =>
-      v = vals[idx]
-      t = Widgets.widgets[domId]
-      console.log "***t/col/vals/idx", t, col, vals, idx
-      cell = t.editableCells[col][idx]  # 0 needs to be arg.
-      dir = if idx<vals.length-1 then 1 else 0
-      cell.div.text v
-      bg = cell.div.parent().css "background"
-      cell.div.parent().css background: "#ccc"
-      setTimeout (->
-        cell.div.parent().css background: bg
-        cell.done()
-      ), 200
-      idx++
-      if idx < vals.length
-        setTimeout (-> setTable(cb)), delay
-      else
-        console.log("cells", $('.editable-table-cell'))
-        cells = $('.editable-table-cell')
-        setTimeout (->
-          $(cells[2]).blur()
-          $("#container").click()
-        ), 1000
-        cb?()
-        
-    setTable(cb)
+  appendAudio: (audio) ->
+    # Audio element
+    if audio and not $("audio#{audio}").length
+      $(document.body).append "<audio id='#{audio}' src='#{@audioServer}/#{audio}.mp3'></audio>\n"
   
-  
-  table: (obj, spec) ->
-    spec.action = "table"
-    @step obj, spec
-    
-  menu: (obj, spec) ->
-    spec.action = "menu"
-    @step obj, spec
-    
   hideElements: ->
     $("[id|=lecture]").hide()
-    #$(".widget").hide()  # Needed?
     
   showElements: ->
     $("[id|=lecture]").show()
     $(".hide[id|=lecture]").hide()
-    #$(".widget").show()  # Needed?
   
 
 class StartButton
   
+  id: "start-lecture-button"
+  
   constructor: (@lecture) ->
-    @button = $ "#start-lecture-button"
     
+    @button = $ "##{@id}"
     return if @button.length
     
     @button = $ "<button>",
-      id: "start-lecture-button"
+      id: @id
       text: "Start lecture"
       css: marginBottom: "10px"
       
@@ -303,23 +211,23 @@ class KeyHandler
       lecture?.reset()
       lecture = null  # ZZZ better way?
     else
-      console.log evt.keyCode
+      #console.log evt.keyCode
       lecture?.doStep() #and evt.keyCode is 32
 
 
 class Guide
   
+  id: "lecture-guide"
+  
   constructor: ->
     
-    @guide = $ "#demo-guide"
+    @container = $ document.body
+    
+    @guide = $ "<div>", id: @id
+    @container.append @guide
+    
     @guide.draggable()
-  
-    @guide.css
-      top: 30
-      left: ($("body").width() - 200)
-      background: background ? "#ff9"
-      textAlign: "center"
-      width: 150
+    @guide.css left: ($("body").width() - 200)
     
     @hide()
     
@@ -337,7 +245,7 @@ class Guide
       @hide()
       @css textAlign: "center"
     
-    setTimeout (-> show()), 1000 #.delay(3000).hide()
+    setTimeout (-> show()), 1000
   
   start: ->
     @guide.html """
@@ -407,8 +315,6 @@ class Pointer
     $(document.body).click (evt) =>
       offset = @container.offset()
       console.log "container(x, y)", (evt.clientX - offset.left), (evt.clientY)
-      # 267, 166
-      # 251, 160
   
   show: ->
     @pointer.show()
@@ -425,6 +331,32 @@ class Pointer
     @pointer.animate
       left: coords[0] - adjust.left
       top: coords[1] - adjust.top
+
+
+# Computation helper function
+$blab.computation = (computeFile, components) ->
+  
+  compute = $blab.resources.find computeFile
+  
+  ui = {}
+  for name, component of components
+    ui[name] = component.ui?()
+    component.change?(-> compute.compile())  # Does not compile if code unchanged
+  $blab.ui = ui
+  
+  $blab.postProcessing = ->
+    # Currently only for tables
+    component.setFunctions?() for name, component of components
+    
+  $(document).on "preCompileCoffee", (evt, data) =>
+    return unless data.resource?.url is computeFile
+    names = (name for name of components)
+    list = names.join ", "
+    precompile = {}
+    precompile[computeFile] =
+      preamble: "{#{list}} = $blab.ui\n"
+      postamble: "$blab.postProcessing()\n"
+    $blab.precompile(precompile)
 
 
 # Dynamic styles

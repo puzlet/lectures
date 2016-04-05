@@ -1,17 +1,23 @@
-.test-style {
+#lecture-table-quadratic table caption {
+  font-size: 18pt;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+#lecture-table-quadratic table th {
+  font-size: 18pt;
+  border: 3px solid green;
+}
+
+#lecture-table-quadratic table td {
+  font-size: 18pt;
+  border: 3px solid green;
+}
+
+.large-text-style {
   font-size: 40pt;
   font-weight: bold;
   color: #78e;
   margin-bottom: 20px;
 }
 
-#table-Quadratic caption {
-  font-size: 18pt;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-
-#table-Quadratic td, th {
-  font-size: 18pt;
-  border: 3px solid green;
-}
