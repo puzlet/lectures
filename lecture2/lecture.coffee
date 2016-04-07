@@ -23,6 +23,8 @@ class myLecture extends $blab.Lecture
       action: (o) ->
         f: -> o.slideDown()
         b: -> o.slideUp()
+        
+    @step "lecture-compute"
     
     @step "lecture-slider-quadratic"
     
