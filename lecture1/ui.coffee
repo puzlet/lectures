@@ -183,7 +183,7 @@ processMathJax = (element, callback) ->
   queue(callback) if callback
 
 
-new Main
+#new Main
 
 #------------------------------------------------------#
 

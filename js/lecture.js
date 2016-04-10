@@ -393,9 +393,8 @@
   Pointer = (function() {
     function Pointer() {
       this.container = $("#container");
-      this.pointer = $("<img>", {
-        "class": "lecture-pointer",
-        src: "../img/pointer.png"
+      this.pointer = $("<div>", {
+        "class": "lecture-pointer"
       });
       this.pointer.hide();
       this.pointer.css({

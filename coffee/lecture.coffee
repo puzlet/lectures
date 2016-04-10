@@ -306,9 +306,7 @@ class Pointer
     
     @container = $ "#container"
     
-    @pointer = $ "<img>",
-      class: "lecture-pointer"
-      src: "../img/pointer.png"
+    @pointer = $ "<div>", class: "lecture-pointer"
     
     @pointer.hide()
     @pointer.css(left: 500, top: 500)
