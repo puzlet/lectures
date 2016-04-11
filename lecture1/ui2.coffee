@@ -195,19 +195,19 @@ class Z1
     @vector = new Vector {@canvas}
     @circle = new Circle
       canvas: @canvas
-      class: "circle"
+      class: "circle fill-green"
       draggable: true
       callback: (p) => @compute(p)
-    @triangle = new Polygon {@canvas, class: "triangle"}
+    #@triangle = new Polygon {@canvas, class: "triangle"}
     
   set: (x, y) ->
     @vector.set(x, y)
     @circle.set(x: x, y: y, r: 10)
-    @triangle.set [
-      {x: 0, y: 0}
-      {x: x, y: y}
-      {x: x, y: 0}
-    ]
+    # @triangle.set [
+    #   {x: 0, y: 0}
+    #   {x: x, y: y}
+    #   {x: x, y: 0}
+    # ]
     
 class Z
   
@@ -223,34 +223,34 @@ class Z
       
     @smallCircle = new Circle
       canvas: @canvas
-      class: "circle"
+      class: "circle fill-black"
       draggable: false
       
     @triangle = new Polygon {@canvas, class: "triangle"}
-    @triangle2 = new Polygon {@canvas, class: "triangle"}
-    @triangle3 = new Polygon {@canvas, class: "triangle"}
+    #@triangle2 = new Polygon {@canvas, class: "triangle"}
+    #@triangle3 = new Polygon {@canvas, class: "triangle"}
       
     #@triangleZ2 = new Polygon {@canvas, class: "triangle"}
-
     
   set: (x, y, xb, yb) ->
+    #console.log "circle", x, y, xb, yb
     @circle.set(x: x, y: y, r: 10)
-    @smallCircle.set(x: xb, y: yb, r: 5)
+    @smallCircle.set(x: xb, y: yb, r: 3)
     @triangle.set [
       {x: 0, y: 0}
       {x: xb, y: yb}
       {x: x, y: y}
     ]
-    @triangle2.set [
-      {x: 0, y: 0}
-      {x: xb, y: 0}
-      {x: xb, y: yb}
-    ]
-    @triangle3.set [
-      {x: xb, y: yb}
-      {x: xb, y: y}
-      {x: x, y: y}
-    ]
+    # @triangle2.set [
+    #   {x: 0, y: 0}
+    #   {x: xb, y: 0}
+    #   {x: xb, y: yb}
+    # ]
+    # @triangle3.set [
+    #   {x: xb, y: yb}
+    #   {x: xb, y: y}
+    #   {x: x, y: y}
+    # ]
     # @triangleZ2.set [
     #   {x: 0, y: 0}
     #   {x: xb/2, y: yb/2}
@@ -261,11 +261,11 @@ class Z
 class Main
   
   # ZZZ get from container?
-  width: 400
-  height: 400
+  width: 600
+  height: 600
   margin: {top: 30, right: 30, bottom: 50, left: 25}
-  xDomain: [-5, 5]
-  yDomain: [-5, 5]
+  xDomain: [-1.5, 1.5]
+  yDomain: [-1.5, 1.5]
   
   constructor: ->
     
@@ -290,7 +290,8 @@ class Main
   draw: (points) ->
     {z1, z2, z, az1} = points
     @z1.set z1.x, z1.y
-    @z.set z.x, z.y, az1.x, az1.y, z2.z, z2.y
+    #console.log "zset", z, az1
+    @z.set z.x, z.y, az1.x, az1.y  #, z2.z, z2.y
 
 
 #!math-sugar
@@ -298,23 +299,58 @@ class Computation
   
   constructor: (@spec) ->
     {@draw} = @spec
-    @z1 = complex 3, 2
+    @z1 = 1/sqrt(2) * complex(1, 1)
     @z2 = complex 0.5, 0.5
     @compute()
     
   compute: ->
-    @z = @z1*@z2
-    @az1 = complex(@z2.x*@z1.x, @z2.x*@z1.y) # # Bug - real * complex
+    @z = @z1*@z2  # BUG?
+    @z.y ?= 0  # Set imaginary to zero if undefined.
+    #@z = @mul(@z1, @z2) #@z1*@z2  # BUG?
+    #console.log "MUL", @z, @z1*@z2
+    
+    @az1 = @z2.x*@z1
+    @az1.y ?= 0  # Set imaginary to zero if undefined.
+    
+    #@az1 = complex(@z2.x*@z1.x, @z2.x*@z1.y) # # Bug - real * complex
     @draw {@z1, @z2, @z, @az1}
     
   setZ1: (p) ->
     @z1 = complex p.x, p.y
+    
+    # Constrain
+    @z1 = @z1 / abs(@z1)
+    @z1.y ?= 0
+    
     @compute()
     
   setZ: (p) ->
     z = complex p.x, p.y
     @z2 = z / @z1
+    @z2.y ?= 0  # Set imaginary to zero if undefined.
+    #@z2 = @div z, @z1
+    #@z2 = z / @z1  # Bug with zero imaginary values
     @compute()
+    
+#   div: (z1, z2) ->
+#     # Fixes bug with complex division.
+#     zz = @mul(z1, @conj(z2))
+# #    zz = @mul(z1, z2.conj())
+#     #z1*z2.conj()  # Bug here, too
+#     #zz = complex(z1.x*z2.x - z1.y*z2.y, z1.x*z2.y + z1.y*z2.x)  #z1*z2.conj()  # Bug here, too
+#     a = 1/(z2.x * z2.x + z2.y * z2.y)
+#     #console.log z1, z2, zz, a
+#     complex(a*zz.x, a*zz.y)
+#
+#   mul: (z1, z2) ->
+#     x = z1.x*z2.x - z1.y*z2.y
+#     y = z1.x*z2.y + z1.y*z2.x
+#     #console.log "z1/z2/x/y", z1, z2, x, y
+#     complex(x, y)
+#
+#   conj: (z) ->
+#     complex(z.x, -z.y)
+    
 
 complexPolar = (r, theta) -> r*exp(j*theta)
 #!no-math-sugar

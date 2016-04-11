@@ -210,12 +210,12 @@ class KeyHandler
     return unless lecture
     if evt.keyCode is 37
       lecture?.back()
+    else if evt.keyCode is 39
+      lecture?.doStep()
     else if evt.keyCode is 27  # Escape
       lecture?.reset()
       lecture = null  # ZZZ better way?
-    else
-      #console.log evt.keyCode
-      lecture?.doStep() #and evt.keyCode is 32
+
 
 
 class Guide

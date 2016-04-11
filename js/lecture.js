@@ -261,13 +261,13 @@
       }
       if (evt.keyCode === 37) {
         return lecture != null ? lecture.back() : void 0;
+      } else if (evt.keyCode === 39) {
+        return lecture != null ? lecture.doStep() : void 0;
       } else if (evt.keyCode === 27) {
         if (lecture != null) {
           lecture.reset();
         }
         return lecture = null;
-      } else {
-        return lecture != null ? lecture.doStep() : void 0;
       }
     };
 
