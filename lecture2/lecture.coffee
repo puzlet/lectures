@@ -12,14 +12,22 @@ class myLecture extends $blab.Lecture
     
     @step "lecture-text-2",
       audio: "x-squared"
-      pointer: [233, 211]
+      pointer: [203, 259]
       action: (o) ->
-        f: -> o.fadeIn(1000)  # perhaps specify f/b directly? omit action?
-        b: -> o.fadeOut()
+        f: ->
+          o.show 0, ->
+            o.addClass("effect-background")
+            setTimeout (-> 
+              o.removeClass("effect-background")
+            ), 1000
+        b: ->
+          o.hide()
+      #  f: -> o.fadeIn(1000)
+      #  b: -> o.fadeOut()
     
     @step "lecture-math-1",
       audio: "x-cubed"
-      pointer: [55, 361]
+      pointer: [55, 381]
       action: (o) ->
         f: -> o.slideDown()
         b: -> o.slideUp()
@@ -35,11 +43,11 @@ class myLecture extends $blab.Lecture
     
     @step "lecture-slider-quadratic",
       audio: "x-squared"  # Not correct audio - just a test.
-      pointer: [229, 420]
+      pointer: [229, 440]
       action: @action(vals: [1..9])
     
     @step "lecture-menu-offset",
-      pointer: [327, 457]
+      pointer: [327, 477]
       action: @action(val: 20)
     
     o = @step "lecture-text-3"
@@ -50,7 +58,7 @@ class myLecture extends $blab.Lecture
     @step "lecture-table-quadratic"
     
     @step "lecture-table-quadratic",
-      pointer: [189, 701]
+      pointer: [189, 721]
       action: @action(col: 0, vals: [4, 5, 6])
 
 new myLecture

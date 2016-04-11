@@ -299,8 +299,12 @@ class Computation
   
   constructor: (@spec) ->
     {@draw} = @spec
-    @z1 = 1/sqrt(2) * complex(1, 1)
-    @z2 = complex 0.5, 0.5
+    @z1 = complex(1, 0)
+    @z2 = 1/sqrt(2) * complex(1, 1)
+    @setZ1(complex(1,0))
+    @setZ(1/sqrt(2) * complex(1, 1))
+    
+    # ZZZ should do a setZ1, setZ here, to get constraints.
     @compute()
     
   compute: ->
@@ -326,7 +330,13 @@ class Computation
     
   setZ: (p) ->
     z = complex p.x, p.y
+    
+    # Constrain
+    z = z / abs(z)
+    z.y ?= 0
+    
     @z2 = z / @z1
+    
     @z2.y ?= 0  # Set imaginary to zero if undefined.
     #@z2 = @div z, @z1
     #@z2 = z / @z1  # Bug with zero imaginary values

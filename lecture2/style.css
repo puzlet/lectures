@@ -21,3 +21,23 @@
   margin-bottom: 20px;
 }
 
+/* Examples of fade effects */
+
+.effect p {
+  padding: 10px;
+  transition: all 1s ease;
+  /* May also need:
+  -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    -o-transition: all 1s ease;
+  */
+}
+
+.effect-background p {
+  /*border: 2px solid black;*/
+  /*opacity: 1;*/
+  background: #ff9;
+}
+
+
