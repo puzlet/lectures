@@ -4,13 +4,13 @@ class AngleSlider
   
   constructor: (@container, @setMethod)->
     
-    @slider = new $blab.components.Slider
+    @sliderN = new $blab.components.Slider
       container: @container
       prompt: "Angle"
       unit: "radians"
       init: 0
       min: 0
-      max: 96
+      max: 100
       
     @textOuter = @slider.textDiv
     @textOuter.empty()

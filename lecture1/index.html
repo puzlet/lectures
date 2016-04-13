@@ -15,7 +15,22 @@
 <div id='outer-container'>
 <div id='container'>
 
-<h2>Complex Numbers</h2>
+<h1>Complex Numbers</h1>
+
+<h2>Complex Plane</h2>
+
+<p>Many applications in science and engineering model phenomena as a two-dimensional vector in a plane.</p>
+
+<div id='figure-complex-plane' class='box-1-1'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+  </div>
+  <div id='slider-angle'></div>
+  <div class='text-centered'>
+    Magnitude: <span id='magnitude'></span><br>
+    <!--Angle: <span id='angle'></span> $\pi$ radians -->
+  </div>
+</div>
 
 <!--ui.coffee-->
 <!--div class='box-1-1'>
@@ -26,12 +41,16 @@
   </div>
 </div-->
 
+<h2>Euler's Formula</h2>
+
 <!--ui2.coffee-->
-<div class='box-1-1'>
-  <div id='math-outer'>
-    <div id='math-surface'></div>
+<div id='figure-euler-formula' class='box-1-1'>
+  <div class='figure-outer figure-outer-large'>
+    <div class='figure-surface'></div>
     <div id='math' class='angle-text'></div>
   </div>
+  <div id='slider-theta'></div>
+  <div id='slider-n'></div>
 </div>
 
 <div class='clear'></div>
