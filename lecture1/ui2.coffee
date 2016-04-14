@@ -1,6 +1,7 @@
 #!no-math-sugar
 
-Slider = 
+# TODO:
+# process mathjax only once loaded.
 
 round = (x, n) ->
   f = Math.pow(10, n)
@@ -38,63 +39,40 @@ class FigureComplexPlane extends ComplexPlane
   
   constructor: ->
     
-    super container: $("#{@id} .figure-surface")
+    @figure = $ "#{@id}"
+    super container: @figure.find(".figure-surface")
     
     @vector = new VectorWithCircle
       canvas: @canvas
       xyLines: true
-      compute: (p) => @draw(p)
+      compute: (p) => @setVector(p)
     
-    Slider = $blab.components.Slider
+    @slider = new VerticalAngleSlider
+      container: @figure.find ".slider"
+      label: "$\\theta$"
+      change: (angle) =>
+        z = ComputationComplexPlane.polarToComplex @magnitude, angle
+        @draw z
     
-    @sliderAngle = new Slider
-      container: $("#{@id} #slider-angle")
-      prompt: "$\\theta$"
-      unit: "$\\pi$ radians"
-      init: 0
-      min: -1
-      max: 1
-      step: 1/48 #0.125/2
+    @magnitudeText = $ "<span>"
+    (@figure.find ".magnitude").append("Magnitude: A=").append(@magnitudeText)
     
-    # TODO: make vertcial slider on right side of plot.
-    #@sliderAngle.slider.slider orientation: "vertical"
-    
-    @draw(x: 1, y: 1)
-    
-    @sliderAngle.change =>
-      angle = @sliderAngle.getVal() * pi
-      z = ComputationComplexPlane.setPolar @magnitude, angle
-      @draw2 z
-      #console.log angle, z
-      #@build(theta, N)
+    @setVector(x: 1, y: 1)
   
-  draw: (p) ->
+  setVector: (p) ->
+    # Set cartesian coords of vector.  Snap to grid.
+    # Make rounding part of clip function?
+    x = round(p.x, 1)
+    y = round(p.y, 1)
+    @z = ComputationComplexPlane.clipMagnitude complex(x, y), 2
+    setSlider = true
+    @draw @z, setSlider
     
-    x = p.x
-    y = p.y
-    
-    # Snap to grid
-    x = round(x, 1)
-    y = round(y, 1)
-    
-    @z = complex x, y
-    
-    {@magnitude, @angle} = ComputationComplexPlane.set(@z)
-    @sliderAngle.move round(@angle/pi, 2)  # OK here?
-    
-    @draw2(@z)
-    
-  draw2: (@z) ->
-    
-    {@magnitude, @angle} = ComputationComplexPlane.set(@z)
-    
+  draw: (@z, setSlider=false) ->
+    {@magnitude, @angle} = ComputationComplexPlane.complexToPolar(@z)  # ZZZ computing twice if called from setVector/change?
     @vector.set @z.x, @z.y, @magnitude, @angle
-    
-    $("#{@id} #magnitude").html round(@magnitude, 2)
-    #$("#{@id} #angle").html round(@angle/pi, 2) 
-    
-  #round: (x) ->
-  #  Math.round(x * 100)/100
+    @slider.set(@angle) if setSlider
+    @magnitudeText.html round(@magnitude, 2)
 
 
 class FigureEulerFormula extends ComplexPlane
@@ -172,6 +150,99 @@ class FigureEulerFormula extends ComplexPlane
     draw: (t, points) ->
       {z1, z2, z, az1} = points
       t.set z.x, z.y, az1.x, az1.y
+
+
+#--- Slider ---#
+
+class VerticalAngleSlider
+  
+  # Slider for -pi..pi.
+  
+  nAngle: 48  # Number of slider angles from 0+ to pi
+  
+  constructor: (@spec) ->
+    
+    {@container, @label, @change} = @spec
+    
+    @container.append @template()
+    
+    @sliderContainer = @container.find(".slider-angle")
+    
+    @slider = new Slider
+      container: @sliderContainer
+      init: 0
+      min: -@nAngle
+      max: @nAngle
+      step: 1
+      change: (v) =>
+        @angle = @nToAngle(v)
+        @setText()
+        @change(@angle)
+    
+    @height = @sliderContainer.height()
+        
+    @prompt = @container.find(".slider-angle-prompt")
+    @prompt.html @label
+    
+    @text = @container.find(".slider-angle-text")
+  
+  template: -> """
+    <div class='slider-angle'></div>
+    <div class='slider-angle-prompt'></div>
+    <div class='slider-angle-text angle-text'></div>
+  """
+    
+  set: (@angle) ->
+    v = round(@angleToN(@angle), 2)
+    @slider.set(v)
+    @setText()
+  
+  setText: ->
+    {mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
+    @text.toggleClass('angle-text-special', special)
+    @text.toggleClass('angle-text-negative', @angle<0)
+    @text.html mathjax
+    processed = processMathJax @text, => @setTextPos()
+    @setTextPos() unless processed
+    
+  setTextPos: ->
+    y = @height * 0.5*(1 - @angle/pi) - 15
+    @text.css top: "#{y}px"
+    
+  angleToN: (angle) -> @nAngle*angle/pi
+  
+  nToAngle: (n) -> n*pi/@nAngle
+    
+
+
+class Slider
+  
+  constructor: (@spec) ->
+    
+    {@container, @min, @max, @step, @init, @fast, change} = @spec
+    
+    @fast ?= true
+    
+    @changeFcn = if change then ((v) -> change(v)) else (->)
+    
+    @slider = @container.slider
+      orientation: "vertical"
+      range: "min"
+      min: @min
+      max: @max
+      step: @step
+      value: @init
+      mouseup: (e) ->
+      slide: (e, ui) =>
+        @changeFcn(ui.value) if @fast
+      change: (e, ui) =>
+        @changeFcn(ui.value) unless @fast
+    
+  val: -> @slider.slider "option", "value"
+  
+  set: (v) ->
+    # Forces slider to move to value - used for animation.
+    @slider.slider 'option', 'value', v
 
 
 #--- d3 elememts ---#
@@ -616,14 +687,18 @@ class VectorWithTriangle
 # TODO - put in separate file - visible in Ace editor in document
 class ComputationComplexPlane
   
-  @set: (z) ->
+  @complexToPolar: (z) ->
     magnitude = abs(z)
     angle = z.arg()
     {magnitude, angle}
     
-  @setPolar: (magnitude, angle) ->
+  @polarToComplex: (magnitude, angle) ->
     z = complex(magnitude*cos(angle), magnitude*sin(angle))
-
+    
+  @clipMagnitude: (z, maxA) ->
+    a = abs(z)
+    return z if a<maxA
+    (maxA/a)*z
 
 class Computation2
   
@@ -693,7 +768,9 @@ angleText = (a) ->
   theta = pi*a/48
   
   specialAngles =
+    
     0: '0'
+    
     8: '\\frac{\\pi}{6}'
     12: '\\frac{\\pi}{4}'
     
@@ -705,6 +782,7 @@ angleText = (a) ->
     
     40: '\\frac{5\\pi}{6}'
     48: '\\pi'
+    
     56: '\\frac{7\\pi}{6}'
     
     60: '\\frac{5\\pi}{4}'
@@ -720,21 +798,23 @@ angleText = (a) ->
   # Angle in pi-radians, rounded to two decimal places.
   piRad = Math.round(100*theta/pi)/100
   
-  special = specialAngles[a]?
-  mj = if special then specialAngles[a] else piRad+"\\pi"
+  aa = round(Math.abs(a), 8)
+  special = specialAngles[aa]?
+  mj = if special then (if a<0 then "-" else "")+specialAngles[aa] else piRad+"\\pi"
   mathjax = "$#{mj}$"
   
   {mathjax, special}
 
 
 processMathJax = (element, callback) ->
-  return unless MathJax?
+  return false unless MathJax?
   Hub = MathJax.Hub
   queue = (x) -> Hub.Queue x
   queue ['PreProcess', Hub, element[0]]
   queue ['Process', Hub, element[0]]
   queue -> $('.math>span').css("border-left-color", "transparent")
   queue(callback) if callback
+  true
 
 
 new FigureComplexPlane

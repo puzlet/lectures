@@ -16,21 +16,74 @@
 <div id='container'>
 
 <h1>Complex Numbers</h1>
+<p class='heading'>Martin Clark<br>April 2016</p>
+<p class='heading highlight'>[This web page is currently under development.]</p>
 
 <h2>Complex Plane</h2>
 
-<p>Many applications in science and engineering model phenomena as a two-dimensional vector in a plane.</p>
+<div class='box-2-1'>
 
-<div id='figure-complex-plane' class='box-1-1'>
+<p>Many applications in science and engineering model phenomena as a two-dimensional (2D) vector in a plane.</p>
+
+<p>We can express the vector $z$ in a couple of ways:
+  <table>
+  <tr><td>Cartesian<td>$z = (x, y)$
+  <tr><td>Polar<td>$z = A \angle \theta$
+  </table>
+  
+where
+
+$$x = A \cos(\theta)$$
+$$y = A \sin(\theta)$$
+</p>
+
+<p>[Discussion of applications here, e.g., electrical circuits/impedance.]</p>
+
+<p>Another useful way to express $z$ is as a <i><b>complex number</b></i>:
+$$z = x+iy$$
+</p>
+
+</div>  <!-- .box-2-1 -->
+
+<div id='figure-complex-plane' class='box-2-2'>
   <div class='figure-outer'>
     <div class='figure-surface'></div>
+    <div class='slider'></div>
   </div>
-  <div id='slider-angle'></div>
-  <div class='text-centered'>
-    Magnitude: <span id='magnitude'></span><br>
-    <!--Angle: <span id='angle'></span> $\pi$ radians -->
-  </div>
+  <div class='magnitude'></div>
 </div>
+
+<div class='clear'></div>
+
+<div class='box-1-1'>
+<p>
+  Here, $i$ represents the vertical-axis in the plane.
+  We'll see that if we assign $i$ a special value, 
+  we can do useful mathematical operations on vectors in this 2D-space.
+  It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.
+</p>
+</div>
+
+<div class='clear'></div>
+
+<h2>Addition</h2>
+
+<div class='box-2-1'>
+<p>
+Addition of vectors&mdash;and thus addition of complex numbers&mdash;is intuitive.
+Just add the $x$-axis coordinates to get the new $x$-coordinate; and add the $y$-axis coordinates to get the new $y$-coordinate:
+  $$z_1 = x + iy$$
+  $$z_2 = a + ib$$
+  $$z_1 + z_2 = (x + iy) + (a + ib) = (x+a) + i(y+b)$$ 
+Subtraction is similar: subtract the $x$-axis coordinates to get the new $x$-coordinate; and subtract the $y$-axis coordinates to get the new $y$-coordinate.
+</p>
+</div>
+
+<div class='box-2-1'>
+  <!-- figure here-->
+</div>
+
+<div class='clear'></div>
 
 <!--ui.coffee-->
 <!--div class='box-1-1'>

@@ -2,6 +2,36 @@
 
 h1 {
   text-align: center;
+  line-height: 100%;
+  margin-bottom: 0px;
+}
+
+h2 {
+  line-height: 100%;
+  margin-bottom: 0px;
+}
+
+p.heading {
+  text-align: center;
+}
+
+p.highlight {
+  color: red;
+  font-weight: bold;
+}
+
+table {
+  margin: 0 auto;
+  font-size: 12pt;
+}
+
+table, th, td {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
 }
 
 /********** Figures **********/
@@ -28,6 +58,62 @@ h1 {
 }
 
 .text-centered {
+  text-align: center;
+}
+
+/********** Figure - Complex Plane **********/
+
+#figure-complex-plane {
+  font-size: 20pt;
+}
+
+#figure-complex-plane .slider-angle {
+  position: absolute;
+  width: 20px;
+  height: 320px;  /* 400px - 2*margin */
+  margin: 40px 0;
+  right: -40px;
+}
+
+.ui-slider .ui-slider-handle {
+  height: 1.2em;
+  width: 1.2em;
+  /*padding-left: 5px;*/
+}
+
+#figure-complex-plane .slider-angle-prompt {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -5px 0;
+  right: -40px;
+}
+
+#figure-complex-plane .slider-angle-text {
+  position: absolute;
+  width: 20px;
+  height: 320px;
+  margin: 40px 0;
+  right: -75px;
+}
+
+.angle-text {
+  font-size: 12pt;
+  color: black;
+  opacity: 0.5;
+}
+
+.angle-text-special {
+  font-size: 20pt;
+  color: black;
+  opacity: 1;
+}
+
+.angle-text-negative {
+  color: red;
+}
+
+#figure-complex-plane .magnitude {
   text-align: center;
 }
 
@@ -95,6 +181,7 @@ h1 {
 
 
 /*--------------------------------*/
+/* No longer used? */
 
 #math-outer {
   position: relative;
@@ -122,6 +209,7 @@ h1 {
 }
 
 /*--------------------------------*/
+/* No longer used? */
 
 #angle {
   height: 50px;
@@ -147,12 +235,3 @@ h1 {
   color: #aaa;
 }
 
-.angle-text {
-  font-size: 12pt;
-  color: #aaa;
-}
-
-.angle-text-special {
-  font-size: 20pt;
-  color: black;
-}
