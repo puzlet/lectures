@@ -51,7 +51,7 @@ class FigureComplexPlane extends ComplexPlane
       container: @figure.find ".slider"
       label: "$\\theta$"
       change: (angle) =>
-        z = ComputationComplexPlane.polarToComplex @magnitude, angle
+        z = Complex.polarToComplex @magnitude, angle
         @draw z
     
     @magnitudeText = $ "<span>"
@@ -64,15 +64,72 @@ class FigureComplexPlane extends ComplexPlane
     # Make rounding part of clip function?
     x = round(p.x, 1)
     y = round(p.y, 1)
-    @z = ComputationComplexPlane.clipMagnitude complex(x, y), 2
+    @z = Complex.clipMagnitude complex(x, y), 2
     setSlider = true
     @draw @z, setSlider
     
   draw: (@z, setSlider=false) ->
-    {@magnitude, @angle} = ComputationComplexPlane.complexToPolar(@z)  # ZZZ computing twice if called from setVector/change?
-    @vector.set @z.x, @z.y, @magnitude, @angle
+    @vector.set @z
+    {@magnitude, @angle} = Complex.toPolar(@z)
     @slider.set(@angle) if setSlider
     @magnitudeText.html round(@magnitude, 2)
+
+
+class FigureComplexAddition extends ComplexPlane
+  
+  # TODO: show x+jy and a+jb below, and sum.
+  # TODO: different colors for vectors and xy lines
+  # BUG?: slider wrong if move and z clips.  or clipping shortens vector when clips?
+  
+  id: "#figure-complex-addition"
+  
+  margin: {top: 40, right: 40, bottom: 40, left: 40}
+  xDomain: [-2, 2]
+  yDomain: [-2, 2]
+  
+  constructor: ->
+    
+    @figure = $ "#{@id}"
+    super container: @figure.find(".figure-surface")
+      
+    @vector1 = new VectorSliderPair
+      figure: @figure
+      canvas: @canvas
+      xyLabels: false
+      sliderClass: ".slider"
+      angleLabel: "$\\theta_1$"
+      getZ: (z) => @getZ(z, @vector2.z())
+      set: =>
+        @setOrigin2()
+        @setMagnitude()
+      
+    @vector2 = new VectorSliderPair
+      figure: @figure
+      canvas: @canvas
+      xyLabels: true
+      sliderClass: ".slider-2"
+      angleLabel: "$\\theta_2$"
+      getZ: (z) => @getZ(z, @vector1.z())
+      set: => @setMagnitude()
+    
+    @magnitudeText = $ "<span>"
+    (@figure.find ".magnitude").append("Magnitude: A=").append(@magnitudeText)
+    
+    @vector1.set complex(1, 0.5)
+    @setOrigin2()
+    @vector2.set complex(0.5, 0.5)
+  
+  setMagnitude: ->
+    A = Complex.magnitudeSum(@vector1.z(), @vector2.z())
+    @magnitudeText.html round(A, 2)
+  
+  setOrigin2: (v, z) -> @vector2.setOrigin @vector1.z()
+  
+  getZ: (z, other) ->
+    total = Complex.add(z, other)
+    clip = Complex.clipMagnitude(total, 2)
+    snap = Complex.snap(clip, 1)
+    Complex.diff snap, other
 
 
 class FigureEulerFormula extends ComplexPlane
@@ -153,6 +210,40 @@ class FigureEulerFormula extends ComplexPlane
 
 
 #--- Slider ---#
+
+class VectorSliderPair
+  
+  constructor: (@spec) ->
+    
+    {@figure, @canvas, @xyLabels, @sliderClass, @angleLabel, @getZ} = @spec
+    
+    @vector = new VectorWithCircle
+      canvas: @canvas
+      xyLines: true
+      xyLabels: @xyLabels
+      arc: false
+      compute: (z) => @set(z)
+      
+    @slider = new VerticalAngleSlider
+      container: @figure.find @sliderClass
+      label: @angleLabel
+      change: (angle) =>
+        z = Complex.polarToComplex @vector.magnitude, angle
+        setSlider = false
+        @set z, setSlider
+        
+  set: (z, setSlider=true) ->
+    z = @getZ z
+    @vector.set z
+    @spec.set?(z)
+    @slider.set(@vector.angle) if setSlider
+    
+  z: -> @vector.z ? complex(0, 0)
+  
+  origin: -> @vector.origin ? complex(0, 0)
+  
+  setOrigin: (z) -> @vector.setOrigin z
+
 
 class VerticalAngleSlider
   
@@ -446,7 +537,9 @@ class Vector
     
     @line = new Line {@canvas, class: "line"} 
     @set(@x, @y)
-    
+  
+  setOrigin: (@x0, @y0) -> @set(@x, @y)
+  
   set: (@x, @y) ->
     @line.set {x1: @x0, y1: @y0, x2: @x0+@x, y2: @y0+@y}
 
@@ -458,10 +551,12 @@ class VectorWithCircle
   
   constructor: (@spec) ->
     
-    {@canvas, @class, @radius, @xyLines, @compute} = @spec
+    {@canvas, @class, @radius, @xyLines, @xyLabels, @arc, @compute} = @spec
       
     @class ?= "circle fill-green"
     @radius ?= 10
+    @xyLabels ?= @xyLines
+    @arc ?= true
     
     @vector = new Vector {@canvas}
     
@@ -469,19 +564,15 @@ class VectorWithCircle
       canvas: @canvas
       class: @class
       draggable: @compute?
-      callback: (p) => @compute?(p)
-      
-    @arc = new Arc
-      canvas: @canvas
-      data:
-        x: 0
-        y: 0
-        innerRadius: 20
-        outerRadius: 22
-        startAngle: pi/2
-        endAngle: pi/2
-      
+      callback: (p) =>
+        zp = complex p.x, p.y
+        origin = @origin ? complex(0, 0)
+        z = Complex.diff zp, origin
+        @compute?(z)
+    
     @showXYLines() if @xyLines
+    @showXYLabels() if @xyLabels
+    @showArc() if @arc
   
   showXYLines: ->
     
@@ -492,7 +583,9 @@ class VectorWithCircle
     @yLine = new Line
       canvas: @canvas
       class: "line-dashed"
-        
+  
+  showXYLabels: ->
+    
     @xText = new Text
       canvas: @canvas
       # class
@@ -506,35 +599,64 @@ class VectorWithCircle
       
     @yText.text
       .attr "dy", "0.4em"
+      
+  showArc: ->
+    @angleArc = new Arc
+      canvas: @canvas
+      data:
+        x: 0
+        y: 0
+        innerRadius: 20
+        outerRadius: 22
+        startAngle: pi/2
+        endAngle: pi/2
+  
+  setOrigin: (@origin) ->
+    # @origin is complex
+    @vector.setOrigin @origin.x, @origin.y
+    @set(@z)
+  
+  set: (@z) ->
     
-  set: (x, y, magnitude=0, angle=0) ->
+    @z ?= complex 0, 0
+    x = @z.x
+    y = @z.y
+    {@magnitude, @angle} = Complex.toPolar(@z)
+    
+    x0 = @origin?.x ? 0
+    y0 = @origin?.y ? 0
     
     @vector.set(x, y)
-    @circle.set(x: x, y: y, r: @radius)
+    @circle.set(x: x0+x, y: y0+y, r: @radius)
     
     xMargin = "0.3em"
     yMargin = "0.3em"
     
-    @xLine?.set(x1: x, y1: 0, x2: x, y2: y)
-    @xText?.set(x: x, y: 0, text: "x="+round(x, 1))
+    xl = x0+x
+    yl = y0+y
+    
+    @xLine?.set(x1: xl, y1: 0, x2: xl, y2: yl)
+    @xText?.set(x: xl, y: 0, text: "x="+round(xl, 1))
     @xText?.text
-      .attr "fill", (if x>=0 then "black" else "red")
-      .attr "dy", (if y>=0 then "1.1em" else "-#{xMargin}")
+      .attr "fill", (if xl>=0 then "black" else "red")
+      .attr "dy", (if yl>=0 then "1.1em" else "-#{xMargin}")
     
-    @yLine?.set(x1: 0, y1: y, x2: x, y2: y)
-    @yText?.set(x: 0, y: y, text: "y="+round(y, 1))
+    @yLine?.set(x1: 0, y1: yl, x2: xl, y2: yl)
+    @yText?.set(x: 0, y: yl, text: "y="+round(yl, 1))
     @yText?.text
-      .attr "fill", (if y>=0 then "black" else "red")
-      .attr "text-anchor", (if x>=0 then "end" else "start")
-      .attr "dx", (if x>=0 then "-#{yMargin}" else yMargin)
+      .attr "fill", (if yl>=0 then "black" else "red")
+      .attr "text-anchor", (if xl>=0 then "end" else "start")
+      .attr "dx", (if xl>=0 then "-#{yMargin}" else yMargin)
     
-    show = magnitude>0.4
-    @arc?.set
+    # ZZZ arc won't work if @origin
+    
+    show = @magnitude>0.4
+    @angleArc?.set
       innerRadius: if show then 20 else 0
       outerRadius: if show then 22 else 0
-      endAngle: pi/2-angle
+      endAngle: pi/2-@angle
       
-    @arc?.path.attr "fill", (if angle>=0 then "black" else "red")
+    @angleArc?.path.attr "fill", (if @angle>=0 then "black" else "red")
 
 
 #------------------#
@@ -683,11 +805,11 @@ class VectorWithTriangle
 
 #!math-sugar
 
-# Computation for FigureComplexPlane
+# Complex number computation
 # TODO - put in separate file - visible in Ace editor in document
-class ComputationComplexPlane
+class Complex
   
-  @complexToPolar: (z) ->
+  @toPolar: (z) ->
     magnitude = abs(z)
     angle = z.arg()
     {magnitude, angle}
@@ -699,6 +821,18 @@ class ComputationComplexPlane
     a = abs(z)
     return z if a<maxA
     (maxA/a)*z
+    
+  @snap: (z, n) -> complex(round(z.x, n), round(z.y, n))
+    
+  @add: (z1, z2) -> z1 + z2
+  
+  @diff: (z1, z2) ->
+    d = z1 - z2
+    d.y ?= 0 # TODO: Fix in math module
+    d
+  
+  @magnitudeSum: (z1, z2) -> abs(z1 + z2)
+
 
 class Computation2
   
@@ -800,7 +934,9 @@ angleText = (a) ->
   
   aa = round(Math.abs(a), 8)
   special = specialAngles[aa]?
-  mj = if special then (if a<0 then "-" else "")+specialAngles[aa] else piRad+"\\pi"
+  minus = "-\\!"  # \! is negative space
+  mj = if special then (if a<0 then minus else "")+specialAngles[aa] else piRad+"\\pi"
+  mj = "{#{mj}}"  # Wrap in {} to get shorter unary minus sign.
   mathjax = "$#{mj}$"
   
   {mathjax, special}
@@ -817,7 +953,12 @@ processMathJax = (element, callback) ->
   true
 
 
+#------------------------------------------------------#
+# Figures
+#------------------------------------------------------#
+
 new FigureComplexPlane
+new FigureComplexAddition
 new FigureEulerFormula
 
 #------------------------------------------------------#
