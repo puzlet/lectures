@@ -67,7 +67,33 @@ th, td {
   font-size: 20pt;
 }
 
-#figure-complex-plane .slider-angle {
+/********** Figure - Complex Addition **********/
+
+#figure-complex-addition {
+  font-size: 20pt;
+}
+
+/* Slider for z2 */
+
+#figure-complex-addition .slider-2 {
+  position: absolute;
+  right: -100px;
+}
+
+/********** Figure - Complex Plane **********/
+
+#figure-complex-scaling {
+  font-size: 20pt;
+}
+
+.slider-scale-factor {
+  width: 100%;
+  margin: 20px 0;
+}
+
+/********** Vertical angle slider **********/
+
+.slider-angle {
   position: absolute;
   width: 20px;
   height: 320px;  /* 400px - 2*margin */
@@ -75,7 +101,7 @@ th, td {
   right: -40px;
 }
 
-#figure-complex-plane .slider-angle-prompt {
+.slider-angle-prompt {
   position: absolute;
   width: 20px;
   height: 20px;
@@ -83,22 +109,12 @@ th, td {
   right: -40px;
 }
 
-#figure-complex-plane .slider-angle-text {
+.slider-angle-text {
   position: absolute;
   width: 20px;
   height: 320px;
   margin: 40px 0;
   right: -75px;
-}
-
-#figure-complex-plane .magnitude {
-  text-align: center;
-}
-
-.ui-slider .ui-slider-handle {
-  height: 1.2em;
-  width: 1.2em;
-  /*padding-left: 5px;*/
 }
 
 .angle-text {
@@ -117,46 +133,33 @@ th, td {
   color: red;
 }
 
-/********** Figure - Complex Addition **********/
-
-#figure-complex-addition {
-  font-size: 20pt;
+.ui-slider .ui-slider-handle {
+  height: 1.2em;
+  width: 1.2em;
+  /*padding-left: 5px;*/
 }
 
-/* Redundant? */
+/********** Horizontal slider **********/
 
-#figure-complex-addition .slider-angle {
-  position: absolute;
-  width: 20px;
-  height: 320px;  /* 400px - 2*margin */
-  margin: 40px 0;
-  right: -40px;
+.slider-horiz-prompt {
+  display: inline-block;
+  width: 20%;
+  text-align: right;
 }
 
-#figure-complex-addition .slider-angle-prompt {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  margin: -5px 0;
-  right: -40px;
+.slider-horiz {
+  display: inline-block;
+  width: 59%;
 }
 
-#figure-complex-addition .slider-angle-text {
-  position: absolute;
-  width: 20px;
-  height: 320px;
-  margin: 40px 0;
-  right: -75px;
+.slider-horiz-text {
+  display: inline-block;
+  width: 15%;
 }
 
-/* Slider for z2 */
+/********** Magnitude **********/
 
-#figure-complex-addition .slider-2 {
-  position: absolute;
-  right: -100px;
-}
-
-#figure-complex-addition .magnitude {
+.magnitude {
   text-align: center;
 }
 

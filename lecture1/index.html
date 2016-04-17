@@ -62,6 +62,9 @@ $$z = x+iy$$
   we can do useful mathematical operations on vectors in this 2D-space.
   It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.
 </p>
+<p>
+  But first, consider two simple vector operations&mdash;addition and scaling.
+</p>
 </div>
 
 <div class='clear'></div>
@@ -70,12 +73,13 @@ $$z = x+iy$$
 
 <div class='box-2-1'>
 <p>
-Addition (or subtraction) of vectors&mdash;and thus addition of complex numbers&mdash;is straightforward.
-Just add the $x$-axis coordinates to get the new $x$-coordinate; and add the $y$-axis coordinates to get the new $y$-coordinate:
+Addition of vectors&mdash;and thus addition of complex numbers&mdash;is straightforward.
+Just add the $x$ coordinates to get the new $x$-coordinate; and add the $y$ coordinates to get the new $y$-coordinate:
   $$z_1 = x + iy$$
   $$z_2 = a + ib$$
   $$z_1 + z_2 = (x + iy) + (a + ib) = (x+a) + i(y+b)$$
 </p>
+<p>[Subtraction]</p>
 </div>
 
 <div id='figure-complex-addition' class='box-2-2'>
@@ -88,6 +92,37 @@ Just add the $x$-axis coordinates to get the new $x$-coordinate; and add the $y$
 </div>
 
 <div class='clear'></div>
+
+<h2>Scaling</h2>
+
+<div class='box-2-1'>
+<p>
+Scaling of vectors and complex numbers is also straightforward.
+Just scale the $x$ and $y$ coordinates by the same factor:
+  $$z = x+iy$$
+  $$az = a(x+iy) = ax + iay$$
+</p>
+<p>
+  When $a$ is a positive number, scaling operates in the direction of the vector.
+</p>
+<p>
+  When $a$ is a <i>negative</i> number, the vector is rotated 180<sup>&deg;</sup> ($\pi$ radians).
+<p>
+  [Buttons in text to set scale factor -1, (-1)^2, j, etc.]
+</p>
+<p>
+  [Rotation and imaginary unit. Complex multiplication with $\cos(\theta)$ and $\sin(\theta)$.]
+</p>
+</div>
+
+<div id='figure-complex-scaling' class='box-2-2'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  <div class='slider-scale-factor'></div>
+  <div class='magnitude'></div>
+</div>
 
 <div class='clear'></div>
 

@@ -3,9 +3,7 @@
 # TODO:
 # process mathjax only once loaded.
 
-round = (x, n) ->
-  f = Math.pow(10, n)
-  Math.round(x * f)/f
+#--- Base class ---#
 
 class ComplexPlane
   
@@ -15,21 +13,21 @@ class ComplexPlane
   yDomain: [-1, 1]
     
   constructor: (@spec) ->
-    
     {@container} = @spec
-    
     @width = @container.width()
     @height = @container.height()
-    
     @createCanvas()
     
   createCanvas: ->
-    
     @canvas = new Canvas {@container, @width, @height, @margin, @xDomain, @yDomain}
     @gridLines = new GridLines {@canvas}
 
 
+#--- Figures ---#
+
 class FigureComplexPlane extends ComplexPlane
+  
+  # TODO: use VectorSliderPair
   
   id: "#figure-complex-plane"
   
@@ -95,6 +93,7 @@ class FigureComplexAddition extends ComplexPlane
     @vector1 = new VectorSliderPair
       figure: @figure
       canvas: @canvas
+      xyLines: false
       xyLabels: false
       sliderClass: ".slider"
       angleLabel: "$\\theta_1$"
@@ -131,6 +130,79 @@ class FigureComplexAddition extends ComplexPlane
     snap = Complex.snap(clip, 1)
     Complex.diff snap, other
 
+
+class FigureComplexScaling extends ComplexPlane
+  
+  id: "#figure-complex-scaling"
+  
+  margin: {top: 40, right: 40, bottom: 40, left: 40}
+  xDomain: [-2, 2]  # ZZZ larger?
+  yDomain: [-2, 2]
+  
+  constructor: ->
+    
+    @figure = $ "#{@id}"
+    super container: @figure.find(".figure-surface")
+    
+    @vector = new VectorWithCircle
+      canvas: @canvas
+      xyLines: false
+      arc: true
+      compute: (@z) => @draw()
+      
+    @scaledVector = new VectorWithCircle
+      canvas: @canvas
+      xyLines: true
+      arc: false
+      compute: (@az) =>
+        # ZZZ preserve sign of z?
+        @z = Complex.polarToComplex(abs(@z), @az.arg())
+        sf = abs(@az)/abs(@z)
+        @sliderScaleFactor.set sf
+        @draw()
+      
+    @sliderAngle = new VerticalAngleSlider
+      container: @figure.find ".slider"
+      label: "$\\theta$"
+      change: (angle) =>
+        @z = Complex.polarToComplex abs(@z), angle
+        @draw()
+    
+    @sliderScaleFactor = new HorizontalSlider
+      container: $(".slider-scale-factor")
+      label: "$a$"
+      unit: ""
+      init: 1.5
+      min: -5
+      max: 5
+      step: 0.1
+      change: => @draw()
+      done: => @draw()  # To constrain slider
+      
+    @magnitudeText = $ "<span>"
+    (@figure.find ".magnitude").append("Magnitude: A=").append(@magnitudeText)
+    
+    @z = complex 1, 1
+    @sliderScaleFactor.set 1.2
+    
+    @draw()
+  
+  draw: ->
+    # Compute scaled vector, and constrain scale factor
+    sf = round(@sliderScaleFactor.val(), 2)
+    @az = Complex.scale @z, sf
+    @az = Complex.clipMagnitude @az, 2
+    sf = @sign(sf)*round(abs(@az)/abs(@z), 2)
+    
+    # Set vectors, sliders, and magnitude
+    @vector.set @z
+    @scaledVector.set(@az)
+    @sliderAngle.set(@z.arg())
+    @sliderScaleFactor.set sf  # ZZZ Issue with slider if too large - need to clip val
+    @magnitudeText.html round(abs(@az), 2)
+    
+  sign: (x) -> if x<0 then -1 else 1
+  
 
 class FigureEulerFormula extends ComplexPlane
     
@@ -209,17 +281,17 @@ class FigureEulerFormula extends ComplexPlane
       t.set z.x, z.y, az1.x, az1.y
 
 
-#--- Slider ---#
+#--- Sliders ---#
 
 class VectorSliderPair
   
   constructor: (@spec) ->
     
-    {@figure, @canvas, @xyLabels, @sliderClass, @angleLabel, @getZ} = @spec
+    {@figure, @canvas, @xyLines, @xyLabels, @sliderClass, @angleLabel, @getZ} = @spec
     
     @vector = new VectorWithCircle
       canvas: @canvas
-      xyLines: true
+      xyLines: @xyLines ? true
       xyLabels: @xyLabels
       arc: false
       compute: (z) => @set(z)
@@ -261,6 +333,7 @@ class VerticalAngleSlider
     
     @slider = new Slider
       container: @sliderContainer
+      orientation: "vertical"
       init: 0
       min: -@nAngle
       max: @nAngle
@@ -295,29 +368,86 @@ class VerticalAngleSlider
     @text.html mathjax
     processed = processMathJax @text, => @setTextPos()
     @setTextPos() unless processed
-    
+  
   setTextPos: ->
     y = @height * 0.5*(1 - @angle/pi) - 15
     @text.css top: "#{y}px"
     
-  angleToN: (angle) -> @nAngle*angle/pi
+  angleToN: (angle) ->
+    n = @nAngle*angle/pi
+    n = 0 if abs(n)<0.0000001
+    n
   
   nToAngle: (n) -> n*pi/@nAngle
+
+
+class HorizontalSlider
+  
+  constructor: (@spec) ->
     
+    {@container, @label, @init, @min, @max, @step, @change, @done} = @spec
+    
+    @container.append @template()
+    
+    @sliderContainer = @container.find(".slider-horiz")
+    
+    @slider = new Slider
+      container: @sliderContainer
+      orientation: "horizontal"
+      init: @init
+      min: @min
+      max: @max
+      step: @step
+      change: (v) =>
+        @value = v
+        @setText()
+        @change(@value)
+      done: => @done()
+    
+    @height = @sliderContainer.height()
+        
+    @prompt = @container.find(".slider-horiz-prompt")
+    @prompt.html @label
+    
+    @text = @container.find(".slider-horiz-text")
+  
+  template: -> """
+    <div class='slider-horiz-prompt'></div>
+    <div class='slider-horiz'></div>
+    <div class='slider-horiz-text'></div>
+  """
+    
+  set: (@value) ->
+    v = @value
+    @slider.set(v)
+    @setText()
+    
+  val: -> @slider.val()
+  
+  setText: ->
+    # {mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
+    #@text.toggleClass('angle-text-special', special)
+    #@text.toggleClass('angle-text-negative', @angle<0)
+    @text.html @value
+    #processed = processMathJax @text, => @setTextPos()
+    #@setTextPos() unless processed
+  
+  
 
 
 class Slider
   
   constructor: (@spec) ->
     
-    {@container, @min, @max, @step, @init, @fast, change} = @spec
+    {@container, @min, @max, @step, @init, @orientation, @fast, change, @done} = @spec
     
+    @orientation ?= "horizontal"
     @fast ?= true
     
     @changeFcn = if change then ((v) -> change(v)) else (->)
     
     @slider = @container.slider
-      orientation: "vertical"
+      orientation: @orientation
       range: "min"
       min: @min
       max: @max
@@ -327,8 +457,9 @@ class Slider
       slide: (e, ui) =>
         @changeFcn(ui.value) if @fast
       change: (e, ui) =>
+        @done?() if e.originalEvent
         @changeFcn(ui.value) unless @fast
-    
+      
   val: -> @slider.slider "option", "value"
   
   set: (v) ->
@@ -696,16 +827,16 @@ class Z1
       class: "circle fill-green"
       draggable: @compute?
       callback: (p) => @compute(p)
-    #@triangle = new Polygon {@canvas, class: "triangle"}
+      #@triangle = new Polygon {@canvas, class: "triangle"}
     
   set: (x, y) ->
     @vector.set(x, y)
     @circle.set(x: x, y: y, r: 10)
-    # @triangle.set [
-    #   {x: 0, y: 0}
-    #   {x: x, y: y}
-    #   {x: x, y: 0}
-    # ]
+      # @triangle.set [
+      #   {x: 0, y: 0}
+      #   {x: x, y: y}
+      #   {x: x, y: 0}
+      # ]
 
 
 class Z
@@ -780,7 +911,7 @@ class VectorWithTriangle
     {@canvas, @class} = @spec
       
     @class ?= "triangle"
-  
+    
     @circle = new Circle
       canvas: @canvas
       class: "circle"
@@ -806,14 +937,14 @@ class VectorWithTriangle
 #!math-sugar
 
 # Complex number computation
-# TODO - put in separate file - visible in Ace editor in document
+# TODO - put in separate file - visible in Ace editor in document?
 class Complex
   
   @toPolar: (z) ->
     magnitude = abs(z)
     angle = z.arg()
     {magnitude, angle}
-    
+  
   @polarToComplex: (magnitude, angle) ->
     z = complex(magnitude*cos(angle), magnitude*sin(angle))
     
@@ -832,22 +963,26 @@ class Complex
     d
   
   @magnitudeSum: (z1, z2) -> abs(z1 + z2)
+  
+  @scale: (z, a) -> a * z
+  
+  @div: (z1, z2) -> z1/z2
 
 
 class Computation2
   
   @angleStep: (theta, N) ->
     cos(theta/N) + j*sin(theta/N)
-    
+  
   @orthoStep: (theta, N) ->
     1 + j*theta/N
-    
+  
   @step: (z1, z2) ->
     # Diff vector
     z = z1*z2
     az1 = z2.x*z1
     {z1, z2, z, az1}
-    
+
 
 #step = (z1) ->
 
@@ -891,6 +1026,16 @@ class Computation1
     @compute()
 
 
+#!no-math-sugar
+
+#------- Functions -----------#
+
+round = (x, n) ->
+  f = Math.pow(10, n)
+  Math.round(x * f)/f
+
+
+#!math-sugar
 complexPolar = (r, theta) -> r*exp(j*theta)
 #!no-math-sugar
 
@@ -930,7 +1075,7 @@ angleText = (a) ->
     96: '2\\pi'
   
   # Angle in pi-radians, rounded to two decimal places.
-  piRad = Math.round(100*theta/pi)/100
+  piRad = Math.round(100*theta/pi)/100  # ZZZ use round above
   
   aa = round(Math.abs(a), 8)
   special = specialAngles[aa]?
@@ -959,6 +1104,7 @@ processMathJax = (element, callback) ->
 
 new FigureComplexPlane
 new FigureComplexAddition
+new FigureComplexScaling
 new FigureEulerFormula
 
 #------------------------------------------------------#
