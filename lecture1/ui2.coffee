@@ -74,7 +74,7 @@ class FigureComplexPlane extends ComplexPlane
 
 
 class FigureComplexUnit extends ComplexPlane
-
+  
   id: "#figure-complex-unit"
   sectionId: "#section-complex-unit"
   tableId: "#table-complex-unit"
@@ -1311,6 +1311,16 @@ new FigureComplexUnit
 new FigureComplexAddition
 new FigureComplexScaling
 new FigureEulerFormula
+
+#------------------------------------------------------#
+# Exercises and solutions
+#------------------------------------------------------#
+
+$(".solution-button").click (evt) ->
+  button = $(evt.target)
+  solution = button.parent().find(".solution")
+  button.hide()
+  solution.show()
 
 #------------------------------------------------------#
 

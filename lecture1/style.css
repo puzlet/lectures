@@ -35,6 +35,16 @@ th, td {
   text-align: center;
 }
 
+/********** Exercise solutions **********/
+.solution {
+  display: none;
+}
+
+.solution-button {
+  font-style: italic;
+  cursor: pointer;
+}
+
 /********** Figures **********/
 
 .figure-outer {
