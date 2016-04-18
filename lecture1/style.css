@@ -32,6 +32,7 @@ table, th, td {
 
 th, td {
   padding: 10px;
+  text-align: center;
 }
 
 /********** Figures **********/
@@ -67,6 +68,56 @@ th, td {
   font-size: 20pt;
 }
 
+/********** Figure - Complex Unit **********/
+
+#table-complex-unit th {
+  border-bottom: 2px solid black;
+}
+
+.circle-no-drag {
+  stroke: black;
+  stroke-width: 2;
+  fill: white;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+#table-complex-unit th {
+  padding: 5px 20px;
+}
+
+#table-complex-unit td {
+  padding: 5px 20px;
+}
+
+#table-complex-unit .row-highlight {
+  background: #adebad;
+}
+
+#section-complex-unit .text-button {
+  background: #adebad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#section-complex-unit .disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+#figure-complex-unit .equation {
+  position: absolute;
+  bottom: 8px;
+  width: 400px;
+  z-index: 100;
+  /* background: yellow; */
+  opacity: 1;
+  text-align: center;
+}
+
 /********** Figure - Complex Addition **********/
 
 #figure-complex-addition {
@@ -80,7 +131,7 @@ th, td {
   right: -100px;
 }
 
-/********** Figure - Complex Plane **********/
+/********** Figure - Complex Scaling **********/
 
 #figure-complex-scaling {
   font-size: 20pt;

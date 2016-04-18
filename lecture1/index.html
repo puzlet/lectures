@@ -19,13 +19,13 @@
 <p class='heading'>Martin Clark<br>April 2016</p>
 <p class='heading highlight'>[This web page is currently under development.]</p>
 
-<h2>Complex Plane</h2>
+<h2>Vectors in a Plane</h2>
 
 <div class='box-2-1'>
 
 <p>Many applications in science and engineering model phenomena as a two-dimensional (2D) vector in a plane.</p>
 
-<p>We can express the vector $z$ in a couple of ways:
+<p>We can express a vector $z$ in a couple of ways:
   <table>
   <tr><td>Cartesian<td>$z = (x, y)$
   <tr><td>Polar<td>$z = A \angle \theta$
@@ -37,11 +37,8 @@ $$x = A \cos(\theta)$$
 $$y = A \sin(\theta)$$
 </p>
 
-<p>[Discussion of applications here, e.g., electrical circuits/impedance.]</p>
-
-<p>Another useful way to express $z$ is as a <i><b>complex number</b></i>:
-$$z = x+iy$$
-</p>
+<p>[Discussion of applications here, e.g., electrical circuits/impedance.
+  Show animated rotating vector, modulated with signal?  QPSK?]</p>
 
 </div>  <!-- .box-2-1 -->
 
@@ -55,19 +52,104 @@ $$z = x+iy$$
 
 <div class='clear'></div>
 
-<div class='box-1-1'>
+<h2>Complex Plane</h2>
+
+<section id='section-complex-unit'>
+
+<div class='box-2-1'>
 <p>
+  Another way to express the vector $z$ is as a <i><b>complex number</b></i>:
+  
+  $$z = x+iy$$
+  
   Here, $i$ represents the vertical-axis in the plane.
   We'll see that if we assign $i$ a special value, 
-  we can do useful mathematical operations on vectors in this 2D-space.
-  It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.
+  we can do useful mathematical operations on vectors in the plane.
+  <!--It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.-->
 </p>
 <p>
-  But first, consider two simple vector operations&mdash;addition and scaling.
+  Consider the following four cases for $z$:
+  <table id='table-complex-unit'>
+  <tr><th>$z$<th>$(x,y)$<th>$\theta$
+  <tr><td>$1$<td>$(1,0)$<td>$0$
+  <tr><td>$i$<td>$(0,1)$<td>$\frac{\pi}{2}$
+  <tr><td>$-1$<td>$(-1,0)$<td>$\pi$
+  <tr><td>$-i$<td>$(0,-1)$<td>$-\frac{\pi}{2}$
+  </table>
 </p>
 </div>
 
+<div id='figure-complex-unit' class='box-2-2'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+    <div class='equation'>$ $</div>
+  </div>
+</div>
+
 <div class='clear'></div>
+
+<div class='box-1-1'>
+
+<p>
+  The figure shows <span id="show-vectors" class='text-button'>each vector $z$</span>.
+  (Click this green button to see the vectors, or click any white circle in the figure.)
+  Each vector lies along an axis and has a unit magnitude $A=1$.
+</p>
+
+<p>
+  If we <span id='multiply-by-negative-1' class='text-button'>multiply a vector $z$ by $-1$</span>,
+  we get a 180<sup>&deg;</sup> rotation ($\pi$ radians).
+  Try with any vector $z$ as the starting point (click white circle in figure).
+  Multiplying <i>twice</i> by $-1$ returns to the original vector.
+</p>
+<p>
+  What about a 90<sup>&deg;</sup> rotation?
+  Can it be accomplished by multiplying $z$ by some value?
+  Well, consider the starting point <span id='z1' class='text-button'>$z=1$</span>.
+  If we <span id='multiply-1-by-i' class='text-button'>multiply by $i$</span>, 
+  we get a 90<sup>&deg;</sup> rotation to $z=i$ (because $1 \times i = i$).
+  If we multiply <i>again</i> by $i$, we get $z=i \times i$.
+  We know we want the result to be
+  <span id='multiply-i-by-i' class='text-button'>$z=-1$</span> 
+  (90<sup>&deg;</sup> from $z=i$).  And so for this operation to work, we need
+  
+  $$i \times i = i^2 = -1$$
+  
+  There's no real number that solves this equation for $i$.  (The square of any real number is always positive.)
+  For this reason, $i$ is called an <i><b>imaginary</b></i> number.
+  With this definition for $i$ in  mind, we get the following operations:
+  <table>
+  <tr>
+    <td>Rotate 90<sup>&deg;</sup> $\left(\frac{\pi}{2}\right)$
+    <td><span id='multiply-by-i' class='text-button'>Multiply by $i$</span>
+  <tr>
+    <td>Rotate -90<sup>&deg;</sup> $\left(-\frac{\pi}{2}\right)$
+    <td><span id='multiply-by-negative-i' class='text-button'>Multiply by $-i$</span><br>
+  </table>
+  
+  <!--$i = \sqrt(-1)$ is the imaginary unit, and any number...-->
+  
+  
+  <!--multiplying by $i$ works for <span id='multiply-1-by-i' class='text-button'>$z=1$</span>.
+  It brings us to $z=i$ ($i \times 1 = i$).
+  So we'd expect rotating another 90<sup>&deg;</sup> from $z=i$
+  
+  But how do we rotate another 90<sup>&deg;</sup> from $z=i$, to get to $z=-1$?
+  
+  The answer is the same, but so long as we let $i$ take on a special meaning. -->
+</p>
+<p>
+  <!--If we have $z=i$ and we multiply by $i$, we want the result to be $z=-1$ (90<sup>&deg;</sup> rotation).
+  And so we have
+  $$i \times i = i^2 = -1$-->
+</p>   
+
+
+</div>
+
+<div class='clear'></div>
+
+</section>
 
 <h2>Addition</h2>
 

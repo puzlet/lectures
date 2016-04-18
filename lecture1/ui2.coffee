@@ -73,6 +73,185 @@ class FigureComplexPlane extends ComplexPlane
     @magnitudeText.html round(@magnitude, 2)
 
 
+class FigureComplexUnit extends ComplexPlane
+
+  id: "#figure-complex-unit"
+  sectionId: "#section-complex-unit"
+  tableId: "#table-complex-unit"
+  
+  margin: {top: 40, right: 40, bottom: 40, left: 40}
+  xDomain: [-2, 2]
+  yDomain: [-2, 2]
+  
+  constructor: ->
+    
+    @figure = $ @id
+    super container: @figure.find(".figure-surface")
+    
+    @zValues = [
+      {value: complex(1,0), r180: "$1 \\times -1 = -1$", f90: "$1 \\times i = i$", b90: "$1 \\times -i = -i$"}
+      {value: complex(0,1), r180: "$i \\times -1 = -i$", f90: "$i \\times i = i^2 = -1$", b90: "$i \\times -i = -i^2 = 1$"}
+      {value: complex(-1,0), r180: "$-1 \\times -1 = 1$", f90: "$-1 \\times i = -i$", b90: "$-1 \\times -i = i$"}
+      {value: complex(0,-1), r180: "$-i \\times -1 = i$", f90: "$-i \\times i = -i^2 = 1$", b90: "$-i \\times -i = i^2 = -1$"}
+    ]
+    
+    for z, idx in @zValues
+      click = (idx) => =>
+        @setEquation "$ $"
+        @setVector idx
+      vector = new VectorWithCircle
+        canvas: @canvas
+        class: "circle-no-drag"
+        xyLines: false
+        arc: false
+        click: click(idx)
+      vector.set z.value
+    
+    @vector = new VectorWithCircle
+      canvas: @canvas
+      xyLines: false
+      zLabel: true
+      #compute: (z) =>
+        
+    @table = $ @tableId
+    @rows = @table.find "tr"
+    
+    @setVector 0
+    
+    @initButtons()
+    
+  initButtons: ->
+    
+    @allButtons = $("#{@sectionId} .text-button")
+    
+    @buttons = [
+      {id: "show-vectors", method: (cb) => @animateAll(cb)}
+      {id: "multiply-by-negative-1", method: (cb) => @negate(cb)}
+      {id: "z1", method: (cb) => @setVectorInstantly(0, cb)}
+      {id: "multiply-1-by-i", method: (cb) => @multiplyzi(0, cb)}
+      {id: "multiply-i-by-i", method: (cb) => @multiplyzi(1, cb)}
+      {id: "multiply-by-i", method: (cb) => @multiply(j, cb)}
+      {id: "multiply-by-negative-i", method: (cb) => @multiply(complex(0, -1), cb)}
+    ]
+    
+    callback = (method) => =>
+      @allButtons.addClass "disabled"
+      method => @allButtons.removeClass "disabled"
+      
+    $("#{@sectionId} ##{b.id}").click(callback b.method) for b in @buttons
+  
+  setVector: (@idx, callback) ->
+    zStart = @z
+    @z = @zValues[@idx].value
+    @animate zStart, =>
+      @highlightRow()
+      callback?()
+      
+  setVectorInstantly: (@idx, callback) ->
+    @setEquation "$ $"
+    @z = @zValues[@idx].value
+    @vector.set @z
+    @highlightRow()
+    callback?()
+    
+  animateAll: (callback) ->
+    @setEquation "$ $"
+    idx = 0
+    next = =>
+      idx++
+      if idx<@zValues.length
+        set()  # Recursion
+      else
+        @setVector 0, callback  # Back to start
+    set = =>
+      @setVector idx, =>
+        delay = if idx is 0 then 500 else 1000
+        setTimeout (-> next()), delay
+    set()
+      
+  animate: (zStart, callback) =>
+    
+    unless zStart
+      @vector.set @z
+      callback?()
+      return
+    
+    stepDelay = 8
+    
+    a1 = zStart.arg()
+    a2 = @z.arg()
+    wrap = (a) -> if a<0 then a+2*pi else a
+    d = abs(a1-a2)
+    if d>pi
+      a1 = wrap(a1)
+      a2 = wrap(a2)
+    a1 -= 2*pi if abs(a1-a2-pi)<0.00001
+    
+    d = abs(a1-a2)
+    nSteps = if d>pi/8 then Math.round(30*d) else 10
+    
+    angles = linspace(a1, a2, nSteps)
+    zValues = (Complex.polarToComplex(1, angle) for angle in angles)
+    zValues[-1..] = @z  # End value
+    
+    step = 1
+    doStep = =>
+      @z = zValues[step]
+      @vector.set @z
+      step++
+      if step<zValues.length
+        setTimeout (-> doStep()), stepDelay # Recursion
+      else
+        callback?()
+    doStep()
+    
+  negate: (callback) ->
+    @setEquation @zValues[@idx].r180
+    zStart = @z
+    @z = Complex.mul -1, zStart
+    @showOperation zStart, callback
+    
+  multiplyzi: (startIdx, callback) ->
+    @setVectorInstantly(startIdx)
+    @multiply j, callback
+    
+  multiply: (z2, callback) ->
+    @setEquation "$ $"
+    if z2.x is 0
+      if z2.y is 1
+        @setEquation @zValues[@idx].f90
+      else if z2.y is -1
+        @setEquation @zValues[@idx].b90
+    zStart = @z
+    @z = Complex.mul z2, zStart
+    @showOperation zStart, callback
+  
+  showOperation: (zStart, callback) ->
+    idx = @getIdx @z
+    if idx<0
+      callback?()
+      return
+    @idx = idx
+    @animate zStart, =>
+      @highlightRow()
+      callback?()
+      
+  setEquation: (equation) ->
+    container = $("#figure-complex-unit .equation")
+    container.html equation
+    processMathJax container  # No callback
+  
+  getIdx: (v) ->
+    for z, idx in @zValues
+      return idx if abs(Complex.diff(z.value, v))<0.000001
+    return -1
+  
+  highlightRow: ->
+    for row0, rowIdx in @rows
+      row = $ row0
+      row.toggleClass "row-highlight", rowIdx is @idx+1
+
+
 class FigureComplexAddition extends ComplexPlane
   
   # TODO: show x+jy and a+jb below, and sum.
@@ -203,6 +382,7 @@ class FigureComplexScaling extends ComplexPlane
     
   sign: (x) -> if x<0 then -1 else 1
   
+
 
 class FigureEulerFormula extends ComplexPlane
     
@@ -558,7 +738,7 @@ class Circle
   
   constructor: (@spec) ->
     
-    {@canvas, @data, @draggable, @class} = @spec
+    {@canvas, @data, @draggable, @class, @click} = @spec
     
     @circle = @canvas.append("circle").attr("class", @class)
     @setDraggable() if @draggable
@@ -572,6 +752,9 @@ class Circle
       .attr "cx", @mx(x)
       .attr "cy", @my(y)
       .attr "r", r  # map?
+      
+    if not @draggable and @click?
+      @circle.on "click", => @click()
       
   setDraggable: ->
     @circle.call(d3.behavior
@@ -682,7 +865,7 @@ class VectorWithCircle
   
   constructor: (@spec) ->
     
-    {@canvas, @class, @radius, @xyLines, @xyLabels, @arc, @compute} = @spec
+    {@canvas, @class, @radius, @xyLines, @xyLabels, @zLabel, @arc, @compute, @click} = @spec
       
     @class ?= "circle fill-green"
     @radius ?= 10
@@ -695,6 +878,7 @@ class VectorWithCircle
       canvas: @canvas
       class: @class
       draggable: @compute?
+      click: @click
       callback: (p) =>
         zp = complex p.x, p.y
         origin = @origin ? complex(0, 0)
@@ -703,6 +887,7 @@ class VectorWithCircle
     
     @showXYLines() if @xyLines
     @showXYLabels() if @xyLabels
+    @showZLabel() if @zLabel
     @showArc() if @arc
   
   showXYLines: ->
@@ -730,6 +915,11 @@ class VectorWithCircle
       
     @yText.text
       .attr "dy", "0.4em"
+      
+  showZLabel: ->
+    
+    @zText = new Text
+      canvas: @canvas
       
   showArc: ->
     @angleArc = new Arc
@@ -778,6 +968,18 @@ class VectorWithCircle
       .attr "fill", (if yl>=0 then "black" else "red")
       .attr "text-anchor", (if xl>=0 then "end" else "start")
       .attr "dx", (if xl>=0 then "-#{yMargin}" else yMargin)
+    
+    isUnit = (x) -> abs(abs(x)-1)<0.000001
+    real = y is 0 and isUnit(x)
+    imag = x is 0 and isUnit(y)
+    @zText?.set
+      x: (if real then xl else 0)
+      y: (if imag then yl else 0)
+      text: (if real or imag then "z="+(if real and x<0 or imag and y<0 then "-" else "")+(if real then "1" else "i") else "")  # ZZZ fix
+    @zText?.text
+      .attr "fill", (if real and x>=0 or imag and y>=0 then "black" else "red")
+      .attr "text-anchor", "middle"
+      .attr "dy", (if real or y<0 then "1.2em" else "-0.6em")
     
     # ZZZ arc won't work if @origin
     
@@ -966,6 +1168,8 @@ class Complex
   
   @scale: (z, a) -> a * z
   
+  @mul: (z1, z2) -> z1 * z2
+  
   @div: (z1, z2) -> z1/z2
 
 
@@ -1103,6 +1307,7 @@ processMathJax = (element, callback) ->
 #------------------------------------------------------#
 
 new FigureComplexPlane
+new FigureComplexUnit
 new FigureComplexAddition
 new FigureComplexScaling
 new FigureEulerFormula
