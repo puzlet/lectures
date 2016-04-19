@@ -1303,16 +1303,6 @@ processMathJax = (element, callback) ->
 
 
 #------------------------------------------------------#
-# Figures
-#------------------------------------------------------#
-
-new FigureComplexPlane
-new FigureComplexUnit
-new FigureComplexAddition
-new FigureComplexScaling
-new FigureEulerFormula
-
-#------------------------------------------------------#
 # Exercises and solutions
 #------------------------------------------------------#
 
@@ -1321,6 +1311,60 @@ $(".solution-button").click (evt) ->
   solution = button.parent().find(".solution")
   button.hide()
   solution.show()
+
+class Exercise1
+  
+  url: "exercises/rotation.coffee"
+  
+  constructor: ->
+    
+    $(document).on "preCompileCoffee", (evt, data) =>
+      return unless data.resource?.url is @url
+      precompile = {}
+      precompile[@url] =
+        preamble: "i = j\n"
+        postamble: "\n"
+      $blab.precompile(precompile)
+    
+    $(document).on "compiledCoffeeScript", (evt, data) =>
+      return unless data.url is @url
+      @resource = $blab.resources.find @url
+      @process()
+      @report()
+      
+  process: ->
+    @numbers = []
+    for result in @resource.resultArray
+      x = @complex(result)
+      @numbers.push(x) if x
+      
+  report: ->
+    container = $ "#exercise-rotation-result"
+    container.css
+      marginTop: "20px"
+      fontFamily: "courier"
+    container.empty()
+    container.append "RESULTS<br>"
+    for z in @numbers
+      container.append("z = #{z.x} + #{z.y}i<br>")
+    #console.log "NUMBERS", numbers
+    
+  complex: (x) ->
+    type = typeof x
+    return x if type is "object" and x.constructor.name is "T"
+    return complex(x, 0) if type is "number"
+    null
+
+#------------------------------------------------------#
+# Figures
+#------------------------------------------------------#
+
+new FigureComplexPlane
+new FigureComplexUnit
+new FigureComplexAddition
+new FigureComplexScaling
+new FigureEulerFormula
+new Exercise1
 
 #------------------------------------------------------#
 
