@@ -37,8 +37,14 @@ $$x = A \cos(\theta)$$
 $$y = A \sin(\theta)$$
 </p>
 
-<p>[Discussion of applications here, e.g., electrical circuits/impedance.
-  Show animated rotating vector, modulated with signal?  QPSK?]</p>
+<p>
+  Another way to express the vector $z$ is as a <i><b>complex number</b></i>:
+  
+  $$z = x+iy$$
+  
+  Here, $i$ represents the vertical-axis in the plane.
+  For now, just think of $z = x+iy$ as another notation for a 2D vector $z = (x, y)$ in a plane.
+</p>
 
 </div>  <!-- .box-2-1 -->
 
@@ -52,21 +58,25 @@ $$y = A \sin(\theta)$$
 
 <div class='clear'></div>
 
-<h2>Complex Plane</h2>
+<div class='box-1-1'>
+  
+  <p>
+    However, we'll see that this complex number form has interesting and useful mathematical properties
+    if we assign $i$ a special value.  In particular, we'll see that complex number <b><i>multiplication</i></b> 
+    is equivalent to <b><i>rotation</i></b> of vectors in the plane.
+
+    <!--It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.-->
+  </p>
+  
+  <p>[Discussion of applications here, e.g., electrical circuits/impedance.
+    Show animated rotating vector, modulated with signal?  QPSK?]</p>
+</div>
+
+<h2>The Imaginary Unit</h2>
 
 <section id='section-complex-unit'>
 
 <div class='box-2-1'>
-<p>
-  Another way to express the vector $z$ is as a <i><b>complex number</b></i>:
-  
-  $$z = x+iy$$
-  
-  Here, $i$ represents the vertical-axis in the plane.
-  We'll see that if we assign $i$ a special value, 
-  we can do useful mathematical operations on vectors in the plane.
-  <!--It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.-->
-</p>
 <p>
   Consider the following four cases for $z$:
   <table id='table-complex-unit'>
@@ -77,18 +87,6 @@ $$y = A \sin(\theta)$$
   <tr><td>$-i$<td>$(0,-1)$<td>$-\frac{\pi}{2}$
   </table>
 </p>
-</div>
-
-<div id='figure-complex-unit' class='box-2-2'>
-  <div class='figure-outer'>
-    <div class='figure-surface'></div>
-    <div class='equation'>$ $</div>
-  </div>
-</div>
-
-<div class='clear'></div>
-
-<div class='box-2-1'>
 
 <p>
   The figure shows <span id="show-vectors" class='text-button'>each vector $z$</span>.
@@ -103,6 +101,19 @@ $$y = A \sin(\theta)$$
   Multiplying <i>twice</i> by $-1$ returns to the original vector.
 </p>
 
+</div>
+
+<div id='figure-complex-unit' class='box-2-2'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+    <div class='equation'></div>
+  </div>
+</div>
+
+<div class='clear'></div>
+
+<div class='box-2-1'>
+
 <p>
   What about a 90<sup>&deg;</sup> rotation?
   Can it be accomplished by multiplying $z$ by some value?
@@ -111,9 +122,6 @@ $$y = A \sin(\theta)$$
   we get a 90<sup>&deg;</sup> rotation to $z=i$ (because $1 \times i = i$).
 </p>
 
-</div>
-
-<div class='box-2-2'>
 <p>
   If we multiply <i>again</i> by $i$, we get $z=i \times i$.
   We know we want the result to be
@@ -122,6 +130,11 @@ $$y = A \sin(\theta)$$
   
   $$i \times i = i^2 = -1$$
 </p>
+
+</div>
+
+<div class='box-2-2'>
+
 <p>
   There's no real number that solves this equation for $i$.  (The square of any real number is always positive.)
   For this reason, $i$ is called an <i><b>imaginary</b></i> number.
@@ -137,6 +150,8 @@ $$y = A \sin(\theta)$$
 </p>
 
 </div>
+
+</section>
 
 <div class='clear'></div>
 
@@ -188,6 +203,8 @@ $$y = A \sin(\theta)$$
 
 <hr>
 
+<section id='section-complex-unit-multiply'>
+
 <div class='box-2-1'>
 <p>
   So, we see that multiplying a vector $z$ by the imaginary unit $i$ rotates $z$ by 90<sup>&deg;</sup>.
@@ -195,24 +212,109 @@ $$y = A \sin(\theta)$$
   $$z = x + iy$$
   We refer to $x$ as the <em><strong>real part </strong></em> and $y$ as the <em><strong>imaginary part</strong></em>.
 </p>
+
 <p>
-  We can think of $z=x+iy$ as the sum of two vectors:
-  
+  Consider the case where the real part is 1 ($x=1$) and the imaginary part is also 1 ($y=1$):
+  $$z = 1+i$$
+  We can think of this vector as the sum of two component vectors:
   $$z = z_1 + z_2$$
-  $$z_1=x$$
-  $$z_2=iy$$
+  $$z_1 = 1$$
+  $$z_2 = i$$
+  The figure shows these two component vectors as blue lines.
+  Each component lies along an axis and has a unit magnitude,
+  just like the vectors in the previous section.
 </p>
-
-<p>[Show figure with each vector: orthogonal pair.  Animate rotation by 90 degrees with buttons.  Similar to vectors above.]
-
 <p>
-  Multiplying $z=x+iy$ by $i$ gives
-  $$i(x+iy) = ix + i^2y = -y + ix$$
+  <span id='multiply-by-i' class='text-button'>Multiplying $z$ by $i$</span>
+  is equivalent to multiplying each component ($z_1$ and $z_2$) by $i$,
+  and summing the results.
+  From the previous section, 
+  we know that this is equivalent to <b>rotating</b> each component by 90<sup>&deg;</sup>.
+  And so multiplying $z$ by $i$ must also rotate it by 90<sup>&deg;</sup>.
+</p>
+</div>
+
+<div id='figure-complex-unit-multiply' class='box-2-2'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+    <!--div class='equation'>$ $</div-->
+  </div>
+</div>
+
+<div class='box-2-2'>
+  <p>What happens for other values of $x$ and $y$?
+    Try adjusting the vector $z=x+iy$ in the figure, and then
+     <span id='multiply-by-i' class='text-button'>multiply by $i$</span>.
+    What happens if you
+    <span id='multiply-by-negative-i' class='text-button'>multiply by $-i$</span>?
+  </p>
+  <p>
+    Multiplying $z=x+iy$ by $i$ gives
+    $$i(x+iy) = ix + i^2y = -y + ix$$
+  </p>
 </div>
 
 <div class='clear'></div>
 
 </section>
+
+<h2>Scaling</h2>
+
+<div class='box-2-1'>
+<p>
+To scale a complex vector $z = x+iy$,
+multiply the real part $x$ and imaginary part $y$ by the same factor:
+  $$az = a(x+iy) = ax + iay$$
+</p>
+<p>
+  When $a$ is a positive number, scaling operates in the direction of the vector.
+</p>
+<p>
+  When $a$ is a <i>negative</i> number, the vector is rotated 180<sup>&deg;</sup> ($\pi$ radians).
+<p>
+  [Buttons in text to set original vector to $1+i$, and scale factor to -1, 2, etc.]
+</p>
+
+<p>
+  What about multiplying a complex number by $ib$?
+  This is the same as scaling by $b$ (as above), and then rotating by 90<sup>&deg;</sup>
+  (as in previous section).
+</p>
+
+<p>
+  [Buttons in text to set original vector to $1+i$, and scale factor to -j, 2*j, 0.5*j etc.]
+</p>
+
+</div>
+
+<div id='figure-complex-scaling' class='box-2-2'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  <div class='slider-scale-factor'></div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='clear'></div>
+
+<h2>Complex Multiplication</h2>
+
+<p>So, we know how to multiply $z=x+iy$ by $a$ or by $ib$.
+  What about multiplying a complex number $z=x+iy$ by another complex number $a+ib$?
+  This is equivalent to
+  $$ (a+ib)z = az + ibz$$
+  That is, add two vectors:
+  <ul>
+    <li>the first vector is $z$ scaled by $a$.
+    <li>the second vector is $z$ scaled by $b$ and rotated by 90<sup>&deg;</sup>.
+  </ul>
+</p>
+
+<p>
+  [Rotation and imaginary unit. Complex multiplication with $\cos(\theta)$ and $\sin(\theta)$.]
+</p>
 
 <h2>Addition</h2>
 
@@ -233,39 +335,6 @@ Just add the $x$ coordinates to get the new $x$-coordinate; and add the $y$ coor
     <div class='slider'></div>
     <div class='slider-2'></div>
   </div>
-  <div class='magnitude'></div>
-</div>
-
-<div class='clear'></div>
-
-<h2>Scaling</h2>
-
-<div class='box-2-1'>
-<p>
-Scaling of vectors and complex numbers is also straightforward.
-Just scale the $x$ and $y$ coordinates by the same factor:
-  $$z = x+iy$$
-  $$az = a(x+iy) = ax + iay$$
-</p>
-<p>
-  When $a$ is a positive number, scaling operates in the direction of the vector.
-</p>
-<p>
-  When $a$ is a <i>negative</i> number, the vector is rotated 180<sup>&deg;</sup> ($\pi$ radians).
-<p>
-  [Buttons in text to set scale factor -1, (-1)^2, j, etc.]
-</p>
-<p>
-  [Rotation and imaginary unit. Complex multiplication with $\cos(\theta)$ and $\sin(\theta)$.]
-</p>
-</div>
-
-<div id='figure-complex-scaling' class='box-2-2'>
-  <div class='figure-outer'>
-    <div class='figure-surface'></div>
-    <div class='slider'></div>
-  </div>
-  <div class='slider-scale-factor'></div>
   <div class='magnitude'></div>
 </div>
 

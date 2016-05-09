@@ -128,6 +128,25 @@ th, td {
   text-align: center;
 }
 
+/********** Figure - Complex Unit Multiply **********/
+
+/* ZZZ Dup code */
+
+#section-complex-unit-multiply .text-button {
+  background: #adebad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#section-complex-unit-multiply .disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+
 /********** Figure - Complex Addition **********/
 
 #figure-complex-addition {
@@ -235,6 +254,12 @@ th, td {
 .line {
   fill: none;
   stroke: #555;
+  stroke-width: 2;
+}
+
+.component {
+  fill: none;
+  stroke: blue;
   stroke-width: 2;
 }
 

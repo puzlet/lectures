@@ -95,10 +95,11 @@ class FigureComplexUnit extends ComplexPlane
       {value: complex(0,-1), r180: "$-i \\times -1 = i$", f90: "$-i \\times i = -i^2 = 1$", b90: "$-i \\times -i = i^2 = -1$"}
     ]
     
+    click = (idx) => =>
+      @setEquation "$ $"
+      @setVector idx
+    
     for z, idx in @zValues
-      click = (idx) => =>
-        @setEquation "$ $"
-        @setVector idx
       vector = new VectorWithCircle
         canvas: @canvas
         class: "circle-no-drag"
@@ -122,9 +123,7 @@ class FigureComplexUnit extends ComplexPlane
     
   initButtons: ->
     
-    @allButtons = $("#{@sectionId} .text-button")
-    
-    @buttons = [
+    new ButtonSet @sectionId, [
       {id: "show-vectors", method: (cb) => @animateAll(cb)}
       {id: "multiply-by-negative-1", method: (cb) => @negate(cb)}
       {id: "z1", method: (cb) => @setVectorInstantly(0, cb)}
@@ -133,12 +132,6 @@ class FigureComplexUnit extends ComplexPlane
       {id: "multiply-by-i", method: (cb) => @multiply(j, cb)}
       {id: "multiply-by-negative-i", method: (cb) => @multiply(complex(0, -1), cb)}
     ]
-    
-    callback = (method) => =>
-      @allButtons.addClass "disabled"
-      method => @allButtons.removeClass "disabled"
-      
-    $("#{@sectionId} ##{b.id}").click(callback b.method) for b in @buttons
   
   setVector: (@idx, callback) ->
     zStart = @z
@@ -176,34 +169,9 @@ class FigureComplexUnit extends ComplexPlane
       callback?()
       return
     
-    stepDelay = 8
-    
-    a1 = zStart.arg()
-    a2 = @z.arg()
-    wrap = (a) -> if a<0 then a+2*pi else a
-    d = abs(a1-a2)
-    if d>pi
-      a1 = wrap(a1)
-      a2 = wrap(a2)
-    a1 -= 2*pi if abs(a1-a2-pi)<0.00001
-    
-    d = abs(a1-a2)
-    nSteps = if d>pi/8 then Math.round(30*d) else 10
-    
-    angles = linspace(a1, a2, nSteps)
-    zValues = (Complex.polarToComplex(1, angle) for angle in angles)
-    zValues[-1..] = @z  # End value
-    
-    step = 1
-    doStep = =>
-      @z = zValues[step]
-      @vector.set @z
-      step++
-      if step<zValues.length
-        setTimeout (-> doStep()), stepDelay # Recursion
-      else
-        callback?()
-    doStep()
+    @vector.animate zStart, @z, =>
+      @z = @vector.z
+      callback?()
     
   negate: (callback) ->
     @setEquation @zValues[@idx].r180
@@ -250,6 +218,46 @@ class FigureComplexUnit extends ComplexPlane
     for row0, rowIdx in @rows
       row = $ row0
       row.toggleClass "row-highlight", rowIdx is @idx+1
+
+
+class FigureComplexUnitMultiply extends ComplexPlane
+  
+  id: "#figure-complex-unit-multiply"
+  sectionId: "#section-complex-unit-multiply"
+  
+  margin: {top: 40, right: 40, bottom: 40, left: 40}
+  xDomain: [-2, 2]
+  yDomain: [-2, 2]
+  
+  constructor: ->
+    
+    @figure = $ @id
+    super container: @figure.find(".figure-surface")
+    
+    @vector = new VectorSliderPair
+      figure: @figure
+      canvas: @canvas
+      xyLines: true
+      xyLabels: true
+      xyComponents: true
+      sliderClass: ".slider"
+      angleLabel: "$\\theta$"
+      getZ: (z) => @getZ(z)
+    
+    new ButtonSet @sectionId, [
+      {id: "multiply-by-i", method: (cb) => @multiply(j, cb)}
+      {id: "multiply-by-negative-i", method: (cb) => @multiply(complex(0, -1), cb)}
+    ]
+    
+    @vector.set complex(1, 1)
+  
+  multiply: (a, callback) ->
+    v = @vector.vector
+    @vector.animate v.z, Complex.mul(a, v.z), callback
+    
+  getZ: (z) ->
+    clip = Complex.clipMagnitude(z, 2)
+    snap = Complex.snap(clip, 1)
 
 
 class FigureComplexAddition extends ComplexPlane
@@ -467,12 +475,13 @@ class VectorSliderPair
   
   constructor: (@spec) ->
     
-    {@figure, @canvas, @xyLines, @xyLabels, @sliderClass, @angleLabel, @getZ} = @spec
+    {@figure, @canvas, @xyLines, @xyLabels, @xyComponents, @sliderClass, @angleLabel, @getZ} = @spec
     
     @vector = new VectorWithCircle
       canvas: @canvas
       xyLines: @xyLines ? true
       xyLabels: @xyLabels
+      xyComponents: @xyComponents
       arc: false
       compute: (z) => @set(z)
       
@@ -495,6 +504,13 @@ class VectorSliderPair
   origin: -> @vector.origin ? complex(0, 0)
   
   setOrigin: (z) -> @vector.setOrigin z
+  
+  animate: (zStart, zEnd, callback) ->
+    @vector.animate zStart, zEnd, =>
+      #@set zEnd
+      @spec.set?(z)
+      setTimeout (=> @slider.set(@vector.angle)), 10
+      callback?()
 
 
 class VerticalAngleSlider
@@ -645,6 +661,22 @@ class Slider
   set: (v) ->
     # Forces slider to move to value - used for animation.
     @slider.slider 'option', 'value', v
+
+
+#--- Buttons ---#
+
+class ButtonSet
+  
+  constructor: (@sectionId, @buttons)->
+    
+    @allButtons = $("#{@sectionId} .text-button")
+    
+    callback = (method) => =>
+      @allButtons.addClass "disabled"
+      method => @allButtons.removeClass "disabled"
+      
+    $("#{@sectionId} ##{b.id}").click(callback b.method) for b in @buttons
+    
 
 
 #--- d3 elememts ---#
@@ -865,8 +897,8 @@ class VectorWithCircle
   
   constructor: (@spec) ->
     
-    {@canvas, @class, @radius, @xyLines, @xyLabels, @zLabel, @arc, @compute, @click} = @spec
-      
+    {@canvas, @class, @radius, @xyLines, @xyLabels, @xyComponents, @zLabel, @arc, @compute, @click} = @spec
+    
     @class ?= "circle fill-green"
     @radius ?= 10
     @xyLabels ?= @xyLines
@@ -887,6 +919,7 @@ class VectorWithCircle
     
     @showXYLines() if @xyLines
     @showXYLabels() if @xyLabels
+    @showXYComponents() if @xyComponents
     @showZLabel() if @zLabel
     @showArc() if @arc
   
@@ -904,7 +937,6 @@ class VectorWithCircle
     
     @xText = new Text
       canvas: @canvas
-      # class
     
     @yText = new Text
       canvas: @canvas
@@ -916,11 +948,21 @@ class VectorWithCircle
     @yText.text
       .attr "dy", "0.4em"
       
+  showXYComponents: ->
+    
+    @xComponent = new Line
+      canvas: @canvas
+      class: "component"
+      
+    @yComponent = new Line
+      canvas: @canvas
+      class: "component"
+  
   showZLabel: ->
     
     @zText = new Text
       canvas: @canvas
-      
+  
   showArc: ->
     @angleArc = new Arc
       canvas: @canvas
@@ -937,12 +979,14 @@ class VectorWithCircle
     @vector.setOrigin @origin.x, @origin.y
     @set(@z)
   
-  set: (@z) ->
+  set: (@z, angleRotate=0) ->
     
     @z ?= complex 0, 0
     x = @z.x
     y = @z.y
     {@magnitude, @angle} = Complex.toPolar(@z)
+    
+    zOriginal = Complex.rotate(@z, -angleRotate)
     
     x0 = @origin?.x ? 0
     y0 = @origin?.y ? 0
@@ -953,17 +997,27 @@ class VectorWithCircle
     xMargin = "0.3em"
     yMargin = "0.3em"
     
+    xo = zOriginal.x
+    yo = zOriginal.y
+    
     xl = x0+x
     yl = y0+y
     
-    @xLine?.set(x1: xl, y1: 0, x2: xl, y2: yl)
-    @xText?.set(x: xl, y: 0, text: "x="+round(xl, 1))
+    ca = cos(angleRotate)
+    sa = sin(angleRotate)
+    
+    @xLine?.set(x1: x0+xo*ca, y1: xo*sa, x2: xl, y2: yl)
+    @xComponent?.set(x1: 0, y1: 0, x2: xo*ca, y2: xo*sa)
+    
+    @yLine?.set(x1: -yo*sa, y1: y0+yo*ca, x2: xl, y2: yl)
+    @yComponent?.set(x1: 0, y1: 0, x2: -yo*sa, y2: yo*ca)
+    
+    @xText?.set(x: xl, y: 0, text: if angleRotate then "" else "x="+round(xl, 1))
     @xText?.text
       .attr "fill", (if xl>=0 then "black" else "red")
       .attr "dy", (if yl>=0 then "1.1em" else "-#{xMargin}")
     
-    @yLine?.set(x1: 0, y1: yl, x2: xl, y2: yl)
-    @yText?.set(x: 0, y: yl, text: "y="+round(yl, 1))
+    @yText?.set(x: 0, y: yl, text: if angleRotate then "" else "y="+round(yl, 1))
     @yText?.text
       .attr "fill", (if yl>=0 then "black" else "red")
       .attr "text-anchor", (if xl>=0 then "end" else "start")
@@ -990,6 +1044,43 @@ class VectorWithCircle
       endAngle: pi/2-@angle
       
     @angleArc?.path.attr "fill", (if @angle>=0 then "black" else "red")
+  
+  animate: (zStart, zEnd, callback) =>
+    
+    stepDelay = 8
+    
+    m1 = abs(zStart)
+    m2 = abs(zEnd)
+    
+    a1 = zStart.arg()
+    a2 = zEnd.arg()
+    
+    wrap = (a) -> if a<0 then a+2*pi else a
+    d = abs(a1-a2)
+    if d>pi
+      a1 = wrap(a1)
+      a2 = wrap(a2)
+    a1 -= 2*pi if abs(a1-a2-pi)<0.00001
+    
+    d = abs(a1-a2)
+    nSteps = if d>pi/8 then Math.round(30*d) else 10
+    
+    magnitudes = linspace(m1, m2, nSteps)
+    angles = linspace(a1, a2, nSteps)
+    zValues = (Complex.polarToComplex(magnitudes[idx], angle) for angle, idx in angles)
+    zValues[-1..] = zEnd  # End value
+    
+    step = 1
+    aStep = angles[1]-angles[0]
+    doStep = =>
+      z = zValues[step]
+      @set z, (if step+1 is zValues.length then 0 else step*aStep)
+      step++
+      if step<zValues.length
+        setTimeout (-> doStep()), stepDelay # Recursion
+      else
+        callback?()
+    doStep()
 
 
 #------------------#
@@ -1171,6 +1262,8 @@ class Complex
   @mul: (z1, z2) -> z1 * z2
   
   @div: (z1, z2) -> z1/z2
+  
+  @rotate: (z, theta) -> z*exp(j*theta)
 
 
 class Computation2
@@ -1312,6 +1405,7 @@ $(".solution-button").click (evt) ->
   button.hide()
   solution.show()
 
+
 class Exercise1
   
   url: "exercises/rotation.coffee"
@@ -1355,12 +1449,14 @@ class Exercise1
     return complex(x, 0) if type is "number"
     null
 
+
 #------------------------------------------------------#
 # Figures
 #------------------------------------------------------#
 
 new FigureComplexPlane
 new FigureComplexUnit
+new FigureComplexUnitMultiply
 new FigureComplexAddition
 new FigureComplexScaling
 new FigureEulerFormula
