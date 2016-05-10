@@ -89,14 +89,21 @@ class FigureComplexUnit extends ComplexPlane
     super container: @figure.find(".figure-surface")
     
     @zValues = [
-      {value: complex(1,0), r180: "$1 \\times -1 = -1$", f90: "$1 \\times i = i$", b90: "$1 \\times -i = -i$"}
-      {value: complex(0,1), r180: "$i \\times -1 = -i$", f90: "$i \\times i = i^2 = -1$", b90: "$i \\times -i = -i^2 = 1$"}
-      {value: complex(-1,0), r180: "$-1 \\times -1 = 1$", f90: "$-1 \\times i = -i$", b90: "$-1 \\times -i = i$"}
-      {value: complex(0,-1), r180: "$-i \\times -1 = i$", f90: "$-i \\times i = -i^2 = 1$", b90: "$-i \\times -i = i^2 = -1$"}
+      {value: complex(1,0), r180: "1 \\times -1 = -1", f90: "1 \\times i = i", b90: "1 \\times -i = -i"}
+      {value: complex(0,1), r180: "i \\times -1 = -i", f90: "i \\times i = i^2 = -1", b90: "i \\times -i = -i^2 = 1"}
+      {value: complex(-1,0), r180: "-1 \\times -1 = 1", f90: "-1 \\times i = -i", b90: "-1 \\times -i = i"}
+      {value: complex(0,-1), r180: "-i \\times -1 = i", f90: "-i \\times i = -i^2 = 1", b90: "-i \\times -i = i^2 = -1"}
     ]
     
+    # @zValues = [
+    #   {value: complex(1,0), r180: "$1 \\times -1 = -1$", f90: "$1 \\times i = i$", b90: "$1 \\times -i = -i$"}
+    #   {value: complex(0,1), r180: "$i \\times -1 = -i$", f90: "$i \\times i = i^2 = -1$", b90: "$i \\times -i = -i^2 = 1$"}
+    #   {value: complex(-1,0), r180: "$-1 \\times -1 = 1$", f90: "$-1 \\times i = -i$", b90: "$-1 \\times -i = i$"}
+    #   {value: complex(0,-1), r180: "$-i \\times -1 = i$", f90: "$-i \\times i = -i^2 = 1$", b90: "$-i \\times -i = i^2 = -1$"}
+    # ]
+    
     click = (idx) => =>
-      @setEquation "$ $"
+      @setEquation ""
       @setVector idx
     
     for z, idx in @zValues
@@ -141,14 +148,14 @@ class FigureComplexUnit extends ComplexPlane
       callback?()
       
   setVectorInstantly: (@idx, callback) ->
-    @setEquation "$ $"
+    @setEquation ""
     @z = @zValues[@idx].value
     @vector.set @z
     @highlightRow()
     callback?()
     
   animateAll: (callback) ->
-    @setEquation "$ $"
+    @setEquation ""
     idx = 0
     next = =>
       idx++
@@ -184,7 +191,7 @@ class FigureComplexUnit extends ComplexPlane
     @multiply j, callback
     
   multiply: (z2, callback) ->
-    @setEquation "$ $"
+    @setEquation "" #"$ $"
     if z2.x is 0
       if z2.y is 1
         @setEquation @zValues[@idx].f90
@@ -206,8 +213,9 @@ class FigureComplexUnit extends ComplexPlane
       
   setEquation: (equation) ->
     container = $("#figure-complex-unit .equation")
-    container.html equation
-    processMathJax container  # No callback
+    katex.render(equation, container[0]);
+    #container.html equation
+    #processMathJax container  # No callback
   
   getIdx: (v) ->
     for z, idx in @zValues
@@ -638,12 +646,14 @@ class VerticalAngleSlider
     @setText()
   
   setText: ->
-    {mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
+    {math, mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
     @text.toggleClass('angle-text-special', special)
     @text.toggleClass('angle-text-negative', @angle<0)
-    @text.html mathjax
-    processed = processMathJax @text, => @setTextPos()
-    @setTextPos() unless processed
+    katex.render math, @text[0]
+    @setTextPos()
+    #@text.html mathjax
+    #processed = processMathJax @text, => @setTextPos()
+    #@setTextPos() unless processed
   
   setTextPos: ->
     y = @height * 0.5*(1 - @angle/pi) - 15
@@ -1467,17 +1477,19 @@ angleText = (a) ->
   mj = if special then (if a<0 then minus else "")+specialAngles[aa] else piRad+"\\pi"
   mj = "{#{mj}}"  # Wrap in {} to get shorter unary minus sign.
   mathjax = "$#{mj}$"
+  math = mj
   
-  {mathjax, special}
+  {math, mathjax, special}
 
 
 processMathJax = (element, callback) ->
   return false unless MathJax?
+  #console.log element
   Hub = MathJax.Hub
   queue = (x) -> Hub.Queue x
   queue ['PreProcess', Hub, element[0]]
   queue ['Process', Hub, element[0]]
-  queue -> $('.math>span').css("border-left-color", "transparent")
+  queue -> element.find('.math>span').css("border-left-color", "transparent")
   queue(callback) if callback
   true
 
