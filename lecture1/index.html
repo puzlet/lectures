@@ -16,7 +16,7 @@
 <div id='container'>
 
 <h1>Complex Numbers</h1>
-<p class='heading'>Martin Clark<br>April 2016</p>
+<p class='heading'>Martin Clark<br>May 2016</p>
 <p class='heading highlight'>[This web page is currently under development.]</p>
 
 <h2>Vectors in a Plane</h2>
@@ -299,22 +299,179 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
 
 <div class='clear'></div>
 
-<h2>Complex Multiplication</h2>
+<h2>Multiplication</h2>
 
-<p>So, we know how to multiply $z=x+iy$ by $a$ or by $ib$.
-  What about multiplying a complex number $z=x+iy$ by another complex number $a+ib$?
+<div class='box-2-1'>
+  
+<p>So, we know how to multiply a complex number $z=x+iy$ by $a$ or by $ib$.
+  What about multiplying a complex number $z=x+iy$ by another complex number $z_2 = a+ib$?
   This is equivalent to
-  $$ (a+ib)z = az + ibz$$
+  $$ z z_2 = z(a+ib) = az + ibz$$
   That is, add two vectors:
   <ul>
     <li>the first vector is $z$ scaled by $a$.
     <li>the second vector is $z$ scaled by $b$ and rotated by 90<sup>&deg;</sup>.
   </ul>
+  You can think of these two vectors as forming a right-angle triangle
+  stacked on top of vector $z$ (see figure).
+  If $z$ has a unit magnitude ($A=1$):
+  <ul>
+  <li>the base of the triangle has length $a$ [color?].
+  <li>the height of the triangle is $b$.
+  <li>the angle of the triangle is the angle of the complex number $a+ib$.
+  <li>the angle of the result is the sum of the angle of $z$ and the angle of $z_2$.
+  </ul>
+  In other words, <b>multiplying complex numbers adds their angles</b>.
 </p>
 
-<p>
-  [Rotation and imaginary unit. Complex multiplication with $\cos(\theta)$ and $\sin(\theta)$.]
-</p>
+  <p>
+    Exercise:<br>
+    What if the magnitude of $z$ is not 1?  Can we still add the angles?
+    What is the magnitude of the result?
+  </p>
+
+</div>
+
+<div id='figure-complex-multiplication' class='box-2-2'>
+  <div class='figure-outer'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+</div>
+
+<div class='box-2-2'>
+  <p>
+    Answer:
+    <ul>
+    <li>$z$ has magnitude $A=\sqrt{x^2 + y^2}$ and angle $\theta$.
+    <li>$z_2$ has magnitude $A_2=\sqrt{a^2 + b^2}$ and angle $\phi$.
+    <li>the triangle has base length $aA$ and height $bA$.
+    <li>this triangle is similar for any value of $A$, and so it has angle $\phi$.
+    <li>the resulting vector $zz_2$ has angle $\theta + \phi$.
+    <li>$zz_2$ has a magnitude equal to the hypotenuse of the triangle: $\sqrt{(aA)^2 + (bA)^2} = AA_2$.
+    </ul>
+  <p>
+  
+  </p>
+  <p>
+    [Complex multiplication with $\cos(\theta)$ and $\sin(\theta)$.]
+  </p>
+</div>
+
+<div class='clear'></div>
+
+<h2>Power</h2>
+
+<div class='box-2-1'>
+  <p>
+  Let's summarize multiplication of complex numbers.  Say we have two complex numbers:
+  <ul>
+    <li>$z_1 = x_1+iy_1 = A_1(\cos(\theta_1) + i\sin(\theta_1))$
+    <li>$z_2 = x_2+iy_2 = A_2(\cos(\theta_2) + i\sin(\theta_2))$
+  </ul>
+  Their product is
+  $$z_1 z_2 = A_1 A_2 (\cos(\theta_1 + \theta_2) + i\sin(\theta_1 + \theta_2))$$
+  Exercise: Prove this using trig identities.
+  </p>
+  
+  <p>
+  Consider now a complex number $z$ with a unit magnitude $A=1$ and angle $\phi$.
+  The <i>square</i> of $z$ is
+  $$ z^2 = (\cos(\phi) + i\sin(\phi))^2 = \cos(2\phi) + i\sin(2\phi) $$
+  The angle of $z^2$ is thus $\theta = 2\phi$.
+  </p>
+  
+  <!--
+  In the case where the complex numbers each have a unit magnitude ($A_1=1$ and $A_2=1$), we have
+  $$z_1 z_2 = \cos(\theta_1 + \theta_2) + i\sin(\theta_1 + \theta_2)$$
+  </p>
+  
+  <p>
+    Now that we know the product of two complex numbers, what is the $n$th power of a complex number?
+    Say we have a complex number $z$ with unit magnitude ($A=1$) and angle $\phi$.
+    The $n$th power of $z$ is
+    $$ z^n = (\cos(\phi) + i\sin(\phi))^n = \cos(n\phi) + i\sin(n\phi) $$
+  </p>
+  
+  <p>
+    Say we have $N$ complex numbers $z_1, z_2, \ldots z_N$, each with a unit magnitude $A_n=1$
+    and each with the same angle $\theta_n = \theta/N$.  The product of these complex numbers is
+    $$\prod_{n=1}^N{z_n} = (\cos(\theta/N) + i\sin(\theta/N))^N = \cos(\theta) + i\sin(\theta)$$
+    That is, $\theta$ is the sum of angles of all the complex numbers.
+    See red triangles in figure below for various $\theta$ and $N$.
+  </p -->
+</div>
+
+<div class='box-2-2'>
+  <p>
+  Further, the <i>$n$th power</i> of $z$ is
+  $$ z^n = (\cos(\phi) + i\sin(\phi))^n = \cos(n\phi) + i\sin(n\phi) $$
+  The angle of $z^n$ is thus $\theta = n\phi$.
+  </p>
+  <p>
+  See red triangles in figure below for specified $\theta$ and $n$ (and $\phi = \theta/n$).
+  The starting vector is $z^0=1$.  The first triangle is $z^1=z$.
+  The second triangle is for $z^2$, and so on.
+  </p>
+  
+</div>
+
+<div class='clear'></div>
+
+<div id='figure-euler-formula' class='box-1-1'>
+  <div class='figure-outer figure-outer-large'>
+    <div class='figure-surface'></div>
+    <div id='math' class='angle-text'></div>
+  </div>
+  <div id='slider-theta'></div>
+  <div id='slider-n'></div>
+</div>
+
+<div class='clear'></div>
+
+<h2>Euler's Formula</h2>
+
+<div class='box-2-1'>
+  <p>
+    From the section above, we can write the relationship
+    $$ (\cos(\theta/n) + i\sin(\theta/n))^n = \cos(\theta) + i\sin(\theta)$$
+    
+    For some value of $\theta$, what happens when $n$ becomes large 
+    and thus $\phi=\theta/n$ becomes small?
+    For small $\phi$, we have:
+    <ul>
+      <li>$\cos(\phi) \rightarrow 1$
+      <li>$\sin(\phi) \rightarrow \phi$ (for angle in radians)
+    </ul>
+    And so
+    $$ \lim_{n \to \infty} \left( 1 + \frac{i\theta}{n} \right)^n = \cos(\theta) + i\sin(\theta) $$
+  </p>
+  <p>
+    The blue triangles in the figure above show the left hand side of the equation for specified $\theta$ and $n$.
+    As $n$ becomes large, the trajectory of the blue triangles approximates that of the red triangles.
+  </p>
+</div>
+
+<div class='box-2-2'>
+  <p>
+    Note that the definition of the <i>exponential function</i> is
+    $$ e^x = \lim_{n \to \infty} \left(1 + \frac{x}{n} \right)^n $$
+    And so it follows that (while not a rigorous proof)
+    $$ e^{i\theta} = \cos(\theta) + i\sin(\theta)$$
+    This is <a href='https://en.wikipedia.org/wiki/Euler%27s_formula'><i>Euler's formula</i></a>, 
+    and has been referred to as "the most remarkable formula in mathematics."
+  </p>
+  <p>
+    Based in Euler's formula, a complex number can be represented as
+    $$ z = A e^{i\theta} $$
+    The product of two complex numbers $z_1 = A_1 e^{i\theta_1}$  and $z_2 = A_2 e^{i\theta_2}$ is
+    $$ z_1 z_2 = A_1 A_2 e^{i\theta_1}e^{i\theta_2} = A_1 A_2 e^{i(\theta_1 + \theta_2)}$$
+    That is, Euler's formula is consistent with the notion of adding angles for the product of complex numbers.
+  </p>
+  
+</div>
+
+<div class='clear'></div>
 
 <h2>Addition</h2>
 
@@ -348,20 +505,6 @@ Just add the $x$ coordinates to get the new $x$-coordinate; and add the $y$ coor
     <div id='math' class='angle-text'></div>
   </div>
 </div-->
-
-<h2>Euler's Formula</h2>
-
-<!--ui2.coffee-->
-<div id='figure-euler-formula' class='box-1-1'>
-  <div class='figure-outer figure-outer-large'>
-    <div class='figure-surface'></div>
-    <div id='math' class='angle-text'></div>
-  </div>
-  <div id='slider-theta'></div>
-  <div id='slider-n'></div>
-</div>
-
-<div class='clear'></div>
 
 <!--
 

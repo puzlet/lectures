@@ -392,6 +392,86 @@ class FigureComplexScaling extends ComplexPlane
   
 
 
+class FigureComplexMultiplication extends ComplexPlane
+  
+  id: "#figure-complex-multiplication"
+  
+  margin: {top: 40, right: 40, bottom: 40, left: 40}
+  xDomain: [-2, 2]  # ZZZ larger?
+  yDomain: [-2, 2]
+  
+  constructor: ->
+    
+    @figure = $ "#{@id}"
+    super container: @figure.find(".figure-surface")
+    
+    # Result z=z1*z2
+    @z2 = complex 0.5, 0.5
+    
+    @vector = new VectorSliderPair
+      figure: @figure
+      canvas: @canvas
+      xyLines: false
+      #xyLabels: true
+      arc: false
+      sliderClass: ".slider"
+      angleLabel: "$\\theta$"
+      getZ: (z) => @getZ(z)
+      set: =>
+        @z = Complex.mul @vector.z(), @z2
+        @compute()
+      
+    @vectorResult = new VectorWithTriangle
+      canvas: @canvas
+      class: "triangle"
+      compute: (z) =>
+        @z = @getZ z
+        @z2 = Complex.div @z, @vector.z()
+        @compute()
+    
+    @vector.set complex(1, 0.5)
+    #@vector2.set @z2.x, @z2.y, 1, 0
+    
+    @compute()
+      
+  getZ: (z) ->
+    clip = Complex.clipMagnitude(z, 2)
+    snap = Complex.snap(clip, 1)
+    
+  compute: ->
+#    @z1 = @vector.z()
+    # @z is result vector
+#    @z2 = Complex.div @z, @z1
+    @az1 = Complex.mul @z2.x, @vector.z()
+    @vectorResult.set @z.x, @z.y, @az1.x, @az1.y
+    
+  # Zcompute: ->
+  #   @z = @z1*@z2
+  #   @az1 = @z2.x*@z1
+  #
+  #   @draw {@z1, @z2, @z, @az1}
+  #
+  # setZ1: (p) ->
+  #   @z1 = complex p.x, p.y
+  #
+  #   # Constrain
+  #   @z1 = @z1 / abs(@z1)
+  #
+  #   @compute()
+  #
+  # setZ: (p) ->
+  #   z = complex p.x, p.y
+  #
+  #   # Constrain
+  #   z = z / abs(z)
+  #
+  #   @z2 = z / @z1
+  #
+  #   @compute()
+    
+    
+  
+
 class FigureEulerFormula extends ComplexPlane
     
     xDomain: [-3, 3]
@@ -475,14 +555,14 @@ class VectorSliderPair
   
   constructor: (@spec) ->
     
-    {@figure, @canvas, @xyLines, @xyLabels, @xyComponents, @sliderClass, @angleLabel, @getZ} = @spec
+    {@figure, @canvas, @xyLines, @xyLabels, @xyComponents, @arc, @sliderClass, @angleLabel, @getZ} = @spec
     
     @vector = new VectorWithCircle
       canvas: @canvas
       xyLines: @xyLines ? true
-      xyLabels: @xyLabels
-      xyComponents: @xyComponents
-      arc: false
+      xyLabels: @xyLabels ? false
+      xyComponents: @xyComponents ? false
+      arc: @arc ? false
       compute: (z) => @set(z)
       
     @slider = new VerticalAngleSlider
@@ -1083,6 +1163,42 @@ class VectorWithCircle
     doStep()
 
 
+class VectorWithTriangle
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @class, @compute} = @spec
+      
+    @class ?= "triangle"
+    
+    @radius = if @compute? then 10 else 3
+    
+    @circle = new Circle
+      canvas: @canvas
+      class: if @compute? then "circle fill-green" else "circle"
+      
+      draggable: @compute?
+      callback: (p) =>
+        z = complex p.x, p.y
+        @compute?(z)
+    
+    @smallCircle = new Circle
+      canvas: @canvas
+      class: "circle fill-black"
+      draggable: false
+    
+    @triangle = new Polygon {@canvas, class: @class}
+  
+  set: (x, y, xb, yb) ->
+    @circle.set(x: x, y: y, r: @radius)
+    @smallCircle.set(x: xb, y: yb, r: 3)
+    @triangle.set [
+      {x: 0, y: 0}
+      {x: xb, y: yb}
+      {x: x, y: y}
+    ]
+
+
 #------------------#
 
 class VectorAngle
@@ -1132,6 +1248,7 @@ class Z1
       # ]
 
 
+# To delete #
 class Z
   
   constructor: (@spec) ->
@@ -1195,36 +1312,6 @@ class Main1
     {z1, z2, z, az1} = points
     @z1.set z1.x, z1.y
     @z.set z.x, z.y, az1.x, az1.y  #, z2.z, z2.y
-
-
-class VectorWithTriangle
-  
-  constructor: (@spec) ->
-    
-    {@canvas, @class} = @spec
-      
-    @class ?= "triangle"
-    
-    @circle = new Circle
-      canvas: @canvas
-      class: "circle"
-      draggable: false
-    
-    @smallCircle = new Circle
-      canvas: @canvas
-      class: "circle fill-black"
-      draggable: false
-    
-    @triangle = new Polygon {@canvas, class: @class}
-  
-  set: (x, y, xb, yb) ->
-    @circle.set(x: x, y: y, r: 3)
-    @smallCircle.set(x: xb, y: yb, r: 3)
-    @triangle.set [
-      {x: 0, y: 0}
-      {x: xb, y: yb}
-      {x: x, y: y}
-    ]
 
 
 #!math-sugar
@@ -1459,6 +1546,7 @@ new FigureComplexUnit
 new FigureComplexUnitMultiply
 new FigureComplexAddition
 new FigureComplexScaling
+new FigureComplexMultiplication
 new FigureEulerFormula
 new Exercise1
 
