@@ -350,6 +350,14 @@ th, td {
   /* ZZZ select events */
 }
 
+.answer-correct {
+  fill: green;
+}
+
+.answer-incorrect {
+  fill: red;
+}
+
 
 /*--------------------------------*/
 /* No longer used? */

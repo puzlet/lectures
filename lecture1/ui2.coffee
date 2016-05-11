@@ -1390,6 +1390,9 @@ class Complex
     d = z1 - z2
     d.y ?= 0 # TODO: Fix in math module
     d
+    
+  @isEqual: (z1, z2) ->
+    abs(@diff(z1, z2)) < 1e-6
   
   @magnitudeSum: (z1, z2) -> abs(z1 + z2)
   
@@ -1557,7 +1560,7 @@ $mathCoffee.preProcessor = (code) ->
   #code = code.replace /√/g, 'sqrt' 
   code = code.replace /[^\x00-\x80]/g, (c) ->
     chars[c] ? c
-  console.log code
+  #console.log code
   code
 
 
@@ -1699,9 +1702,21 @@ class ExerciseComplex1
     z2 = complex(x, y)
     z3 = Complex.polarToComplex(A, θ)
     
+    correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
+    
     @figure.step {z: z1, fill: "fill-green", t: 0}, =>
       @figure.step {z: z2, fill: "fill-yellow"}, =>
         @figure.step {z: z3, fill: "fill-blue"}
+        @message(correct)
+    
+  message: (correct) ->
+    canvas = @figure.canvas
+    text = if correct then "Correct!" else "Incorrect"
+    data = {x: 0, y: -2, text: text}
+    c = if correct then "answer-correct" else "answer-incorrect"
+    text = new Text {canvas, data, class: c}
+    text.text.attr "text-anchor", "middle"
+    setTimeout (-> text.text.remove()), 2000
 
 
 class ExerciseRotation
