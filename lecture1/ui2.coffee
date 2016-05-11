@@ -1539,26 +1539,26 @@ processMathJax = (element, callback) ->
 
 $mathCoffee.preProcessor = (code) ->
   chars =
+    "×":      "*"
+    "⋅":      "*"
+    "÷":      "/"
     "√":      "sqrt"
-    "\u211C": "real"
-    "ℑ":      "imag"
+    #"^":      "**"  # see below - not unicode
     "²":      "**2"
+    "³":      "**3"
+    "⁴":      "**4"
+    "\u211C": "Re"
+    "ℑ":      "Im"
     "₂":      "2"
   
   # Special case: √val
-  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' 
+  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)'
+  code = code.replace /\^/g, "**"
   #code = code.replace /√/g, 'sqrt' 
   code = code.replace /[^\x00-\x80]/g, (c) ->
     chars[c] ? c
-    #if c is "\u221A"  # #x221A
-    # #if c is "√"
-    #   "sqrt "
-    # else if c is "²"
-    #   "**2"
-    # else if c is "₂"
-    #   "2"
-    # else
-    #   c
+  console.log code
+  code
 
 
 $(".solution-button").click (evt) ->
@@ -1580,8 +1580,15 @@ class CodeButton
       click: =>
         @editor?().insert @char
         @editor?().focus()
+        if @char.match /\(\)/g
+          {row, column} = @editor?().getCursorPosition()
+          column = column-1
+          @editor?().moveCursorTo(row, column)
         @click?(this)
-      
+    
+    if @label.length>2
+      @button.css fontSize: "8pt"
+    
     @container.append @button
 
 
@@ -1605,10 +1612,16 @@ class ExerciseComplex1
   
   # ZZZ make cursor hop back 1?
   codeButtons:
+    "×": "⋅"
+    "÷": "/"
     "x²": "²"
+    "xʸ": "^"
     "√": "√"
     "π": "π"
     "θ": "θ"
+    "eˣ": "exp()"
+    "sin": "sin()"
+    "cos": "cos()"
     #"Re": "Re "
     #"Im": "Im "
     #"sin": "sin "
