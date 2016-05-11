@@ -577,6 +577,207 @@ class FigureEulerFormula extends ComplexPlane
       t.set z.x, z.y, az1.x, az1.y
 
 
+#------------------------------------------------------#
+# Exercises and solutions
+#------------------------------------------------------#
+
+$mathCoffee.preProcessor = (code) ->
+  chars =
+    "×":      "*"
+    "⋅":      "*"
+    "÷":      "/"
+    "√":      "sqrt"
+    "²":      "**2"
+    "³":      "**3"
+    "⁴":      "**4"
+    "\u211C": "Re"
+    "ℑ":      "Im"
+    "₂":      "2"
+  
+  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' # Special case: √val
+  code = code.replace /([a-zA-Z0-9]+)π/g, '$1*π'  # nπ
+  code = code.replace /\^/g, "**"
+  code = code.replace /[^\x00-\x80]/g, (c) ->
+    chars[c] ? c
+  #code
+
+
+$(".solution-button").click (evt) ->
+  button = $(evt.target)
+  solution = button.parent().find(".solution")
+  button.hide()
+  solution.show()
+
+
+class CodeButton
+  
+  constructor: (@spec) ->
+    
+    {@container, @editor, @label, @char, @click} = @spec
+    
+    @button = $ "<div>",
+      class: "code-button"
+      html: @label
+      click: =>
+        @editor?().insert @char
+        @editor?().focus()
+        if @char.match /\(\)/g
+          {row, column} = @editor?().getCursorPosition()
+          @editor?().moveCursorTo(row, column-1)
+        @click?(this)
+    
+    if @label.length>2
+      @button.css fontSize: "8pt"
+    
+    @container.append @button
+
+
+class ExerciseComplex1
+  
+  id: "#exercise-complex-1"
+  url: "exercises/complex1.coffee"
+  
+  codeButtons:
+    "×": "⋅"
+    "÷": "/"
+    "x²": "²"
+    "xʸ": "^"
+    "√": "√"
+    "π": "π"
+    "θ": "θ"
+    "eˣ": "exp()"
+    "sin": "sin()"
+    "cos": "cos()"
+    #"Re": "Re "
+    #"Im": "Im "
+  
+  constructor: (@figure) ->
+    
+    @container = $(@id)
+    #@initHeading()
+    @initButtons()
+    
+    $blab.exercises ?= {}
+    $blab.exercises.complex1 = (data) => @process(data)
+    
+    $(document).on "preCompileCoffee", (evt, data) =>
+      return unless data.resource?.url is @url
+      
+      # Hide syntax checks in margin
+      @editor = data.resource.containers.fileNodes[0].editor
+      @editor.session().setUseWorker false
+      
+      # ZZZ do only once - after ace compiled?
+      @buttons.css fontFamily: @editor.editorContainer.css("font-family")
+      
+      precompile = {}
+      precompile[@url] =
+        preamble: """
+          i = j
+          π = pi
+          Re = (z) -> z.x
+          Im = (z) -> z.y
+          
+        """
+        postamble: """
+          
+          null
+          $blab.exercises.complex1 {z, x, y, A, θ}
+          
+        """
+      $blab.precompile(precompile)
+  
+  initHeading: ->
+    #@heading = @container.find ".exercise-heading"
+  
+  initButtons: ->
+    @buttons = @container.find ".code-buttons"
+    @codeButton(label, char) for label, char of @codeButtons
+    text = $ "<div>",
+      class: "run-instruction"
+      html: "Press shift-enter to run"
+    @buttons.append text
+    
+  codeButton: (label, char) ->
+    new CodeButton
+      container: @buttons
+      editor: => @editor.editor
+      label: label
+      char: char
+      click: (char) =>
+  
+  process: (data) ->
+    
+    {z, x, y, A, θ} = data
+    return unless x?  # Some postprocess check instead?
+    
+    z1 = z
+    z2 = complex(x, y)
+    z3 = Complex.polarToComplex(A, θ)
+    
+    correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
+    
+    @figure.step {z: z1, fill: "fill-green", t: 0}, =>
+      @message Complex.isEqual(z1, z2)
+      @figure.step {z: z2, fill: "fill-red"}, =>
+        @figure.step {z: z3, fill: "fill-blue"}
+        @message Complex.isEqual(z1, z3)
+    
+  message: (correct) ->
+    canvas = @figure.canvas
+    txt = if correct then "Correct!" else "Incorrect - Try again"
+    data = {x: 0, y: -2, text: txt}
+    c = if correct then "answer-correct" else "answer-incorrect"
+    @text?.text.remove()
+    @text = new Text {canvas, data, class: c}
+    @text.text.attr "text-anchor", "middle"
+    setTimeout (=> @text.text.remove()), 2000
+
+
+class ExerciseRotation
+  
+  url: "exercises/rotation.coffee"
+  
+  constructor: ->
+    
+    $(document).on "preCompileCoffee", (evt, data) =>
+      return unless data.resource?.url is @url
+      precompile = {}
+      precompile[@url] =
+        preamble: "i = j\n"
+        postamble: "\n"
+      $blab.precompile(precompile)
+    
+    $(document).on "compiledCoffeeScript", (evt, data) =>
+      return unless data.url is @url
+      @resource = $blab.resources.find @url
+      @process()
+      @report()
+      
+  process: ->
+    @numbers = []
+    for result in @resource.resultArray
+      x = @complex(result)
+      @numbers.push(x) if x
+      
+  report: ->
+    container = $ "#exercise-rotation-result"
+    container.css
+      marginTop: "20px"
+      fontFamily: "courier"
+    container.empty()
+    container.append "RESULTS<br>"
+    for z in @numbers
+      container.append("z = #{z.x} + #{z.y}i<br>")
+    #console.log "NUMBERS", numbers
+    
+  complex: (x) ->
+    type = typeof x
+    return x if type is "object" and x.constructor.name is "T"
+    return complex(x, 0) if type is "number"
+    null
+
+
 #--- Sliders ---#
 
 class VectorSliderPair
@@ -1534,237 +1735,6 @@ processMathJax = (element, callback) ->
   queue -> element.find('.math>span').css("border-left-color", "transparent")
   queue(callback) if callback
   true
-
-
-#------------------------------------------------------#
-# Exercises and solutions
-#------------------------------------------------------#
-
-$mathCoffee.preProcessor = (code) ->
-  chars =
-    "×":      "*"
-    "⋅":      "*"
-    "÷":      "/"
-    "√":      "sqrt"
-    #"^":      "**"  # see below - not unicode
-    "²":      "**2"
-    "³":      "**3"
-    "⁴":      "**4"
-    "\u211C": "Re"
-    "ℑ":      "Im"
-    "₂":      "2"
-  
-  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' # Special case: √val
-  code = code.replace /([a-zA-Z0-9]+)π/g, '$1*π'  # nπ
-  code = code.replace /\^/g, "**"
-  #code = code.replace /√/g, 'sqrt' 
-  code = code.replace /[^\x00-\x80]/g, (c) ->
-    chars[c] ? c
-  #console.log code
-  code
-
-
-$(".solution-button").click (evt) ->
-  button = $(evt.target)
-  solution = button.parent().find(".solution")
-  button.hide()
-  solution.show()
-
-
-class CodeButton
-  
-  constructor: (@spec) ->
-    
-    {@container, @editor, @label, @char, @click} = @spec
-    
-    @button = $ "<div>",
-      class: "code-button"
-      html: @label
-      click: =>
-        @editor?().insert @char
-        @editor?().focus()
-        if @char.match /\(\)/g
-          {row, column} = @editor?().getCursorPosition()
-          column = column-1
-          @editor?().moveCursorTo(row, column)
-        @click?(this)
-    
-    if @label.length>2
-      @button.css fontSize: "8pt"
-    
-    @container.append @button
-
-
-class ExerciseComplex1
-  
-  id: "#exercise-complex-1"
-  url: "exercises/complex1.coffee"
-  
-  # ZZZ TEMP
-  # z = i
-  # x = Re(z)
-  # y = Im(z)
-  # A = √2
-  # θ = π/4
-  
-  # z = √(3) + i
-  # x = √ 3
-  # y = 1
-  # A = 2
-  # θ = π/6  # π/4
-  
-  # ZZZ make cursor hop back 1?
-  codeButtons:
-    "×": "⋅"
-    "÷": "/"
-    "x²": "²"
-    "xʸ": "^"
-    "√": "√"
-    "π": "π"
-    "θ": "θ"
-    "eˣ": "exp()"
-    "sin": "sin()"
-    "cos": "cos()"
-    #"Re": "Re "
-    #"Im": "Im "
-    #"sin": "sin "
-    #"cos": "cos "
-  
-  constructor: (@figure) ->
-    
-    @container = $(@id)
-    @initHeading()
-    @initButtons()
-    
-    $blab.exercises ?= {}
-    $blab.exercises.complex1 = (data) => @process(data)
-    
-    $(document).on "preCompileCoffee", (evt, data) =>
-      return unless data.resource?.url is @url
-      
-      # Hide syntax checks in margin
-      @editor = data.resource.containers.fileNodes[0].editor
-      @editor.session().setUseWorker false
-      
-      #console.log "****** EC", @editor.editorContainer.css "font-family"
-      # ZZZ do only once
-      @buttons.css fontFamily: @editor.editorContainer.css("font-family")
-      
-      precompile = {}
-      precompile[@url] =
-        preamble: """
-          i = j
-          π = pi
-          Re = (z) -> z.x
-          Im = (z) -> z.y
-          
-        """
-        postamble: """
-          
-          null
-          $blab.exercises.complex1 {z, x, y, A, θ}
-          
-        """
-      $blab.precompile(precompile)
-    
-    # $(document).on "compiledCoffeeScript", (evt, data) =>
-    #   return unless data.url is @url
-    #   @resource = $blab.resources.find @url
-    #   #@process()
-    #   #@report()
-  
-  initHeading: ->
-    @heading = @container.find ".exercise-heading"
-    #@heading.append """
-    #<b>Exercise:</b>
-    #For the value of $z below, complete the related
-    #"""
-  
-  initButtons: ->
-    @buttons = @container.find ".code-buttons"
-    for label, char of @codeButtons
-      @codeButton label, char
-    text = $ "<div>",
-      class: "run-instruction"
-      html: "Press shift-enter to run"
-    @buttons.append text
-    
-  codeButton: (label, char) ->
-    new CodeButton
-      container: @buttons
-      editor: => @editor.editor
-      label: label
-      char: char
-      click: (char) =>
-  
-  process: (data) ->
-    
-    {z, x, y, A, θ} = data
-    return unless x?  # Some postprocess check instead?
-    
-    z1 = z
-    z2 = complex(x, y)
-    z3 = Complex.polarToComplex(A, θ)
-    
-    correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
-    
-    @figure.step {z: z1, fill: "fill-green", t: 0}, =>
-      @figure.step {z: z2, fill: "fill-yellow"}, =>
-        @figure.step {z: z3, fill: "fill-blue"}
-        @message(correct)
-    
-  message: (correct) ->
-    canvas = @figure.canvas
-    text = if correct then "Correct!" else "Incorrect - Try again"
-    data = {x: 0, y: -2, text: text}
-    c = if correct then "answer-correct" else "answer-incorrect"
-    text = new Text {canvas, data, class: c}
-    text.text.attr "text-anchor", "middle"
-    setTimeout (-> text.text.remove()), 2000
-
-
-class ExerciseRotation
-  
-  url: "exercises/rotation.coffee"
-  
-  constructor: ->
-    
-    $(document).on "preCompileCoffee", (evt, data) =>
-      return unless data.resource?.url is @url
-      precompile = {}
-      precompile[@url] =
-        preamble: "i = j\n"
-        postamble: "\n"
-      $blab.precompile(precompile)
-    
-    $(document).on "compiledCoffeeScript", (evt, data) =>
-      return unless data.url is @url
-      @resource = $blab.resources.find @url
-      @process()
-      @report()
-      
-  process: ->
-    @numbers = []
-    for result in @resource.resultArray
-      x = @complex(result)
-      @numbers.push(x) if x
-      
-  report: ->
-    container = $ "#exercise-rotation-result"
-    container.css
-      marginTop: "20px"
-      fontFamily: "courier"
-    container.empty()
-    container.append "RESULTS<br>"
-    for z in @numbers
-      container.append("z = #{z.x} + #{z.y}i<br>")
-    #console.log "NUMBERS", numbers
-    
-  complex: (x) ->
-    type = typeof x
-    return x if type is "object" and x.constructor.name is "T"
-    return complex(x, 0) if type is "number"
-    null
 
 
 #------------------------------------------------------#

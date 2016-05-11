@@ -306,6 +306,10 @@ th, td {
   fill: green;
 }
 
+.fill-red {
+  fill: red;
+}
+
 .fill-yellow {
   fill: yellow;
 }
@@ -326,6 +330,32 @@ th, td {
 }
 
 /********** Exercises, Code button **********/
+
+.todo {
+  margin-top: 15px;
+  padding: 0px 10px;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}
+
+.todo h3 {
+  margin-top: 5px;
+  margin-bottom: 4px;
+  padding-bottom: 0px;
+  font-size: 12pt;
+}
+
+.todo ul {
+  margin-top: 0px;
+}
+
+.exercise {
+  background: #ffffcc;
+  padding: 10px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}
 
 .exercise-heading {
   margin-bottom: 5px;
