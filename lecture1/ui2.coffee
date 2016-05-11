@@ -1554,8 +1554,8 @@ $mathCoffee.preProcessor = (code) ->
     "ℑ":      "Im"
     "₂":      "2"
   
-  # Special case: √val
-  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)'
+  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' # Special case: √val
+  code = code.replace /2π/g, '2*π'
   code = code.replace /\^/g, "**"
   #code = code.replace /√/g, 'sqrt' 
   code = code.replace /[^\x00-\x80]/g, (c) ->
@@ -1684,6 +1684,10 @@ class ExerciseComplex1
     @buttons = @container.find ".code-buttons"
     for label, char of @codeButtons
       @codeButton label, char
+    text = $ "<div>",
+      class: "run-instruction"
+      html: "Press shift-enter to run"
+    @buttons.append text
     
   codeButton: (label, char) ->
     new CodeButton
@@ -1711,7 +1715,7 @@ class ExerciseComplex1
     
   message: (correct) ->
     canvas = @figure.canvas
-    text = if correct then "Correct!" else "Incorrect"
+    text = if correct then "Correct!" else "Incorrect - Try again"
     data = {x: 0, y: -2, text: text}
     c = if correct then "answer-correct" else "answer-incorrect"
     text = new Text {canvas, data, class: c}

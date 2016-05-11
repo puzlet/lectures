@@ -331,6 +331,10 @@ th, td {
   margin-bottom: 5px;
 }
 
+.exercise-footer {
+  margin-top: 10px;
+}
+
 .code-buttons {
   margin-bottom: 5px;
 }
@@ -356,6 +360,14 @@ th, td {
 
 .answer-incorrect {
   fill: red;
+}
+
+.run-instruction {
+  display: inline-block;
+  margin-left: 10px;
+  font-family: Verdana;
+  font-size: 10pt;
+  color: #aaa;
 }
 
 
