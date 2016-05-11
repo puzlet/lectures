@@ -1555,7 +1555,7 @@ $mathCoffee.preProcessor = (code) ->
     "₂":      "2"
   
   code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' # Special case: √val
-  code = code.replace /2π/g, '2*π'
+  code = code.replace /([a-zA-Z0-9]+)π/g, '$1*π'  # nπ
   code = code.replace /\^/g, "**"
   #code = code.replace /√/g, 'sqrt' 
   code = code.replace /[^\x00-\x80]/g, (c) ->
