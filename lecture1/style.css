@@ -76,6 +76,7 @@ th, td {
 
 #figure-complex-plane {
   font-size: 20pt;
+  margin-bottom: 20px;
 }
 
 /********** Figure - Complex Unit **********/
@@ -276,6 +277,11 @@ th, td {
   stroke-dasharray: 3, 3;  
 }
 
+.line-invisible {
+  fill: none;
+  stroke-width: 0;
+}
+
 .triangle {
   stroke: black;
   stroke-width: 2;
@@ -300,6 +306,14 @@ th, td {
   fill: green;
 }
 
+.fill-yellow {
+  fill: yellow;
+}
+
+.fill-blue {
+  fill: blue;
+}
+
 .fill-black {
   fill: black;
 }
@@ -309,6 +323,31 @@ th, td {
 #slider {
   margin-top: 20px;
   height: 100px;
+}
+
+/********** Exercises, Code button **********/
+
+.exercise-heading {
+  margin-bottom: 5px;
+}
+
+.code-buttons {
+  margin-bottom: 5px;
+}
+
+.code-button {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  text-align: center;
+  line-height: 22px;
+  font-size: 10pt;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  cursor: pointer;
+  /* ZZZ select events */
 }
 
 

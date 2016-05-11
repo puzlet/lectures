@@ -71,6 +71,25 @@ class FigureComplexPlane extends ComplexPlane
     {@magnitude, @angle} = Complex.toPolar(@z)
     @slider.set(@angle) if setSlider
     @magnitudeText.html round(@magnitude, 2)
+  
+  animate: (z, callback) ->
+    @vector.showXYLines false
+    @vector.animate @z, z, =>
+      @z = z
+      @draw @z, true  # No clipping
+      @vector.showXYLines true
+      callback?()
+      
+  step: (spec, callback) =>
+    @vector.setCircleClass spec.fill
+    next = (t=1000) ->
+      setTimeout(callback, t) if callback?
+    if spec.t?
+      @z = spec.z
+      @draw @z, true  # No clipping
+      next()
+    else
+      @animate spec.z, next
 
 
 class FigureComplexUnit extends ComplexPlane
@@ -480,6 +499,7 @@ class FigureComplexMultiplication extends ComplexPlane
     
   
 
+
 class FigureEulerFormula extends ComplexPlane
     
     xDomain: [-3, 3]
@@ -888,6 +908,8 @@ class Circle
         @data.y = @canvas.invertY(y)
         @spec.callback?(@data)
     )
+    
+  setClass: (@class) -> @circle.attr "class", @class
 
 
 class Polygon
@@ -1012,16 +1034,27 @@ class VectorWithCircle
     @showXYComponents() if @xyComponents
     @showZLabel() if @zLabel
     @showArc() if @arc
-  
-  showXYLines: ->
     
-    @xLine = new Line
+  setCircleClass: (c) ->
+    @circle.setClass "circle "+c
+  
+  showXYLines: (show=true) ->
+    
+    setClass = (line) ->
+      l = line.line
+      c = if show then "line-dashed" else "line-invisible"
+      l.attr "class", c
+    
+    @xLine ?= new Line
       canvas: @canvas
-      class: "line-dashed"
+      #class: "line-dashed" 
         
-    @yLine = new Line
+    @yLine ?= new Line
       canvas: @canvas
-      class: "line-dashed"
+      #class: "line-dashed"
+    
+    setClass @xLine
+    setClass @yLine
   
   showXYLabels: ->
     
@@ -1096,10 +1129,16 @@ class VectorWithCircle
     ca = cos(angleRotate)
     sa = sin(angleRotate)
     
-    @xLine?.set(x1: x0+xo*ca, y1: xo*sa, x2: xl, y2: yl)
+    if angleRotate
+      @xLine?.set(x1: x0+xo*ca, y1: xo*sa, x2: xl, y2: yl)
+    else
+      @xLine?.set(x1: xl, y1: 0, x2: xl, y2: yl)
     @xComponent?.set(x1: 0, y1: 0, x2: xo*ca, y2: xo*sa)
     
-    @yLine?.set(x1: -yo*sa, y1: y0+yo*ca, x2: xl, y2: yl)
+    if angleRotate
+      @yLine?.set(x1: -yo*sa, y1: y0+yo*ca, x2: xl, y2: yl)
+    else
+      @yLine?.set(x1: 0, y1: yl, x2: xl, y2: yl)
     @yComponent?.set(x1: 0, y1: 0, x2: -yo*sa, y2: yo*ca)
     
     @xText?.set(x: xl, y: 0, text: if angleRotate then "" else "x="+round(xl, 1))
@@ -1498,6 +1537,30 @@ processMathJax = (element, callback) ->
 # Exercises and solutions
 #------------------------------------------------------#
 
+$mathCoffee.preProcessor = (code) ->
+  chars =
+    "√":      "sqrt"
+    "\u211C": "real"
+    "ℑ":      "imag"
+    "²":      "**2"
+    "₂":      "2"
+  
+  # Special case: √val
+  code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' 
+  #code = code.replace /√/g, 'sqrt' 
+  code = code.replace /[^\x00-\x80]/g, (c) ->
+    chars[c] ? c
+    #if c is "\u221A"  # #x221A
+    # #if c is "√"
+    #   "sqrt "
+    # else if c is "²"
+    #   "**2"
+    # else if c is "₂"
+    #   "2"
+    # else
+    #   c
+
+
 $(".solution-button").click (evt) ->
   button = $(evt.target)
   solution = button.parent().find(".solution")
@@ -1505,7 +1568,130 @@ $(".solution-button").click (evt) ->
   solution.show()
 
 
-class Exercise1
+class CodeButton
+  
+  constructor: (@spec) ->
+    
+    {@container, @editor, @label, @char, @click} = @spec
+    
+    @button = $ "<div>",
+      class: "code-button"
+      html: @label
+      click: =>
+        @editor?().insert @char
+        @editor?().focus()
+        @click?(this)
+      
+    @container.append @button
+
+
+class ExerciseComplex1
+  
+  id: "#exercise-complex-1"
+  url: "exercises/complex1.coffee"
+  
+  # ZZZ TEMP
+  # z = i
+  # x = Re(z)
+  # y = Im(z)
+  # A = √2
+  # θ = π/4
+  
+  # z = √(3) + i
+  # x = √ 3
+  # y = 1
+  # A = 2
+  # θ = π/6  # π/4
+  
+  # ZZZ make cursor hop back 1?
+  codeButtons:
+    "x²": "²"
+    "√": "√"
+    "π": "π"
+    "θ": "θ"
+    #"Re": "Re "
+    #"Im": "Im "
+    #"sin": "sin "
+    #"cos": "cos "
+  
+  constructor: (@figure) ->
+    
+    @container = $(@id)
+    @initHeading()
+    @initButtons()
+    
+    $blab.exercises ?= {}
+    $blab.exercises.complex1 = (data) => @process(data)
+    
+    $(document).on "preCompileCoffee", (evt, data) =>
+      return unless data.resource?.url is @url
+      
+      # Hide syntax checks in margin
+      @editor = data.resource.containers.fileNodes[0].editor
+      @editor.session().setUseWorker false
+      
+      #console.log "****** EC", @editor.editorContainer.css "font-family"
+      # ZZZ do only once
+      @buttons.css fontFamily: @editor.editorContainer.css("font-family")
+      
+      precompile = {}
+      precompile[@url] =
+        preamble: """
+          i = j
+          π = pi
+          Re = (z) -> z.x
+          Im = (z) -> z.y
+          
+        """
+        postamble: """
+          
+          null
+          $blab.exercises.complex1 {z, x, y, A, θ}
+          
+        """
+      $blab.precompile(precompile)
+    
+    # $(document).on "compiledCoffeeScript", (evt, data) =>
+    #   return unless data.url is @url
+    #   @resource = $blab.resources.find @url
+    #   #@process()
+    #   #@report()
+  
+  initHeading: ->
+    @heading = @container.find ".exercise-heading"
+    #@heading.append """
+    #<b>Exercise:</b>
+    #For the value of $z below, complete the related
+    #"""
+  
+  initButtons: ->
+    @buttons = @container.find ".code-buttons"
+    for label, char of @codeButtons
+      @codeButton label, char
+    
+  codeButton: (label, char) ->
+    new CodeButton
+      container: @buttons
+      editor: => @editor.editor
+      label: label
+      char: char
+      click: (char) =>
+  
+  process: (data) ->
+    
+    {z, x, y, A, θ} = data
+    return unless x?  # Some postprocess check instead?
+    
+    z1 = z
+    z2 = complex(x, y)
+    z3 = Complex.polarToComplex(A, θ)
+    
+    @figure.step {z: z1, fill: "fill-green", t: 0}, =>
+      @figure.step {z: z2, fill: "fill-yellow"}, =>
+        @figure.step {z: z3, fill: "fill-blue"}
+
+
+class ExerciseRotation
   
   url: "exercises/rotation.coffee"
   
@@ -1553,14 +1739,16 @@ class Exercise1
 # Figures
 #------------------------------------------------------#
 
-new FigureComplexPlane
+figureComplexPlane = new FigureComplexPlane
 new FigureComplexUnit
 new FigureComplexUnitMultiply
 new FigureComplexAddition
 new FigureComplexScaling
 new FigureComplexMultiplication
 new FigureEulerFormula
-new Exercise1
+
+new ExerciseComplex1(figureComplexPlane)
+new ExerciseRotation
 
 #------------------------------------------------------#
 
