@@ -3,8 +3,11 @@
 # TODO:
 # process mathjax only once loaded.
 
-#--- Base class ---#
+#------------------------------------------------------#
+# Figures
+#------------------------------------------------------#
 
+# Base class
 class ComplexPlane
   
   # Override in subclass
@@ -23,13 +26,12 @@ class ComplexPlane
     @gridLines = new GridLines {@canvas}
 
 
-#--- Figures ---#
-
 class FigureComplexPlane extends ComplexPlane
   
   # TODO: use VectorSliderPair
   
   id: "#figure-complex-plane"
+  exercises: 'exercises-complex-plane'
   
   margin: {top: 40, right: 40, bottom: 40, left: 40}
   xDomain: [-2, 2]
@@ -56,6 +58,8 @@ class FigureComplexPlane extends ComplexPlane
     (@figure.find ".magnitude").append("Magnitude: A=").append(@magnitudeText)
     
     @setVector(x: 1, y: 1)
+    
+    new Exercises(@exercises, this)
   
   setVector: (p) ->
     # Set cartesian coords of vector.  Snap to grid.
@@ -558,18 +562,18 @@ class FigureEulerFormula extends ComplexPlane
       @triangles2 = []
       
       points = z: z0
-      step = Computation2.angleStep(theta, N)
+      step = EulerComputation.angleStep(theta, N)
       @doSteps @triangles1, "triangle", points, N, step
       
       points = z: z0
-      step = Computation2.orthoStep(theta, N)
+      step = EulerComputation.orthoStep(theta, N)
       @doSteps @triangles2, "triangle fill-blue", points, N, step
        
     doSteps: (triangles, c, points, N, step) ->
       for n in [1..N]
         z = new VectorWithTriangle(canvas: @canvas, class: c)
         triangles.push z
-        points = Computation2.step(points.z, step)
+        points = EulerComputation.step(points.z, step)
         @draw z, points
     
     draw: (t, points) ->
@@ -599,43 +603,56 @@ $mathCoffee.preProcessor = (code) ->
   code = code.replace /\^/g, "**"
   code = code.replace /[^\x00-\x80]/g, (c) ->
     chars[c] ? c
-  #code
 
 
-$(".solution-button").click (evt) ->
-  button = $(evt.target)
-  solution = button.parent().find(".solution")
-  button.hide()
-  solution.show()
-
-
-class CodeButton
+class Exercises
   
-  constructor: (@spec) ->
+  constructor: (@id, @figure) ->
     
-    {@container, @editor, @label, @char, @click} = @spec
+    # Example: @id = 'exercises-complex-plane'
     
-    @button = $ "<div>",
-      class: "code-button"
-      html: @label
-      click: =>
-        @editor?().insert @char
-        @editor?().focus()
-        if @char.match /\(\)/g
-          {row, column} = @editor?().getCursorPosition()
-          @editor?().moveCursorTo(row, column-1)
-        @click?(this)
+    sel = "#"+@id
+    @mainButton = $("#{sel} .exercises-button")
+    @container = $("#{sel} .exercises")
+    @exercises = $("#{sel} .exercise")
+    @next = $("#{sel} .next")
+    @previous = $("#{sel} .previous")
     
-    if @label.length>2
-      @button.css fontSize: "8pt"
+    # Exercise process functions need to be accessible to exercise coffee.
+    $blab.exercises ?= {}
     
-    @container.append @button
+    # Instantiate Exercise objects.
+    for exercise in @exercises
+      id = $(exercise).attr "id"
+      new Exercise[id](id, @figure)  # get this if from loop
+    
+    $(".exercise").hide()
+    @current = 0
+    $(@exercises[@current]).show()
+    
+    @mainButton.click =>
+      @mainButton.hide 500
+      @container.hide()
+      @container.toggleClass "hide"
+      @container.slideDown()
+    
+    @next.click => @navigate(1)
+    @previous.click => @navigate(-1)
+    
+    @setNavButtons()
+    
+  navigate: (dir) ->
+    $(@exercises[@current]).hide()
+    @current += dir
+    $(@exercises[@current]).show()
+    @setNavButtons()
+    
+  setNavButtons: ->
+    @previous.toggleClass("disable", @current is 0)
+    @next.toggleClass("disable", @current is @exercises.length-1)
 
 
-class ExerciseComplex1
-  
-  id: "#exercise-complex-1"
-  url: "exercises/complex1.coffee"
+class ExerciseBase
   
   codeButtons:
     "×": "⋅"
@@ -650,45 +667,52 @@ class ExerciseComplex1
     "cos": "cos()"
     #"Re": "Re "
     #"Im": "Im "
-  
-  constructor: (@figure) ->
     
-    @container = $(@id)
-    #@initHeading()
+  preamble: """
+    i = j
+    π = pi
+    Re = (z) -> z.x
+    Im = (z) -> z.y
+    
+  """
+  
+  # Override in subclass
+  processArgs: "{}"
+  
+  postamble: (process) -> """
+    
+    null
+    #{process} #{@processArgs}
+    
+  """
+  
+  constructor: (@id, @figure) ->
+    @container = $("#"+@id)
+    @url = @container.find('div[data-file]').data()["file"]
+    return unless @url
     @initButtons()
-    
-    $blab.exercises ?= {}
-    $blab.exercises.complex1 = (data) => @process(data)
-    
-    $(document).on "preCompileCoffee", (evt, data) =>
-      return unless data.resource?.url is @url
-      
-      # Hide syntax checks in margin
-      @editor = data.resource.containers.fileNodes[0].editor
-      @editor.session().setUseWorker false
-      
-      # ZZZ do only once - after ace compiled?
-      @buttons.css fontFamily: @editor.editorContainer.css("font-family")
-      
-      precompile = {}
-      precompile[@url] =
-        preamble: """
-          i = j
-          π = pi
-          Re = (z) -> z.x
-          Im = (z) -> z.y
-          
-        """
-        postamble: """
-          
-          null
-          $blab.exercises.complex1 {z, x, y, A, θ}
-          
-        """
-      $blab.precompile(precompile)
+    # Is there a way to process only if shift-enter or swipe?  i.e., so not processed initially.
+    $blab.exercises[@id] = (data) => @process(data)
+    $(document).on "preCompileCoffee", (evt, data) => @preCompile(data.resource)
   
-  initHeading: ->
-    #@heading = @container.find ".exercise-heading"
+  process: (data) ->  # Override in subclass
+  
+  preCompile: (coffee) ->
+    
+    return unless coffee?.url is @url
+    
+    # Hide syntax checks in margin
+    @editor = coffee.containers.fileNodes[0].editor
+    @editor.session().setUseWorker false
+    
+    # Do only once - after Ace compiled?
+    @buttons.css fontFamily: @editor.editorContainer.css("font-family")
+    
+    precompile = {}
+    process = "$blab.exercises['#{@id}']"
+    postamble = @postamble(process)
+    precompile[@url] = {@preamble, postamble}
+    $blab.precompile(precompile)
   
   initButtons: ->
     @buttons = @container.find ".code-buttons"
@@ -706,23 +730,6 @@ class ExerciseComplex1
       char: char
       click: (char) =>
   
-  process: (data) ->
-    
-    {z, x, y, A, θ} = data
-    return unless x?  # Some postprocess check instead?
-    
-    z1 = z
-    z2 = complex(x, y)
-    z3 = Complex.polarToComplex(A, θ)
-    
-    correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
-    
-    @figure.step {z: z1, fill: "fill-green", t: 0}, =>
-      @message Complex.isEqual(z1, z2)
-      @figure.step {z: z2, fill: "fill-red"}, =>
-        @figure.step {z: z3, fill: "fill-blue"}
-        @message Complex.isEqual(z1, z3)
-    
   message: (correct) ->
     canvas = @figure.canvas
     txt = if correct then "Correct!" else "Incorrect - Try again"
@@ -732,7 +739,40 @@ class ExerciseComplex1
     @text = new Text {canvas, data, class: c}
     @text.text.attr "text-anchor", "middle"
     setTimeout (=> @text.text.remove()), 2000
+    
 
+
+#----------Exercise subclasses-------------#
+
+Exercise = {}
+
+class Exercise['exercise-complex-1'] extends ExerciseBase
+  
+  processArgs: "{z, x, y, A, θ}"
+  
+  process: (data) ->
+    
+    {z, x, y, A, θ} = data
+    return unless x?  # May replace this with process detector.
+    
+    z1 = z
+    z2 = complex(x, y)
+    z3 = Complex.polarToComplex(A, θ)
+    
+    #correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
+    
+    @figure.step {z: z1, fill: "fill-green", t: 0}, =>
+      @message Complex.isEqual(z1, z2)
+      @figure.step {z: z2, fill: "fill-red"}, =>
+        @figure.step {z: z3, fill: "fill-blue"}
+        @message Complex.isEqual(z1, z3)
+
+
+# To build
+class Exercise['exercise-complex-2'] extends ExerciseBase 
+
+# To build
+class Exercise['exercise-complex-3'] extends ExerciseBase
 
 class ExerciseRotation
   
@@ -778,203 +818,37 @@ class ExerciseRotation
     null
 
 
-#--- Sliders ---#
+$(".solution-button").click (evt) ->
+  button = $(evt.target)
+  solution = button.parent().find(".solution")
+  button.hide()
+  solution.show()
 
-class VectorSliderPair
+
+#------------Exercise tools-------------#
+
+class CodeButton
   
   constructor: (@spec) ->
     
-    {@figure, @canvas, @xyLines, @xyLabels, @xyComponents, @arc, @sliderClass, @angleLabel, @getZ} = @spec
+    {@container, @editor, @label, @char, @click} = @spec
     
-    @vector = new VectorWithCircle
-      canvas: @canvas
-      xyLines: @xyLines ? true
-      xyLabels: @xyLabels ? false
-      xyComponents: @xyComponents ? false
-      arc: @arc ? false
-      compute: (z) => @set(z)
-      
-    @slider = new VerticalAngleSlider
-      container: @figure.find @sliderClass
-      label: @angleLabel
-      change: (angle) =>
-        z = Complex.polarToComplex @vector.magnitude, angle
-        setSlider = false
-        @set z, setSlider
-        
-  set: (z, setSlider=true) ->
-    z = @getZ z
-    @vector.set z
-    @spec.set?(z)
-    @slider.set(@vector.angle) if setSlider
+    @button = $ "<div>",
+      class: "code-button"
+      html: @label
+      click: =>
+        @editor?().insert @char
+        @editor?().focus()
+        if @char.match /\(\)/g
+          {row, column} = @editor?().getCursorPosition()
+          @editor?().moveCursorTo(row, column-1)
+        @click?(this)
     
-  z: -> @vector.z ? complex(0, 0)
-  
-  origin: -> @vector.origin ? complex(0, 0)
-  
-  setOrigin: (z) -> @vector.setOrigin z
-  
-  animate: (zStart, zEnd, callback) ->
-    @vector.animate zStart, zEnd, =>
-      #@set zEnd
-      @spec.set?(z)
-      setTimeout (=> @slider.set(@vector.angle)), 10
-      callback?()
+    if @label.length>2
+      @button.css fontSize: "8pt"
+    
+    @container.append @button
 
-
-class VerticalAngleSlider
-  
-  # Slider for -pi..pi.
-  
-  nAngle: 48  # Number of slider angles from 0+ to pi
-  
-  constructor: (@spec) ->
-    
-    {@container, @label, @change} = @spec
-    
-    @container.append @template()
-    
-    @sliderContainer = @container.find(".slider-angle")
-    
-    @slider = new Slider
-      container: @sliderContainer
-      orientation: "vertical"
-      init: 0
-      min: -@nAngle
-      max: @nAngle
-      step: 1
-      change: (v) =>
-        @angle = @nToAngle(v)
-        @setText()
-        @change(@angle)
-    
-    @height = @sliderContainer.height()
-        
-    @prompt = @container.find(".slider-angle-prompt")
-    @prompt.html @label
-    
-    @text = @container.find(".slider-angle-text")
-  
-  template: -> """
-    <div class='slider-angle'></div>
-    <div class='slider-angle-prompt'></div>
-    <div class='slider-angle-text angle-text'></div>
-  """
-    
-  set: (@angle) ->
-    v = round(@angleToN(@angle), 2)
-    @slider.set(v)
-    @setText()
-  
-  setText: ->
-    {math, mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
-    @text.toggleClass('angle-text-special', special)
-    @text.toggleClass('angle-text-negative', @angle<0)
-    katex.render math, @text[0]
-    @setTextPos()
-    #@text.html mathjax
-    #processed = processMathJax @text, => @setTextPos()
-    #@setTextPos() unless processed
-  
-  setTextPos: ->
-    y = @height * 0.5*(1 - @angle/pi) - 15
-    @text.css top: "#{y}px"
-    
-  angleToN: (angle) ->
-    n = @nAngle*angle/pi
-    n = 0 if abs(n)<0.0000001
-    n
-  
-  nToAngle: (n) -> n*pi/@nAngle
-
-
-class HorizontalSlider
-  
-  constructor: (@spec) ->
-    
-    {@container, @label, @init, @min, @max, @step, @change, @done} = @spec
-    
-    @container.append @template()
-    
-    @sliderContainer = @container.find(".slider-horiz")
-    
-    @slider = new Slider
-      container: @sliderContainer
-      orientation: "horizontal"
-      init: @init
-      min: @min
-      max: @max
-      step: @step
-      change: (v) =>
-        @value = v
-        @setText()
-        @change(@value)
-      done: => @done()
-    
-    @height = @sliderContainer.height()
-        
-    @prompt = @container.find(".slider-horiz-prompt")
-    @prompt.html @label
-    
-    @text = @container.find(".slider-horiz-text")
-  
-  template: -> """
-    <div class='slider-horiz-prompt'></div>
-    <div class='slider-horiz'></div>
-    <div class='slider-horiz-text'></div>
-  """
-    
-  set: (@value) ->
-    v = @value
-    @slider.set(v)
-    @setText()
-    
-  val: -> @slider.val()
-  
-  setText: ->
-    # {mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
-    #@text.toggleClass('angle-text-special', special)
-    #@text.toggleClass('angle-text-negative', @angle<0)
-    @text.html @value
-    #processed = processMathJax @text, => @setTextPos()
-    #@setTextPos() unless processed
-  
-  
-
-
-class Slider
-  
-  constructor: (@spec) ->
-    
-    {@container, @min, @max, @step, @init, @orientation, @fast, change, @done} = @spec
-    
-    @orientation ?= "horizontal"
-    @fast ?= true
-    
-    @changeFcn = if change then ((v) -> change(v)) else (->)
-    
-    @slider = @container.slider
-      orientation: @orientation
-      range: "min"
-      min: @min
-      max: @max
-      step: @step
-      value: @init
-      mouseup: (e) ->
-      slide: (e, ui) =>
-        @changeFcn(ui.value) if @fast
-      change: (e, ui) =>
-        @done?() if e.originalEvent
-        @changeFcn(ui.value) unless @fast
-      
-  val: -> @slider.slider "option", "value"
-  
-  set: (v) ->
-    # Forces slider to move to value - used for animation.
-    @slider.slider 'option', 'value', v
-
-
-#--- Buttons ---#
 
 class ButtonSet
   
@@ -990,198 +864,10 @@ class ButtonSet
     
 
 
-#--- d3 elememts ---#
 
-class Canvas
-  
-  constructor: (@spec) ->
-    
-    {@container, @width, @height, @margin, @xDomain, @yDomain} = @spec
-    
-    @graphics = d3.select @container[0]
-    
-    @graphics.selectAll("svg").remove()
-    @svg = @graphics.append("svg")
-      .attr('width', @width)
-      .attr('height', @height)
-      
-    @w = @width - @margin.left - @margin.right
-    
-    @h = @height - @margin.top - @margin.bottom
-    
-    @canvas = @svg.append("g")
-      .attr("transform", "translate(#{@margin.left}, #{@margin.top})")
-      .attr("width", @w)
-      .attr("height", @h)
-    
-    @mx = d3.scale.linear()
-      .domain(@xDomain)
-      .range([0, @w])
-    
-    @my = d3.scale.linear()
-      .domain(@yDomain)
-      .range([@h, 0])
-      
-  invertX: (x) -> @limit @mx.invert(x), @xDomain
-  
-  invertY: (y) -> @limit @my.invert(y), @yDomain
-    
-  limit: (z, d) ->
-    return d[1] if z>d[1]
-    return d[0] if z<d[0]
-    z
-  
-  append: (obj) ->
-    @canvas.append obj
-
-
-class Line
-  
-  constructor: (@spec) ->
-    
-    {@canvas, @points, @class} = @spec
-    
-    @line = @canvas.append("line").attr("class", @class)
-      
-    {@mx, @my} = @canvas
-    @set(@points) if @points?
-    
-  set: (@points) ->
-    {x1, y1, x2, y2} = @points
-    @line
-      .attr "x1", @mx(x1)
-      .attr "y1", @my(y1)
-      .attr "x2", @mx(x2)
-      .attr "y2", @my(y2)
-
-
-class Arc
-  
-  constructor: (@spec) ->
-    
-    {@canvas, @data, @class} = @spec
-    
-    @path = @canvas.append("path").attr("class", @class)
-    
-    {@mx, @my} = @canvas
-    @arc = d3.svg.arc()
-      
-    @set(@data) if @data?
-    
-  set: (@data) ->
-    @arc.innerRadius(@data.innerRadius) if @data.innerRadius?
-    @arc.outerRadius(@data.outerRadius) if @data.outerRadius?
-    @arc.startAngle(@data.startAngle) if @data.startAngle?
-    @arc.endAngle(@data.endAngle) if @data.endAngle?
-    @path.attr "d",  @arc
-    @path.attr("transform", "translate(#{@mx(@data.x)},#{@my(@data.y)})") if @data.x? and @data.y?
-
-
-class Circle
-  
-  constructor: (@spec) ->
-    
-    {@canvas, @data, @draggable, @class, @click} = @spec
-    
-    @circle = @canvas.append("circle").attr("class", @class)
-    @setDraggable() if @draggable
-    
-    {@mx, @my} = @canvas
-    @set(@data) if @data?
-    
-  set: (@data) ->
-    {x, y, r} = @data
-    @circle
-      .attr "cx", @mx(x)
-      .attr "cy", @my(y)
-      .attr "r", r  # map?
-      
-    if not @draggable and @click?
-      @circle.on "click", => @click()
-      
-  setDraggable: ->
-    @circle.call(d3.behavior
-      .drag()
-      .on "drag", =>
-        x = d3.event.x
-        y = d3.event.y
-        @data.x = @canvas.invertX(x)
-        @data.y = @canvas.invertY(y)
-        @spec.callback?(@data)
-    )
-    
-  setClass: (@class) -> @circle.attr "class", @class
-
-
-class Polygon
-  
-  constructor: (@spec) ->
-    
-    {@canvas, @points, @class} = @spec
-    @path = @canvas.append("path").attr("class", @class)
-    
-    {@mx, @my} = @canvas
-    @line = d3.svg.line()
-      .x((d) => @mx(d.x))
-      .y((d) => @my(d.y))
-      .interpolate("linear")
-    
-    @set(@points) if @points?
-    
-  set: (@points) ->
-    # Z closes path
-    @path.attr "d",  @line(@points) + "Z"
-
-
-class GridLines
-  
-  constructor: (@spec) ->
-    
-    {@canvas} = @spec
-    
-    @xDomain = @canvas.xDomain
-    @yDomain = @canvas.yDomain
-    
-    @xAxis = new Line
-      canvas: @canvas
-      class: "grid-line"
-      points:
-        x1: @xDomain[0]
-        y1: 0
-        x2: @xDomain[1]
-        y2: 0
-        
-    @yAxis = new Line
-      canvas: @canvas
-      class: "grid-line"
-      points:
-        x1: 0
-        y1: @yDomain[0]
-        x2: 0
-        y2: @yDomain[1]
-
-
-class Text
-  
-  constructor: (@spec) ->
-    
-    {@canvas, @data, @class} = @spec
-      
-    @text = @canvas.append("text").attr("class", @class)
-      
-    {@mx, @my} = @canvas
-    
-    @set(@data) if @data?
-    
-  set: (@data) ->
-    {x, y, text} = @data
-    @text
-      .attr "x", @mx(x)
-      .attr "y", @my(y)
-      .text text
-
-
-#--- Complex plane elements ---#
+#------------------------------------------------------#
+# Complex Plane and Slider Elements
+#------------------------------------------------------#
 
 class Vector
   
@@ -1449,31 +1135,201 @@ class VectorWithTriangle
     ]
 
 
-#------------------#
-
-class VectorAngle
+class VectorSliderPair
   
-  constructor: (@container, @x0, @y0) ->
+  constructor: (@spec) ->
+    
+    {@figure, @canvas, @xyLines, @xyLabels, @xyComponents, @arc, @sliderClass, @angleLabel, @getZ} = @spec
+    
+    @vector = new VectorWithCircle
+      canvas: @canvas
+      xyLines: @xyLines ? true
+      xyLabels: @xyLabels ? false
+      xyComponents: @xyComponents ? false
+      arc: @arc ? false
+      compute: (z) => @set(z)
+      
+    @slider = new VerticalAngleSlider
+      container: @figure.find @sliderClass
+      label: @angleLabel
+      change: (angle) =>
+        z = Complex.polarToComplex @vector.magnitude, angle
+        setSlider = false
+        @set z, setSlider
+        
+  set: (z, setSlider=true) ->
+    z = @getZ z
+    @vector.set z
+    @spec.set?(z)
+    @slider.set(@vector.angle) if setSlider
+    
+  z: -> @vector.z ? complex(0, 0)
   
-  set: (x, y, mathjax, special) ->
-    @container.toggleClass('angle-text-special', special)
-    @container.html mathjax
-    processMathJax @container, => @pos(x, y)
+  origin: -> @vector.origin ? complex(0, 0)
   
-  pos: (x, y) ->
-    
-    w = @container.width()
-    h = @container.height()
-    
-    r = Math.sqrt(x*x + y*y)
-    f = (x) -> 0.5*(1 - 1.2*x/r)
-    
-    @container.css
-      left: @x0 + x - w*f(x)
-      top: @y0 + y - h*f(y)
-    
+  setOrigin: (z) -> @vector.setOrigin z
+  
+  animate: (zStart, zEnd, callback) ->
+    @vector.animate zStart, zEnd, =>
+      #@set zEnd
+      @spec.set?(z)
+      setTimeout (=> @slider.set(@vector.angle)), 10
+      callback?()
 
 
+class VerticalAngleSlider
+  
+  # Slider for -pi..pi.
+  
+  nAngle: 48  # Number of slider angles from 0+ to pi
+  
+  constructor: (@spec) ->
+    
+    {@container, @label, @change} = @spec
+    
+    @container.append @template()
+    
+    @sliderContainer = @container.find(".slider-angle")
+    
+    @slider = new Slider
+      container: @sliderContainer
+      orientation: "vertical"
+      init: 0
+      min: -@nAngle
+      max: @nAngle
+      step: 1
+      change: (v) =>
+        @angle = @nToAngle(v)
+        @setText()
+        @change(@angle)
+    
+    @height = @sliderContainer.height()
+        
+    @prompt = @container.find(".slider-angle-prompt")
+    @prompt.html @label
+    
+    @text = @container.find(".slider-angle-text")
+  
+  template: -> """
+    <div class='slider-angle'></div>
+    <div class='slider-angle-prompt'></div>
+    <div class='slider-angle-text angle-text'></div>
+  """
+    
+  set: (@angle) ->
+    v = round(@angleToN(@angle), 2)
+    @slider.set(v)
+    @setText()
+  
+  setText: ->
+    {math, mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
+    @text.toggleClass('angle-text-special', special)
+    @text.toggleClass('angle-text-negative', @angle<0)
+    katex.render math, @text[0]
+    @setTextPos()
+    #@text.html mathjax
+    #processed = processMathJax @text, => @setTextPos()
+    #@setTextPos() unless processed
+  
+  setTextPos: ->
+    y = @height * 0.5*(1 - @angle/pi) - 15
+    @text.css top: "#{y}px"
+    
+  angleToN: (angle) ->
+    n = @nAngle*angle/pi
+    n = 0 if abs(n)<0.0000001
+    n
+  
+  nToAngle: (n) -> n*pi/@nAngle
+
+
+class HorizontalSlider
+  
+  constructor: (@spec) ->
+    
+    {@container, @label, @init, @min, @max, @step, @change, @done} = @spec
+    
+    @container.append @template()
+    
+    @sliderContainer = @container.find(".slider-horiz")
+    
+    @slider = new Slider
+      container: @sliderContainer
+      orientation: "horizontal"
+      init: @init
+      min: @min
+      max: @max
+      step: @step
+      change: (v) =>
+        @value = v
+        @setText()
+        @change(@value)
+      done: => @done()
+    
+    @height = @sliderContainer.height()
+        
+    @prompt = @container.find(".slider-horiz-prompt")
+    @prompt.html @label
+    
+    @text = @container.find(".slider-horiz-text")
+  
+  template: -> """
+    <div class='slider-horiz-prompt'></div>
+    <div class='slider-horiz'></div>
+    <div class='slider-horiz-text'></div>
+  """
+    
+  set: (@value) ->
+    v = @value
+    @slider.set(v)
+    @setText()
+    
+  val: -> @slider.val()
+  
+  setText: ->
+    # {mathjax, special} = angleText(@angleToN(@angle))  # ZZZ dup comp?
+    #@text.toggleClass('angle-text-special', special)
+    #@text.toggleClass('angle-text-negative', @angle<0)
+    @text.html @value
+    #processed = processMathJax @text, => @setTextPos()
+    #@setTextPos() unless processed
+  
+  
+
+
+class Slider
+  
+  constructor: (@spec) ->
+    
+    {@container, @min, @max, @step, @init, @orientation, @fast, change, @done} = @spec
+    
+    @orientation ?= "horizontal"
+    @fast ?= true
+    
+    @changeFcn = if change then ((v) -> change(v)) else (->)
+    
+    @slider = @container.slider
+      orientation: @orientation
+      range: "min"
+      min: @min
+      max: @max
+      step: @step
+      value: @init
+      mouseup: (e) ->
+      slide: (e, ui) =>
+        @changeFcn(ui.value) if @fast
+      change: (e, ui) =>
+        @done?() if e.originalEvent
+        @changeFcn(ui.value) unless @fast
+      
+  val: -> @slider.slider "option", "value"
+  
+  set: (v) ->
+    # Forces slider to move to value - used for animation.
+    @slider.slider 'option', 'value', v
+
+
+# Still used by Euler - to be replaced by VectorWithTriangle.
 class Z1
   
   constructor: (@spec) ->
@@ -1498,76 +1354,208 @@ class Z1
       # ]
 
 
-# To delete #
-class Z
+
+#------------------------------------------------------#
+# d3 Elements
+#------------------------------------------------------#
+
+class Canvas
   
   constructor: (@spec) ->
     
-    {@canvas, @compute} = @spec
+    {@container, @width, @height, @margin, @xDomain, @yDomain} = @spec
     
-    @circle = new Circle
-      canvas: @canvas
-      class: "circle"
-      draggable: true
-      callback: (p) => @compute(p)
+    @graphics = d3.select @container[0]
+    
+    @graphics.selectAll("svg").remove()
+    @svg = @graphics.append("svg")
+      .attr('width', @width)
+      .attr('height', @height)
       
-    @smallCircle = new Circle
-      canvas: @canvas
-      class: "circle fill-black"
-      draggable: false
+    @w = @width - @margin.left - @margin.right
+    
+    @h = @height - @margin.top - @margin.bottom
+    
+    @canvas = @svg.append("g")
+      .attr("transform", "translate(#{@margin.left}, #{@margin.top})")
+      .attr("width", @w)
+      .attr("height", @h)
+    
+    @mx = d3.scale.linear()
+      .domain(@xDomain)
+      .range([0, @w])
+    
+    @my = d3.scale.linear()
+      .domain(@yDomain)
+      .range([@h, 0])
       
-    @triangle = new Polygon {@canvas, class: "triangle"}
-    
-  set: (x, y, xb, yb) ->
-    @circle.set(x: x, y: y, r: 10)
-    @smallCircle.set(x: xb, y: yb, r: 3)
-    @triangle.set [
-      {x: 0, y: 0}
-      {x: xb, y: yb}
-      {x: x, y: y}
-    ]
-
-
-# Multiply two complex vectors - to rename.
-class Main1
+  invertX: (x) -> @limit @mx.invert(x), @xDomain
   
-  # ZZZ get from container?
-  width: 600
-  height: 600
-  margin: {top: 30, right: 30, bottom: 50, left: 25}
-  xDomain: [-1.5, 1.5]
-  yDomain: [-1.5, 1.5]
+  invertY: (y) -> @limit @my.invert(y), @yDomain
+    
+  limit: (z, d) ->
+    return d[1] if z>d[1]
+    return d[0] if z<d[0]
+    z
   
-  constructor: ->
-    
-    @container = $("#math-surface")
-    @canvas = new Canvas {@container, @width, @height, @margin, @xDomain, @yDomain}
-    @gridLines = new GridLines {@canvas} 
-    
-    # First vector, z1
-    @z1 = new Z1
-      canvas: @canvas
-      compute: (p) => @computation.setZ1(p)
-    
-    # Result vector, z = z1*z2
-    @z = new Z
-      canvas: @canvas
-      compute: (p) => @computation.setZ(p)
-    
-    @computation = new Computation1(draw: (points) => @draw(points))
-    
-#    $(document).on "mathjaxPreConfig", => @compute(0)
-    
-  draw: (points) ->
-    {z1, z2, z, az1} = points
-    @z1.set z1.x, z1.y
-    @z.set z.x, z.y, az1.x, az1.y  #, z2.z, z2.y
+  append: (obj) ->
+    @canvas.append obj
 
+
+class Line
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @points, @class} = @spec
+    
+    @line = @canvas.append("line").attr("class", @class)
+      
+    {@mx, @my} = @canvas
+    @set(@points) if @points?
+    
+  set: (@points) ->
+    {x1, y1, x2, y2} = @points
+    @line
+      .attr "x1", @mx(x1)
+      .attr "y1", @my(y1)
+      .attr "x2", @mx(x2)
+      .attr "y2", @my(y2)
+
+
+class Arc
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @data, @class} = @spec
+    
+    @path = @canvas.append("path").attr("class", @class)
+    
+    {@mx, @my} = @canvas
+    @arc = d3.svg.arc()
+      
+    @set(@data) if @data?
+    
+  set: (@data) ->
+    @arc.innerRadius(@data.innerRadius) if @data.innerRadius?
+    @arc.outerRadius(@data.outerRadius) if @data.outerRadius?
+    @arc.startAngle(@data.startAngle) if @data.startAngle?
+    @arc.endAngle(@data.endAngle) if @data.endAngle?
+    @path.attr "d",  @arc
+    @path.attr("transform", "translate(#{@mx(@data.x)},#{@my(@data.y)})") if @data.x? and @data.y?
+
+
+class Circle
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @data, @draggable, @class, @click} = @spec
+    
+    @circle = @canvas.append("circle").attr("class", @class)
+    @setDraggable() if @draggable
+    
+    {@mx, @my} = @canvas
+    @set(@data) if @data?
+    
+  set: (@data) ->
+    {x, y, r} = @data
+    @circle
+      .attr "cx", @mx(x)
+      .attr "cy", @my(y)
+      .attr "r", r  # map?
+      
+    if not @draggable and @click?
+      @circle.on "click", => @click()
+      
+  setDraggable: ->
+    @circle.call(d3.behavior
+      .drag()
+      .on "drag", =>
+        x = d3.event.x
+        y = d3.event.y
+        @data.x = @canvas.invertX(x)
+        @data.y = @canvas.invertY(y)
+        @spec.callback?(@data)
+    )
+    
+  setClass: (@class) -> @circle.attr "class", @class
+
+
+class Polygon
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @points, @class} = @spec
+    @path = @canvas.append("path").attr("class", @class)
+    
+    {@mx, @my} = @canvas
+    @line = d3.svg.line()
+      .x((d) => @mx(d.x))
+      .y((d) => @my(d.y))
+      .interpolate("linear")
+    
+    @set(@points) if @points?
+    
+  set: (@points) ->
+    # Z closes path
+    @path.attr "d",  @line(@points) + "Z"
+
+
+class GridLines
+  
+  constructor: (@spec) ->
+    
+    {@canvas} = @spec
+    
+    @xDomain = @canvas.xDomain
+    @yDomain = @canvas.yDomain
+    
+    @xAxis = new Line
+      canvas: @canvas
+      class: "grid-line"
+      points:
+        x1: @xDomain[0]
+        y1: 0
+        x2: @xDomain[1]
+        y2: 0
+        
+    @yAxis = new Line
+      canvas: @canvas
+      class: "grid-line"
+      points:
+        x1: 0
+        y1: @yDomain[0]
+        x2: 0
+        y2: @yDomain[1]
+
+
+class Text
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @data, @class} = @spec
+      
+    @text = @canvas.append("text").attr("class", @class)
+      
+    {@mx, @my} = @canvas
+    
+    @set(@data) if @data?
+    
+  set: (@data) ->
+    {x, y, text} = @data
+    @text
+      .attr "x", @mx(x)
+      .attr "y", @my(y)
+      .text text
+
+
+
+#------------------------------------------------------#
+# Complex Number Computation
+#------------------------------------------------------#
+# TODO - put in separate file - visible in Ace editor in document?
 
 #!math-sugar
 
-# Complex number computation
-# TODO - put in separate file - visible in Ace editor in document?
 class Complex
   
   @toPolar: (z) ->
@@ -1606,7 +1594,7 @@ class Complex
   @rotate: (z, theta) -> z*exp(j*theta)
 
 
-class Computation2
+class EulerComputation
   
   @angleStep: (theta, N) ->
     cos(theta/N) + j*sin(theta/N)
@@ -1621,60 +1609,20 @@ class Computation2
     {z1, z2, z, az1}
 
 
-#step = (z1) ->
-
-class Computation1
-  
-  constructor: (@spec) ->
-    
-    {@draw} = @spec
-    
-    @z1 = complex(1, 0)
-    @z2 = 1/sqrt(2) * complex(1, 1)
-    
-    @setZ1(complex(1,0))
-    @setZ(1/sqrt(2) * complex(1, 1))
-    
-    # ZZZ should do a setZ1, setZ here, to get constraints.
-    @compute()
-    
-  compute: ->
-    @z = @z1*@z2
-    @az1 = @z2.x*@z1
-    
-    @draw {@z1, @z2, @z, @az1}
-    
-  setZ1: (p) ->
-    @z1 = complex p.x, p.y
-    
-    # Constrain
-    @z1 = @z1 / abs(@z1)
-    
-    @compute()
-    
-  setZ: (p) ->
-    z = complex p.x, p.y
-    
-    # Constrain
-    z = z / abs(z)
-    
-    @z2 = z / @z1
-    
-    @compute()
-
+# Unused
+complexPolar = (r, theta) -> r*exp(j*theta)
 
 #!no-math-sugar
 
-#------- Functions -----------#
+
+#------------------------------------------------------#
+# Utility functions
+#------------------------------------------------------#
 
 round = (x, n) ->
   f = Math.pow(10, n)
   Math.round(x * f)/f
 
-
-#!math-sugar
-complexPolar = (r, theta) -> r*exp(j*theta)
-#!no-math-sugar
 
 angleText = (a) ->
   
@@ -1737,11 +1685,13 @@ processMathJax = (element, callback) ->
   true
 
 
+
 #------------------------------------------------------#
-# Figures
+# Instantiate Figures (and Exercises)
 #------------------------------------------------------#
 
-figureComplexPlane = new FigureComplexPlane
+# Exercises are instantiated within figure classes.
+new FigureComplexPlane
 new FigureComplexUnit
 new FigureComplexUnitMultiply
 new FigureComplexAddition
@@ -1749,10 +1699,136 @@ new FigureComplexScaling
 new FigureComplexMultiplication
 new FigureEulerFormula
 
-new ExerciseComplex1(figureComplexPlane)
+# Old exercise
 new ExerciseRotation
 
-#------------------------------------------------------#
+#--------------Old, Extra, Unused--------------------#
+
+class OLD_Figure_Multiply
+  
+  # ZZZ get from container?
+  width: 600
+  height: 600
+  margin: {top: 30, right: 30, bottom: 50, left: 25}
+  xDomain: [-1.5, 1.5]
+  yDomain: [-1.5, 1.5]
+  
+  constructor: ->
+    
+    @container = $("#math-surface")
+    @canvas = new Canvas {@container, @width, @height, @margin, @xDomain, @yDomain}
+    @gridLines = new GridLines {@canvas} 
+    
+    # First vector, z1
+    @z1 = new Z1
+      canvas: @canvas
+      compute: (p) => @computation.setZ1(p)
+    
+    # Result vector, z = z1*z2
+    @z = new OLD_Figure_Multiply_Z
+      canvas: @canvas
+      compute: (p) => @computation.setZ(p)
+    
+    @computation = new OLD_Figure_Multiply_Computation1(draw: (points) => @draw(points))
+    
+#    $(document).on "mathjaxPreConfig", => @compute(0)
+    
+  draw: (points) ->
+    {z1, z2, z, az1} = points
+    @z1.set z1.x, z1.y
+    @z.set z.x, z.y, az1.x, az1.y  #, z2.z, z2.y
+
+
+class OLD_Figure_Multiply_Computation1
+  
+  constructor: (@spec) ->
+    
+    {@draw} = @spec
+    
+    @z1 = complex(1, 0)
+    @z2 = 1/sqrt(2) * complex(1, 1)
+    
+    @setZ1(complex(1,0))
+    @setZ(1/sqrt(2) * complex(1, 1))
+    
+    # ZZZ should do a setZ1, setZ here, to get constraints.
+    @compute()
+    
+  compute: ->
+    @z = @z1*@z2
+    @az1 = @z2.x*@z1
+    
+    @draw {@z1, @z2, @z, @az1}
+    
+  setZ1: (p) ->
+    @z1 = complex p.x, p.y
+    
+    # Constrain
+    @z1 = @z1 / abs(@z1)
+    
+    @compute()
+    
+  setZ: (p) ->
+    z = complex p.x, p.y
+    
+    # Constrain
+    z = z / abs(z)
+    
+    @z2 = z / @z1
+    
+    @compute()
+
+
+class OLD_Figure_Multiply_Z
+  
+  constructor: (@spec) ->
+    
+    {@canvas, @compute} = @spec
+    
+    @circle = new Circle
+      canvas: @canvas
+      class: "circle"
+      draggable: true
+      callback: (p) => @compute(p)
+      
+    @smallCircle = new Circle
+      canvas: @canvas
+      class: "circle fill-black"
+      draggable: false
+      
+    @triangle = new Polygon {@canvas, class: "triangle"}
+    
+  set: (x, y, xb, yb) ->
+    @circle.set(x: x, y: y, r: 10)
+    @smallCircle.set(x: xb, y: yb, r: 3)
+    @triangle.set [
+      {x: 0, y: 0}
+      {x: xb, y: yb}
+      {x: x, y: y}
+    ]
+
+
+class OLD_VectorAngle
+  
+  constructor: (@container, @x0, @y0) ->
+  
+  set: (x, y, mathjax, special) ->
+    @container.toggleClass('angle-text-special', special)
+    @container.html mathjax
+    processMathJax @container, => @pos(x, y)
+  
+  pos: (x, y) ->
+    
+    w = @container.width()
+    h = @container.height()
+    
+    r = Math.sqrt(x*x + y*y)
+    f = (x) -> 0.5*(1 - 1.2*x/r)
+    
+    @container.css
+      left: @x0 + x - w*f(x)
+      top: @y0 + y - h*f(y)
+
 
 extraStuff = ->
   
@@ -1782,4 +1858,6 @@ extraStuff = ->
     input: -> parseFloat(input.getVal())
     result: (f) -> $("#result").html("Frequency " + f + " Hz")
     plot: (x, y) -> plot.setVal([x, y])
+
+
 

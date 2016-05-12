@@ -17,7 +17,7 @@
 <div id='container'>
 
 <h1>Complex Numbers</h1>
-<p class='heading'>Martin Clark<br>May 2016</p>
+<p class='heading'>Martin Clark and Gary Ballantyne<br>May 2016</p>
 <p class='heading highlight'>[This web page is currently under development.]</p>
 
 <h2>Vectors in a Plane</h2>
@@ -75,26 +75,53 @@ $$y = A \sin(\theta)$$
 </div>
 
 <div class='box-2-2'>
-  <div class='exercise' id='exercise-complex-1'>
-    <div class='exercise-heading'>
-      <b>Exercise 1</b><br>
-    </div>
-    <div class='code-buttons'></div>
-    <div data-file='exercises/complex1.coffee'></div>
-    <div class='exercise-footer'>
-      For the complex vector $z$ in the editor above, 
-      fill in the related values ($x$ and $y$ coordinates, magnitude $A$, and angle $\theta$).
-      See the values plotted above &mdash;
-      <span style='color:green'>green for $z$</span>,
-      <span style='color:red'>red for ($x$, $y$)</span>,
-      and <span style='color:blue'>blue for $A \angle \theta$</span>.
-    </div>
-  </div>
-</div>
-
-<div class='clear'></div>
-
-<div class='box-2-2'>
+  
+  <div id='exercises-complex-plane'>
+    
+    <div class='exercises-button'>Exercises</div>
+    
+    <div class='exercises hide'>
+      
+      <div class='exercise-navigation'>
+        <div class='previous button'>Prev</div> | <div class='next button'>Next</div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-1'>
+        <h2 class='exercise-heading'>Exercise 1</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex1.coffee'></div>
+        <div class='exercise-footer'>
+          For the complex vector $z$ in the editor above,
+          fill in the related values ($x$ and $y$ coordinates, magnitude $A$, and angle $\theta$).
+          See the values plotted above &mdash;
+          <span style='color:green'>green for $z$</span>,
+          <span style='color:red'>red for ($x$, $y$)</span>,
+          and <span style='color:blue'>blue for $A \angle \theta$</span>.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-2'>
+        <h2 class='exercise-heading'>Exercise 2</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex2.coffee'></div>
+        <div class='exercise-footer'>
+          For the complex vector $z$ in the editor above, ...
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-3'>
+        <h2 class='exercise-heading'>Exercise 3</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex3.coffee'></div>
+        <div class='exercise-footer'>
+          For the complex vector $z$ in the editor above, ...
+        </div>
+      </div>
+      
+    </div> <!-- .exercises -->
+    
+  </div> <!-- #exercises-complex-plane -->
+  
   <div class='todo'>
     <h3>Exercises to implement</h3>
     <ul>
@@ -103,6 +130,7 @@ $$y = A \sin(\theta)$$
       <li>Expression for angle: $\arctan{(y, x)}$
     </ul>
   </div>
+
 </div>
 
 <div class='clear'></div>
@@ -564,6 +592,15 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
 </div>
 
 <div class='clear'></div>
+
+<h2>Other Stuff</h2>
+
+<ul>
+  <li>Conjugate.
+  <li>Division.
+  <li>Using Euler's form in applications.
+</ul>
+
 
 <!--ui.coffee-->
 <!--div class='box-1-1'>

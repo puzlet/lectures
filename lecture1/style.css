@@ -350,11 +350,62 @@ th, td {
   margin-top: 0px;
 }
 
+.exercises-button {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  margin-bottom: 5px;
+  text-align: center;
+  line-height: 30px;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  cursor: pointer;
+  /* ZZZ select events */  
+}
+
 .exercise {
+  position: relative;
   background: #ffffcc;
   padding: 10px;
   border: 1px solid #aaa;
   border-radius: 10px;
+}
+
+.exercise h2 {
+  font-size: 12pt;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.exercise-navigation {
+  position: absolute;
+  display: inline-block;
+  margin-top: 10px;
+  right: 10px;
+  z-index: 10;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.exercise-navigation .button {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.exercise-navigation .disable {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+.hide {
+  display: none;
+  visibility: hidden;
 }
 
 .exercise-heading {
