@@ -2,6 +2,7 @@
 
 # TODO:
 # process mathjax only once loaded.
+# Run button with title showing shoft-enter tip
 
 #------------------------------------------------------#
 # Figures
@@ -603,13 +604,13 @@ $mathCoffee.preProcessor = (code) ->
   code = code.replace /\^/g, "**"
   code = code.replace /[^\x00-\x80]/g, (c) ->
     chars[c] ? c
+  #console.log code
+  #code
 
 
 class Exercises
   
   constructor: (@id, @figure) ->
-    
-    # Example: @id = 'exercises-complex-plane'
     
     sel = "#"+@id
     @mainButton = $("#{sel} .exercises-button")
@@ -624,7 +625,11 @@ class Exercises
     # Instantiate Exercise objects.
     for exercise in @exercises
       id = $(exercise).attr "id"
-      new Exercise[id](id, @figure)  # get this if from loop
+      E = Exercise[id]
+      unless E
+        console.log "!!!!!!!! NOT IMPLEMENTED: Exercise #{id}"
+        E = ExerciseBase
+      new E(id, @figure) if E
     
     $(".exercise").hide()
     @current = 0
@@ -688,21 +693,29 @@ class ExerciseBase
   
   constructor: (@id, @figure) ->
     @container = $("#"+@id)
-    @url = @container.find('div[data-file]').data()["file"]
+    @url = @container.find('div[data-file]').data()?["file"]
     return unless @url
     @initButtons()
     # Is there a way to process only if shift-enter or swipe?  i.e., so not processed initially.
     $blab.exercises[@id] = (data) => @process(data)
     $(document).on "preCompileCoffee", (evt, data) => @preCompile(data.resource)
+    
+    $(document).on "compiledCoffeeScript", (evt, data) =>
+      return unless data.url is @url
+      @resource = $blab.resources.find @url
+      @resultArray = @resource?.resultArray
+      @postProcess(@resultArray)
   
   process: (data) ->  # Override in subclass
-  
-  preCompile: (coffee) ->
     
-    return unless coffee?.url is @url
+  postProcess: (evals) ->  # Override in subclass
+  
+  preCompile: (@coffee) ->
+    
+    return unless @coffee?.url is @url
     
     # Hide syntax checks in margin
-    @editor = coffee.containers.fileNodes[0].editor
+    @editor = @coffee.containers.fileNodes[0].editor
     @editor.session().setUseWorker false
     
     # Do only once - after Ace compiled?
@@ -730,15 +743,26 @@ class ExerciseBase
       char: char
       click: (char) =>
   
-  message: (correct) ->
+  text: (text, x=0, y=-1.5) ->
     canvas = @figure.canvas
-    txt = if correct then "Correct!" else "Incorrect - Try again"
+    data = {x, y, text}
+    clearTimeout(@tId) if @tId?
+    @ttext?.text.remove()
+    @ttext = new Text {canvas, data} #, class: c}
+    @ttext.text.attr "text-anchor", "middle"
+    @tId = setTimeout (=> @ttext.text.remove()), 2000
+  
+  ok: (correct) ->
+    # Merge with above
+    canvas = @figure.canvas
+    txt = if correct then "Correct" else "Incorrect - Try again"
     data = {x: 0, y: -2, text: txt}
     c = if correct then "answer-correct" else "answer-incorrect"
-    @text?.text.remove()
-    @text = new Text {canvas, data, class: c}
-    @text.text.attr "text-anchor", "middle"
-    setTimeout (=> @text.text.remove()), 2000
+    clearTimeout(@oId) if @oId?
+    @oText?.text.remove()
+    @oText = new Text {canvas, data, class: c}
+    @oText.text.attr "text-anchor", "middle"
+    @oId = setTimeout (=> @oText.text.remove()), 2000
     
 
 
@@ -746,7 +770,7 @@ class ExerciseBase
 
 Exercise = {}
 
-class Exercise['exercise-complex-1'] extends ExerciseBase
+class Exercise['exercise-complex-plane-1'] extends ExerciseBase
   
   processArgs: "{z, x, y, A, θ}"
   
@@ -762,17 +786,37 @@ class Exercise['exercise-complex-1'] extends ExerciseBase
     #correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
     
     @figure.step {z: z1, fill: "fill-green", t: 0}, =>
-      @message Complex.isEqual(z1, z2)
+      @ok Complex.isEqual(z1, z2)
       @figure.step {z: z2, fill: "fill-red"}, =>
         @figure.step {z: z3, fill: "fill-blue"}
-        @message Complex.isEqual(z1, z3)
+        @ok Complex.isEqual(z1, z3)
 
+
+class Exercise['exercise-complex-plane-2'] extends ExerciseBase
+  
+  postProcess: (evals) ->
+    
+    return unless evals.length
+    f = evals[0]
+    return unless f(0, 0)?
+    
+    A = (z) -> f(z.x, z.y)
+    
+    z1 = complex 0.6, 0.8
+    z2 = complex -1, 1.5
+    z3 = complex -1.8, -0.6
+    
+    step = (spec, next) =>
+      z = spec.z
+      @text "Your A = "+round(A(z), 2)
+      @ok Complex.isEqual(A(z), abs(z))
+      @figure.step {z: z, fill: "fill-green", t: spec.t}, => next?()
+        
+    step {z: z1, t: 0}, => step {z: z2}, => step {z: z3}
+    
 
 # To build
-class Exercise['exercise-complex-2'] extends ExerciseBase 
-
-# To build
-class Exercise['exercise-complex-3'] extends ExerciseBase
+class Exercise['exercise-complex-plane-3'] extends ExerciseBase
 
 class ExerciseRotation
   
