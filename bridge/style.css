@@ -1,0 +1,519 @@
+/********** Document elements **********/
+
+h1 {
+  text-align: center;
+  line-height: 100%;
+  margin-bottom: 0px;
+}
+
+h2 {
+  line-height: 100%;
+  margin-bottom: 0px;
+}
+
+p.heading {
+  text-align: center;
+}
+
+p.highlight {
+  color: red;
+  font-weight: bold;
+}
+
+table {
+  margin: 0 auto;
+  font-size: 12pt;
+}
+
+table, th, td {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+/********** Exercise solutions **********/
+.solution {
+  display: none;
+}
+
+.solution-button {
+  font-style: italic;
+  cursor: pointer;
+}
+
+/********** Figures **********/
+
+.figure-outer {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 20px auto;
+  background: #ddd;
+  border: 1px solid black;
+  font-size: 20pt;
+}
+
+.figure-outer-large {
+  width: 600px;
+  height: 600px;
+}
+
+.figure-surface {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.text-centered {
+  text-align: center;
+}
+
+/********** Figure - Complex Plane **********/
+
+#figure-complex-plane {
+  font-size: 20pt;
+  margin-bottom: 20px;
+}
+
+/********** Figure - Complex Unit **********/
+
+#table-complex-unit th {
+  border-bottom: 2px solid black;
+}
+
+.circle-no-drag {
+  stroke: black;
+  stroke-width: 2;
+  fill: white;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+#table-complex-unit th {
+  padding: 5px 20px;
+}
+
+#table-complex-unit td {
+  padding: 5px 20px;
+}
+
+#table-complex-unit .row-highlight {
+  background: #adebad;
+}
+
+#section-complex-unit .text-button {
+  background: #adebad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#section-complex-unit .disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+#figure-complex-unit .equation {
+  position: absolute;
+  bottom: 8px;
+  width: 400px;
+  z-index: 100;
+  /* background: yellow; */
+  opacity: 1;
+  text-align: center;
+}
+
+/********** Figure - Complex Unit Multiply **********/
+
+/* ZZZ Dup code */
+
+#section-complex-unit-multiply .text-button {
+  background: #adebad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#section-complex-unit-multiply .disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+
+/********** Figure - Complex Addition **********/
+
+#figure-complex-addition {
+  font-size: 20pt;
+}
+
+/* Slider for z2 */
+
+#figure-complex-addition .slider-2 {
+  position: absolute;
+  right: -100px;
+}
+
+/********** Figure - Complex Scaling **********/
+
+#figure-complex-scaling {
+  font-size: 20pt;
+}
+
+.slider-scale-factor {
+  width: 100%;
+  margin: 20px 0;
+}
+
+/********** Vertical angle slider **********/
+
+.slider-angle {
+  position: absolute;
+  width: 20px;
+  height: 320px;  /* 400px - 2*margin */
+  margin: 40px 0;
+  right: -40px;
+}
+
+.slider-angle-prompt {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -5px 0;
+  right: -40px;
+}
+
+.slider-angle-text {
+  position: absolute;
+  width: 20px;
+  height: 320px;
+  margin: 40px 0;
+  right: -75px;
+}
+
+.angle-text {
+  font-size: 12pt;
+  color: black;
+  opacity: 0.5;
+}
+
+.angle-text-special {
+  font-size: 20pt;
+  color: black;
+  opacity: 1;
+}
+
+.angle-text-negative {
+  color: red;
+}
+
+.ui-slider .ui-slider-handle {
+  height: 1.2em;
+  width: 1.2em;
+  /*padding-left: 5px;*/
+}
+
+/********** Horizontal slider **********/
+
+.slider-horiz-prompt {
+  display: inline-block;
+  width: 20%;
+  text-align: right;
+}
+
+.slider-horiz {
+  display: inline-block;
+  width: 59%;
+}
+
+.slider-horiz-text {
+  display: inline-block;
+  width: 15%;
+}
+
+/********** Magnitude **********/
+
+.magnitude {
+  text-align: center;
+}
+
+/********** d3 **********/
+
+.grid-line {
+  fill: none;
+  stroke: #aaa;
+  stroke-width: 1;
+}
+
+.line {
+  fill: none;
+  stroke: #555;
+  stroke-width: 2;
+}
+
+.component {
+  fill: none;
+  stroke: blue;
+  stroke-width: 2;
+}
+
+.line-thin {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1;
+}
+
+.line-dashed {
+  fill: none;
+  stroke: #999;
+  stroke-width: 2;
+  stroke-dasharray: 3, 3;  
+}
+
+.line-invisible {
+  fill: none;
+  stroke-width: 0;
+}
+
+.triangle {
+  stroke: black;
+  stroke-width: 2;
+  fill: red;
+  opacity: 0.5;
+}
+
+.fill-blue {
+  fill: blue;
+  opacity: 0.5;
+}
+
+.circle {
+  stroke: black;
+  stroke-width: 2;
+  fill: red;
+  opacity: 0.5;
+  cursor: move;
+}
+
+.fill-green {
+  fill: green;
+}
+
+.fill-red {
+  fill: red;
+}
+
+.fill-yellow {
+  fill: yellow;
+}
+
+.fill-blue {
+  fill: blue;
+}
+
+.fill-black {
+  fill: black;
+}
+
+/*--------------------------------*/
+
+#slider {
+  margin-top: 20px;
+  height: 100px;
+}
+
+/********** Exercises, Code button **********/
+
+.exercises-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.exercises-button {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  margin-bottom: 5px;
+  text-align: center;
+  line-height: 30px;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  cursor: pointer;
+  /* ZZZ select events */  
+}
+
+.exercises {
+  text-align: left;
+}
+
+.exercise {
+  position: relative;
+  padding: 10px;
+  background: #ffffcc;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}
+
+.exercise h2 {
+  font-size: 12pt;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.exercise-navigation {
+  position: absolute;
+  display: inline-block;
+  margin-top: 10px;
+  right: 15px;
+  z-index: 10;
+  font-size: 10pt;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.exercise-navigation .button {
+  display: inline-block;
+  color: blue;
+  cursor: pointer;
+}
+
+.exercise-navigation .disable {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+
+.hide {
+  display: none;
+  visibility: hidden;
+}
+
+.exercise-heading {
+  margin-bottom: 5px;
+}
+
+.exercise-footer {
+  margin-top: 10px;
+}
+
+.code-buttons {
+  margin-bottom: 5px;
+}
+
+.code-button {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  text-align: center;
+  line-height: 22px;
+  font-size: 11pt;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  cursor: pointer;
+  /* ZZZ select events */
+}
+
+.answer-correct {
+  fill: green;
+}
+
+.answer-incorrect {
+  fill: red;
+}
+
+.run-instruction {
+  display: inline-block;
+  margin-left: 10px;
+  font-family: Verdana;
+  font-size: 10pt;
+  color: #aaa;
+}
+
+.todo {
+  margin-top: 15px;
+  padding: 0px 10px;
+  background: #eee;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}
+
+.todo h3 {
+  margin-top: 5px;
+  margin-bottom: 4px;
+  padding-bottom: 0px;
+  font-size: 12pt;
+}
+
+.todo ul {
+  margin-top: 0px;
+}
+
+/*--------------------------------*/
+/* No longer used? */
+
+#math-outer {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  background: #ddd;
+  border: 1px solid black;
+  font-size: 20pt;
+  margin: 20px auto;
+}
+
+#math-surface {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+}
+
+#math {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  /*background: yellow;*/
+  opacity: 0.5;
+}
+
+/*--------------------------------*/
+/* No longer used? */
+
+#angle {
+  height: 50px;
+}
+
+#angle .slider-text-1 {
+  position: relative;
+  width: 50px;
+  height: 40px;
+  margin-top: -5px;
+  vertical-align: middle;
+}
+
+.angle-inner {
+  position: absolute;
+  top: 50%;
+  width: 200px;
+  transform: translate(0%,-50%);
+}
+
+.angle-slider-unit {
+  font-size: 10pt;
+  color: #aaa;
+}
+
