@@ -1,6 +1,7 @@
 #!no-math-sugar
 
 # TODO:
+# complex plane rendering - load indicator
 # katex render - perhaps show loading...
 # process mathjax only once loaded.
 # Exercises button same color as exercises box.
@@ -9,6 +10,9 @@
 # Vector addition: show resultant vector in plot.
 # Close (x) button for exercises window.
 # Need a way to precompile complex.coffee - command line sci-coffee compiler.
+
+# Defer Ace loading.  See Figures constructor.
+$Ace.autoload = false
 
 # Math/numeric dependencies
 abs = numeric.abs
@@ -43,6 +47,9 @@ class Figures
     
     # Old exercise
     new ExerciseRotation
+    
+    # Ace after all figures rendered.
+    $Ace.load($blab.resources)
 
 
 # Base class
