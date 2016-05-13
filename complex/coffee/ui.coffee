@@ -15,6 +15,7 @@
 abs = numeric.abs
 complex = numeric.complex
 linspace = numeric.linspace
+j = complex 0, 1
 pi = Math.PI
 
 # complex.coffee dependencies - see Figures constructor
