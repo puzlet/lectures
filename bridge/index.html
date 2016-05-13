@@ -23,7 +23,111 @@
 
 <div class='box-2-1'>
 
-  Blah.
+  Math? $x$
+
+  <!-- Complex numbers appear often in science and engineering. The
+  suspension of your car, the electronics in your phone, skyscrapers and
+  bridges all use complex numbers in their design.
+
+  However, the most important (and interesting) examples are
+  advanced&mdash;often appearing in *dynamic systems* where things
+  change over time.  So, when you start learning about complex numbers
+  it can appear that they have little practical use. This is far form
+  true.
+
+  The basic ingredient of a dynamic system are differentiation (e.g.,
+  $\frac{dy}{dt}$) and cosines (e.g., $\cos \omega t$). With both these
+  tools on your belt, you can appreciate how useful complex numbers are,
+  and see how they are applied in real-world problems. -->
+
+  <!-- To begin, first watch this short
+  [video](https://youtu.be/3mclp9QmCGs).  The design of this bridge used
+  the wrong complex number.
+
+  The bridge is a dynamic system. Its twisting is described using
+  differentiation&mdash;we call it a differential equation. If you
+  haven't seen a differential equation before, it may look
+  intimidating&mdash; but let's take it in steps.
+
+  Consider this equation for the amount of twist, $\phi$ $$
+  \frac{d^2\phi}{dt^2} +\phi = 0 $$ It's solution, $\phi$, is some
+  function of time that when differentiated twice, and added to itself
+  is zero. You can check for yourself that $\phi=\cos t$ is a solution.
+
+  $$ \begin{eqnarray} \frac{d}{dt} \cos t &=& -\sin t \\ \frac{d^2 \cos
+  t}{dt^2} = \frac{d}{dt}(-\sin t) &=& -\cos t \\ -\cos t + \cos t &=& 0
+  \end{eqnarray} $$
+
+  In this simple case, using cosines and sines (trigonometric functions)
+  is OK.  But, as the problems become more comlicated, the level of
+  trigonetry required quickly becomes a burden. Complex numbers to the
+  rescue.
+
+  As you have already found $$ \cos t= \frac{1}{2} \left( e^{it} +
+  e^{-it} \right) $$ Now, lets just consider the $e^{it}$ part. Call it
+  $X$. We can check that $X$ is also a solution
+
+  $$ \begin{eqnarray} \frac{d}{dt} e^{it} &=& i e^{it} \\ \frac{d^2
+  e^{it}}{dt^2} = \frac{d}{dt}(i e^{it}) &=& -e^{it} \\ -e^{it} + e^{it}
+  &=& 0 \end{eqnarray} $$
+
+  There are a couple of very important things to note. First.
+
+
+
+
+
+  For lots of important differential equations a cosine is a
+  solution. Sometimes it is OK to assume a solution and just find its
+  parameters.
+
+  $$ \frac{d^2\phi}{dt^2} +\phi = 0 $$
+
+  $$ \phi = \cos(\omega t) $$
+
+  $$ -\omega^2 \cos \omega t + 4 \cos \omega t = 0 $$
+
+  $$ \omega = 2 $$
+
+
+  $$ \phi(t) = \frac{1}{2} \left( e^{i\omega t} + e^{-i\omega t}\right)
+  $$
+
+
+  $$ \frac{d^2\phi}{dt^2} + 2d\frac{d\phi}{dt}+\phi = 0 $$
+
+  $$ \Phi = e^{i\omega t} $$
+
+  $$ \omega = 2 $$
+
+
+  $$ x = A \cos \left( \omega t + \phi\right) $$
+
+  for known $\omega$ and for some amplitude ($A$) and phase ($\phi$)
+  that we have to find.
+
+  Very often it is easier to rewrite $x$ as two **complex** parts,
+
+  $$ x = \frac{1}{2} \left( \underbrace{Ae^{i\phi}e^{i\omega t}}_{X}+
+  \underbrace{Ae^{-i\phi}e^{-i\omega t}}_{X^*} \right) $$
+
+  and then work only with $X=Ae^{i\phi}e^{i\omega}$.
+
+  For example, a common problem in electrical engineering is to find
+  $X$, where
+
+  $$ L\frac{dX}{dt} + RX = Y $$
+
+  $L$ and $R$ are known constants, and $Y=Be^{i\omega t}$.
+
+  $$ i\omega L A e^{i\phi} e^{i\omega t} + R A e^{i\phi} e^{i\omega t} =
+  B e^{i\omega t} $$
+
+  $$ Ae^{i\phi} = \frac{B}{i\omega L + R} $$ -->
+
+
+
+
 
 </div>  <!-- .box-2-1 -->
 
