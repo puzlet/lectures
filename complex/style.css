@@ -46,30 +46,38 @@ th, td {
 
 /********** Page footer **********/
 
-#page-footer {
+.page-footer {
   font-size: 10pt;
-  color: #aaa;
+  color: #666;
   margin-top: 30px;
   margin-bottom: 20px;
 }
 
-#page-footer p {
+.page-footer p {
   margin: 0 0;
 }
 
-#page-footer .last-update{
+.page-footer .last-update{
   color: black;
   font-weight: bold;
 }
 
-#page-footer img {
+.page-footer img {
   margin-right: 5px;
   vertical-align: middle;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
-#page-footer a {
- color: #aaa; 
+.page-footer a {
+ color: #666; 
+}
+
+.credits {
+  color: #aaa;
+}
+
+.credits a {
+  color: #aaa;
 }
 
 /********** Exercise solutions **********/
