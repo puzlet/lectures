@@ -68,6 +68,7 @@ class ComplexPlane
     {@container} = @spec
     @width = @container.width()
     @height = @container.height()
+    @figure?.find(".figure-outer").removeClass("loading")
     @createCanvas()
     
   createCanvas: ->
@@ -566,12 +567,14 @@ class FigureComplexMultiplication extends ComplexPlane
 
 class FigureEulerFormula extends ComplexPlane
     
+    id: "#figure-euler-formula"
     xDomain: [-3, 3]
     yDomain: [-3, 3]
     
     constructor: ->
       
-      super container: $("#figure-euler-formula .figure-surface")
+      @figure = $ "#{@id}"
+      super container: @figure.find(".figure-surface")
       
       #@container = $("#math-surface")
       

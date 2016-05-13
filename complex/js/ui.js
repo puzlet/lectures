@@ -63,10 +63,14 @@
     ComplexPlane.prototype.yDomain = [-1, 1];
 
     function ComplexPlane(spec) {
+      var _ref;
       this.spec = spec;
       this.container = this.spec.container;
       this.width = this.container.width();
       this.height = this.container.height();
+      if ((_ref = this.figure) != null) {
+        _ref.find(".figure-outer").removeClass("loading");
+      }
       this.createCanvas();
     }
 
@@ -868,14 +872,17 @@
   FigureEulerFormula = (function(_super) {
     __extends(FigureEulerFormula, _super);
 
+    FigureEulerFormula.prototype.id = "#figure-euler-formula";
+
     FigureEulerFormula.prototype.xDomain = [-3, 3];
 
     FigureEulerFormula.prototype.yDomain = [-3, 3];
 
     function FigureEulerFormula() {
       var N, Slider, theta;
+      this.figure = $("" + this.id);
       FigureEulerFormula.__super__.constructor.call(this, {
-        container: $("#figure-euler-formula .figure-surface")
+        container: this.figure.find(".figure-surface")
       });
       theta = pi;
       N = 4;

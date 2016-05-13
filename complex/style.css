@@ -102,6 +102,10 @@ th, td {
   font-size: 20pt;
 }
 
+.loading {
+  background: #ddd url('../img/loader.gif') no-repeat 50% 50%;
+}
+
 .figure-outer-large {
   width: 600px;
   height: 600px;
