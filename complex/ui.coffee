@@ -2,7 +2,7 @@
 
 # TODO:
 # process mathjax only once loaded.
-# Run button with title showing shoft-enter tip
+# *** Run button with title showing shoft-enter tip
 # Bug: scaling slider - label doesn't bounce back.
 # Vector addition: show resultant vector in plot.
 # Close (x) button for exercises window.
