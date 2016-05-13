@@ -5,6 +5,8 @@ resources
     "/puzlet/puzlet/js/render.js"
     "../../blab/css/widgets.css"  # CSS for all widgets in /puzlet/blab/widgets
     "../../blab/js/components.js"  # JS for all widgets in /puzlet/blab/widgets
-    "ui.coffee"
-    # "compute.coffee"
+    "js/ui.js"
+    "coffee/complex.coffee"
+#    "coffee/ui.coffee"
+    "coffee/app.coffee"
   ]
