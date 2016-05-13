@@ -3,6 +3,8 @@
 # TODO:
 # process mathjax only once loaded.
 # Run button with title showing shoft-enter tip
+# Bug: scaling slider - label doesn't bounce back.
+# Vector addition: show resultant vector in plot.
 
 #------------------------------------------------------#
 # Figures
@@ -32,7 +34,8 @@ class FigureComplexPlane extends ComplexPlane
   # TODO: use VectorSliderPair
   
   id: "#figure-complex-plane"
-  exercises: 'exercises-complex-plane'
+  sectionId: "#section-complex-plane"
+  exercises: "exercises-complex-plane"
   
   margin: {top: 40, right: 40, bottom: 40, left: 40}
   xDomain: [-2, 2]
@@ -60,7 +63,18 @@ class FigureComplexPlane extends ComplexPlane
     
     @setVector(x: 1, y: 1)
     
+    @initButtons()
+    
     new Exercises(@exercises, this)
+    
+  initButtons: ->
+    draw = (x, y) => @animate(complex(x, y))
+    new ButtonSet @sectionId, [
+      {id: "complex-12-plus-09i", method: (cb) -> draw(1.2, 0.9)}
+      {id: "complex-neg1-plus-i", method: (cb) -> draw(-1, 1)}
+      {id: "complex-neg1-plus-negi", method: (cb) => draw(-1, -1)}
+      {id: "complex-negi", method: (cb) => draw(0, -1)}
+    ]
   
   setVector: (p) ->
     # Set cartesian coords of vector.  Snap to grid.
@@ -97,11 +111,73 @@ class FigureComplexPlane extends ComplexPlane
       @animate spec.z, next
 
 
+class FigureComplexAddition extends ComplexPlane
+  
+  # TODO: show x+jy and a+jb below, and sum.
+  # TODO: different colors for vectors and xy lines
+  # BUG?: slider wrong if move and z clips.  or clipping shortens vector when clips?
+  
+  id: "#figure-complex-addition"
+  exercises: "exercises-complex-addition"
+  
+  margin: {top: 40, right: 40, bottom: 40, left: 40}
+  xDomain: [-2, 2]
+  yDomain: [-2, 2]
+  
+  constructor: ->
+    
+    @figure = $ "#{@id}"
+    super container: @figure.find(".figure-surface")
+      
+    @vector1 = new VectorSliderPair
+      figure: @figure
+      canvas: @canvas
+      xyLines: false
+      xyLabels: false
+      sliderClass: ".slider"
+      angleLabel: "$\\theta_1$"
+      getZ: (z) => @getZ(z, @vector2.z())
+      set: =>
+        @setOrigin2()
+        @setMagnitude()
+      
+    @vector2 = new VectorSliderPair
+      figure: @figure
+      canvas: @canvas
+      xyLabels: true
+      sliderClass: ".slider-2"
+      angleLabel: "$\\theta_2$"
+      getZ: (z) => @getZ(z, @vector1.z())
+      set: => @setMagnitude()
+    
+    @magnitudeText = $ "<span>"
+    (@figure.find ".magnitude").append("Magnitude: A=").append(@magnitudeText)
+    
+    @vector1.set complex(1, 0.5)
+    @setOrigin2()
+    @vector2.set complex(0.5, 0.5)
+    
+    new Exercises(@exercises, this)
+    
+  setMagnitude: ->
+    A = Complex.magnitudeSum(@vector1.z(), @vector2.z())
+    @magnitudeText.html round(A, 2)
+  
+  setOrigin2: (v, z) -> @vector2.setOrigin @vector1.z()
+  
+  getZ: (z, other) ->
+    total = Complex.add(z, other)
+    clip = Complex.clipMagnitude(total, 2)
+    snap = Complex.snap(clip, 1)
+    Complex.diff snap, other
+
+
 class FigureComplexUnit extends ComplexPlane
   
   id: "#figure-complex-unit"
   sectionId: "#section-complex-unit"
   tableId: "#table-complex-unit"
+  exercises: "exercises-complex-unit"
   
   margin: {top: 40, right: 40, bottom: 40, left: 40}
   xDomain: [-2, 2]
@@ -151,6 +227,8 @@ class FigureComplexUnit extends ComplexPlane
     @setVector 0
     
     @initButtons()
+    
+    new Exercises(@exercises, this)
     
   initButtons: ->
     
@@ -290,64 +368,6 @@ class FigureComplexUnitMultiply extends ComplexPlane
   getZ: (z) ->
     clip = Complex.clipMagnitude(z, 2)
     snap = Complex.snap(clip, 1)
-
-
-class FigureComplexAddition extends ComplexPlane
-  
-  # TODO: show x+jy and a+jb below, and sum.
-  # TODO: different colors for vectors and xy lines
-  # BUG?: slider wrong if move and z clips.  or clipping shortens vector when clips?
-  
-  id: "#figure-complex-addition"
-  
-  margin: {top: 40, right: 40, bottom: 40, left: 40}
-  xDomain: [-2, 2]
-  yDomain: [-2, 2]
-  
-  constructor: ->
-    
-    @figure = $ "#{@id}"
-    super container: @figure.find(".figure-surface")
-      
-    @vector1 = new VectorSliderPair
-      figure: @figure
-      canvas: @canvas
-      xyLines: false
-      xyLabels: false
-      sliderClass: ".slider"
-      angleLabel: "$\\theta_1$"
-      getZ: (z) => @getZ(z, @vector2.z())
-      set: =>
-        @setOrigin2()
-        @setMagnitude()
-      
-    @vector2 = new VectorSliderPair
-      figure: @figure
-      canvas: @canvas
-      xyLabels: true
-      sliderClass: ".slider-2"
-      angleLabel: "$\\theta_2$"
-      getZ: (z) => @getZ(z, @vector1.z())
-      set: => @setMagnitude()
-    
-    @magnitudeText = $ "<span>"
-    (@figure.find ".magnitude").append("Magnitude: A=").append(@magnitudeText)
-    
-    @vector1.set complex(1, 0.5)
-    @setOrigin2()
-    @vector2.set complex(0.5, 0.5)
-  
-  setMagnitude: ->
-    A = Complex.magnitudeSum(@vector1.z(), @vector2.z())
-    @magnitudeText.html round(A, 2)
-  
-  setOrigin2: (v, z) -> @vector2.setOrigin @vector1.z()
-  
-  getZ: (z, other) ->
-    total = Complex.add(z, other)
-    clip = Complex.clipMagnitude(total, 2)
-    snap = Complex.snap(clip, 1)
-    Complex.diff snap, other
 
 
 class FigureComplexScaling extends ComplexPlane
@@ -597,6 +617,7 @@ $mathCoffee.preProcessor = (code) ->
     "⁴":      "**4"
     "\u211C": "Re"
     "ℑ":      "Im"
+    "₁":      "1"
     "₂":      "2"
   
   code = code.replace /√([a-zA-Z0-9]+)/g, 'sqrt($1)' # Special case: √val
@@ -632,7 +653,7 @@ class Exercises
         E = ExerciseBase
       new E(id, @figure) if E
     
-    $(".exercise").hide()
+    @exercises.hide()
     @current = 0
     $(@exercises[@current]).show()
     
@@ -784,8 +805,6 @@ class Exercise['exercise-complex-plane-1'] extends ExerciseBase
     z2 = complex(x, y)
     z3 = Complex.polarToComplex(A, θ)
     
-    #correct = Complex.isEqual(z1, z2) and Complex.isEqual(z1, z3)
-    
     @figure.step {z: z1, fill: "fill-green", t: 0}, =>
       @ok Complex.isEqual(z1, z2)
       @figure.step {z: z2, fill: "fill-red"}, =>
@@ -814,10 +833,99 @@ class Exercise['exercise-complex-plane-2'] extends ExerciseBase
       @figure.step {z: z, fill: "fill-green", t: spec.t}, => next?()
         
     step {z: z1, t: 0}, => step {z: z2}, => step {z: z3}
-    
 
-# To build
-class Exercise['exercise-complex-plane-3'] extends ExerciseBase
+
+class Exercise['exercise-complex-addition-1'] extends ExerciseBase
+  
+  processArgs: "{z, z1, z2}"
+  
+  process: (data) ->
+    
+    {z, z1, z2} = data
+    return unless z1?  # May replace this with process detector.
+    
+    c = (z) => complex(z.x ? z, z.y ? 0)
+    
+    z1 = c(z1)
+    z2 = c(z2)
+    
+    @figure.vector1.set z1
+    @figure.setOrigin2()
+    @figure.vector2.set z2
+    @figure.setMagnitude()
+    @ok(z1.x is z.x and z1.y is 0 and z2.x is 0 and z2.y is z.y)
+
+
+class Exercise['exercise-complex-addition-2'] extends ExerciseBase
+  
+  processArgs: "{z, z1, z2}"
+  
+  process: (data) ->
+    
+    {z, z1, z2} = data
+    return unless z1?  # May replace this with process detector.
+    
+    c = (z) => complex(z.x ? z, z.y ? 0)
+    
+    z2 = c(z2)
+    
+    @figure.vector1.set z1
+    @figure.setOrigin2()
+    @figure.vector2.set z2
+    @figure.setMagnitude()
+    zb = Complex.add(z1, z2)
+    @ok(Complex.isEqual z, zb)
+
+
+class Exercise['exercise-complex-addition-3'] extends ExerciseBase
+  
+  postamble: -> "\n  null\n  A\n"
+  
+  postProcess: (evals) ->
+    
+    return unless evals.length
+    f = evals[0]
+    z = complex(0, 0)
+    #console.log "f", f, f(z, z)
+    return unless f(z, z)?
+    
+    A = (z1, z2) -> f(z1, z2)
+    
+    z1 = complex(0.5, 0.2)
+    z2 = complex(0.5, 0.5)
+    
+    console.log "Result", A(z1, z2)
+    
+    step = (spec, next) =>
+      {z1, z2, t} = spec
+      z = Complex.add(z1, z2)
+      m = A(z1, z2)
+      @text "Your A = "+round(m, 2)
+      @ok Complex.isEqual(m, abs(z))
+      # TODO: create method on figure.  Dup code.  Need to do without clipping.
+      @figure.vector1.set z1
+      @figure.setOrigin2()
+      @figure.vector2.set z2
+      @figure.setMagnitude()
+      #@figure.step {z: z, fill: "fill-green", t: t}, => next?()
+        
+    step {z1: z1, z2: z2, t: 0} #, => step {z: z2}, => step {z: z3}
+
+
+class Exercise['exercise-complex-unit-1'] extends ExerciseBase
+  
+  postamble: -> "\n" #"\n  null\n"
+    
+  postProcess: (evals) ->
+    console.log "********* evals", evals
+    
+    return unless evals.length
+    #f = evals[0]
+    #return unless f(0)?
+    
+    #console.log "**** complex unit exercise"
+    
+  
 
 class ExerciseRotation
   

@@ -72,9 +72,35 @@ th, td {
   text-align: center;
 }
 
+.text-button {
+  background: #adebad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/*
+.div-text-button {
+  display: inline-block;
+  margin: 0;
+  background: #adebad;
+  padding: 3px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}*/
+
 /********** Figure - Complex Plane **********/
 
 #figure-complex-plane {
+  font-size: 20pt;
+  margin-bottom: 20px;
+}
+
+/********** Figure - Complex Addition **********/
+
+#figure-complex-addition {
   font-size: 20pt;
   margin-bottom: 20px;
 }
@@ -105,14 +131,6 @@ th, td {
   background: #adebad;
 }
 
-#section-complex-unit .text-button {
-  background: #adebad;
-  padding: 3px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
 #section-complex-unit .disabled {
   opacity: 0.3;
   cursor: default;
@@ -133,13 +151,13 @@ th, td {
 
 /* ZZZ Dup code */
 
-#section-complex-unit-multiply .text-button {
+/*#section-complex-unit-multiply .text-button {
   background: #adebad;
   padding: 3px 8px;
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-}
+}*/
 
 #section-complex-unit-multiply .disabled {
   opacity: 0.3;
@@ -343,8 +361,8 @@ th, td {
   margin-bottom: 5px;
   text-align: center;
   line-height: 30px;
-  background: #eee;
-  border: 1px solid #aaa;
+  background: #adebad; /*#eee;*/
+  border: 1px solid green;  /*#aaa;*/
   border-radius: 10px;
   cursor: pointer;
   /* ZZZ select events */  
