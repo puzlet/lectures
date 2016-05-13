@@ -1,6 +1,7 @@
 #!no-math-sugar
 
 # TODO:
+# katex render - perhaps show loading...
 # process mathjax only once loaded.
 # Exercises button same color as exercises box.
 # *** Run button with title showing shoft-enter tip
@@ -87,7 +88,7 @@ class FigureComplexPlane extends ComplexPlane
     
     @slider = new VerticalAngleSlider
       container: @figure.find ".slider"
-      label: "$\\theta$"
+      label: "\\theta"
       change: (angle) =>
         z = Complex.polarToComplex @magnitude, angle
         @draw z
@@ -169,7 +170,7 @@ class FigureComplexAddition extends ComplexPlane
       xyLines: false
       xyLabels: false
       sliderClass: ".slider"
-      angleLabel: "$\\theta_1$"
+      angleLabel: "\\theta_1"
       getZ: (z) => @getZ(z, @vector2.z())
       set: =>
         @setOrigin2()
@@ -180,7 +181,7 @@ class FigureComplexAddition extends ComplexPlane
       canvas: @canvas
       xyLabels: true
       sliderClass: ".slider-2"
-      angleLabel: "$\\theta_2$"
+      angleLabel: "\\theta_2"
       getZ: (z) => @getZ(z, @vector1.z())
       set: => @setMagnitude()
     
@@ -228,13 +229,6 @@ class FigureComplexUnit extends ComplexPlane
       {value: complex(-1,0), r180: "-1 \\times -1 = 1", f90: "-1 \\times i = -i", b90: "-1 \\times -i = i"}
       {value: complex(0,-1), r180: "-i \\times -1 = i", f90: "-i \\times i = -i^2 = 1", b90: "-i \\times -i = i^2 = -1"}
     ]
-    
-    # @zValues = [
-    #   {value: complex(1,0), r180: "$1 \\times -1 = -1$", f90: "$1 \\times i = i$", b90: "$1 \\times -i = -i$"}
-    #   {value: complex(0,1), r180: "$i \\times -1 = -i$", f90: "$i \\times i = i^2 = -1$", b90: "$i \\times -i = -i^2 = 1$"}
-    #   {value: complex(-1,0), r180: "$-1 \\times -1 = 1$", f90: "$-1 \\times i = -i$", b90: "$-1 \\times -i = i$"}
-    #   {value: complex(0,-1), r180: "$-i \\times -1 = i$", f90: "$-i \\times i = -i^2 = 1$", b90: "$-i \\times -i = i^2 = -1$"}
-    # ]
     
     click = (idx) => =>
       @setEquation ""
@@ -327,7 +321,7 @@ class FigureComplexUnit extends ComplexPlane
     @multiply j, callback
     
   multiply: (z2, callback) ->
-    @setEquation "" #"$ $"
+    @setEquation ""
     if z2.x is 0
       if z2.y is 1
         @setEquation @zValues[@idx].f90
@@ -385,7 +379,7 @@ class FigureComplexUnitMultiply extends ComplexPlane
       xyLabels: true
       xyComponents: true
       sliderClass: ".slider"
-      angleLabel: "$\\theta$"
+      angleLabel: "\\theta"
       getZ: (z) => @getZ(z)
     
     new ButtonSet @sectionId, [
@@ -436,14 +430,14 @@ class FigureComplexScaling extends ComplexPlane
       
     @sliderAngle = new VerticalAngleSlider
       container: @figure.find ".slider"
-      label: "$\\theta$"
+      label: "\\theta"
       change: (angle) =>
         @z = Complex.polarToComplex abs(@z), angle
         @draw()
     
     @sliderScaleFactor = new HorizontalSlider
       container: $(".slider-scale-factor")
-      label: "$a$"
+      label: "a"
       unit: ""
       init: 1.5
       min: -5
@@ -501,7 +495,7 @@ class FigureComplexMultiplication extends ComplexPlane
       #xyLabels: true
       arc: false
       sliderClass: ".slider"
-      angleLabel: "$\\theta$"
+      angleLabel: "\\theta"
       getZ: (z) => @getZ(z)
       set: =>
         @z = Complex.mul @vector.z(), @z2
@@ -583,7 +577,7 @@ class FigureEulerFormula extends ComplexPlane
         min: 0
         max: 2
         step: 0.125
-      
+        
       @sliderN = new Slider
         container: $("#slider-n")
         prompt: "N"
@@ -591,6 +585,9 @@ class FigureEulerFormula extends ComplexPlane
         init: N
         min: 1
         max: 200
+        
+      @renderSliderMath @sliderTheta
+      @renderSliderMath @sliderN
       
       @sliderTheta.change =>
         theta = @sliderTheta.getVal() * pi
@@ -601,6 +598,11 @@ class FigureEulerFormula extends ComplexPlane
         @build(theta, N)
       
       @build(theta, N)
+      
+    renderSliderMath: (slider) ->
+      renderMathInElement slider.container[0], delimiters: [
+        left: "$", right: "$", display: false
+      ]
       
     build: (theta, N) ->
       
@@ -758,7 +760,7 @@ class ExerciseBase
     
     $(document).on "compiledCoffeeScript", (evt, data) =>
       return unless data.url is @url
-      console.log "*** Compiled", @url
+      #console.log "*** Compiled", @url
       @resource = $blab.resources.find @url
       @resultArray = @resource?.resultArray
       @postProcess(@resultArray)
@@ -770,7 +772,7 @@ class ExerciseBase
   preCompile: (@coffee) ->
     
     return unless @coffee?.url is @url
-    console.log "+++ Precompile", @url
+    #console.log "+++ Precompile", @url
     
     # Hide syntax checks in margin
     @editor = @coffee.containers.fileNodes[0].editor
@@ -1437,7 +1439,8 @@ class VerticalAngleSlider
     @height = @sliderContainer.height()
         
     @prompt = @container.find(".slider-angle-prompt")
-    @prompt.html @label
+    katex.render @label, @prompt[0]
+    #@prompt.html @label
     
     @text = @container.find(".slider-angle-text")
   
@@ -1500,7 +1503,8 @@ class HorizontalSlider
     @height = @sliderContainer.height()
         
     @prompt = @container.find(".slider-horiz-prompt")
-    @prompt.html @label
+    katex.render @label, @prompt[0]
+    #@prompt.html @label
     
     @text = @container.find(".slider-horiz-text")
   
@@ -1831,12 +1835,13 @@ angleText = (a) ->
   minus = "-\\!"  # \! is negative space
   mj = if special then (if a<0 then minus else "")+specialAngles[aa] else piRad+"\\pi"
   mj = "{#{mj}}"  # Wrap in {} to get shorter unary minus sign.
-  mathjax = "$#{mj}$"
+  mathjax = "$#{mj}$"  # No longer used
   math = mj
   
   {math, mathjax, special}
 
 
+# To delete
 processMathJax = (element, callback) ->
   return false unless MathJax?
   #console.log element

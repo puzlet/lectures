@@ -110,7 +110,7 @@
       });
       this.slider = new VerticalAngleSlider({
         container: this.figure.find(".slider"),
-        label: "$\\theta$",
+        label: "\\theta",
         change: (function(_this) {
           return function(angle) {
             var z;
@@ -253,7 +253,7 @@
         xyLines: false,
         xyLabels: false,
         sliderClass: ".slider",
-        angleLabel: "$\\theta_1$",
+        angleLabel: "\\theta_1",
         getZ: (function(_this) {
           return function(z) {
             return _this.getZ(z, _this.vector2.z());
@@ -271,7 +271,7 @@
         canvas: this.canvas,
         xyLabels: true,
         sliderClass: ".slider-2",
-        angleLabel: "$\\theta_2$",
+        angleLabel: "\\theta_2",
         getZ: (function(_this) {
           return function(z) {
             return _this.getZ(z, _this.vector1.z());
@@ -628,7 +628,7 @@
         xyLabels: true,
         xyComponents: true,
         sliderClass: ".slider",
-        angleLabel: "$\\theta$",
+        angleLabel: "\\theta",
         getZ: (function(_this) {
           return function(z) {
             return _this.getZ(z);
@@ -720,7 +720,7 @@
       });
       this.sliderAngle = new VerticalAngleSlider({
         container: this.figure.find(".slider"),
-        label: "$\\theta$",
+        label: "\\theta",
         change: (function(_this) {
           return function(angle) {
             _this.z = Complex.polarToComplex(abs(_this.z), angle);
@@ -730,7 +730,7 @@
       });
       this.sliderScaleFactor = new HorizontalSlider({
         container: $(".slider-scale-factor"),
-        label: "$a$",
+        label: "a",
         unit: "",
         init: 1.5,
         min: -5,
@@ -807,7 +807,7 @@
         xyLines: false,
         arc: false,
         sliderClass: ".slider",
-        angleLabel: "$\\theta$",
+        angleLabel: "\\theta",
         getZ: (function(_this) {
           return function(z) {
             return _this.getZ(z);
@@ -882,6 +882,8 @@
         min: 1,
         max: 200
       });
+      this.renderSliderMath(this.sliderTheta);
+      this.renderSliderMath(this.sliderN);
       this.sliderTheta.change((function(_this) {
         return function() {
           theta = _this.sliderTheta.getVal() * pi;
@@ -896,6 +898,18 @@
       })(this));
       this.build(theta, N);
     }
+
+    FigureEulerFormula.prototype.renderSliderMath = function(slider) {
+      return renderMathInElement(slider.container[0], {
+        delimiters: [
+          {
+            left: "$",
+            right: "$",
+            display: false
+          }
+        ]
+      });
+    };
 
     FigureEulerFormula.prototype.build = function(theta, N) {
       var points, step, z0;
@@ -1084,7 +1098,6 @@
           if (data.url !== _this.url) {
             return;
           }
-          console.log("*** Compiled", _this.url);
           _this.resource = $blab.resources.find(_this.url);
           _this.resultArray = (_ref1 = _this.resource) != null ? _ref1.resultArray : void 0;
           return _this.postProcess(_this.resultArray);
@@ -1102,7 +1115,6 @@
       if (((_ref = this.coffee) != null ? _ref.url : void 0) !== this.url) {
         return;
       }
-      console.log("+++ Precompile", this.url);
       this.editor = this.coffee.containers.fileNodes[0].editor;
       this.editor.session().setUseWorker(false);
       this.buttons.css({
@@ -2227,7 +2239,7 @@
       });
       this.height = this.sliderContainer.height();
       this.prompt = this.container.find(".slider-angle-prompt");
-      this.prompt.html(this.label);
+      katex.render(this.label, this.prompt[0]);
       this.text = this.container.find(".slider-angle-text");
     }
 
@@ -2306,7 +2318,7 @@
       });
       this.height = this.sliderContainer.height();
       this.prompt = this.container.find(".slider-horiz-prompt");
-      this.prompt.html(this.label);
+      katex.render(this.label, this.prompt[0]);
       this.text = this.container.find(".slider-horiz-text");
     }
 

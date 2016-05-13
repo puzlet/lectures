@@ -10,6 +10,9 @@
 <link rel='stylesheet' href='../css/style.css?v=1'>
 <link rel='stylesheet' href='style.css?v=1'>
 <base target="_blank">
+<!-- Preload KaTeX to improve math rendering speed -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+<script src="js/auto-render.js"></script>
 </head>
 
 <body>
@@ -798,7 +801,7 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
     Thanks to:
     <a href='//ace.c9.io'>Ace</a>,
     <a href='//coffeescript.org'>CoffeeScript</a>,
-    <a href='//mathjax.org'>MathJax</a>,
+    <!--a href='//mathjax.org'>MathJax</a>, -->
     <a href='//khan.github.io/KaTeX/'>KaTeX</a>,
     <a href='//numericjs.com'>numericjs</a>,
     <a href='//d3js.org'>d3</a>,
@@ -820,8 +823,8 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
 </div>  <!--#container-->
 </div>  <!--#outer-container-->
 
+<script src="js/render-math.js"></script>
 <script src='../js/vendor.js'></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
 <script src='//puzlet.org/puzlet.js' data-puzlet data-resources='resources.coffee'></script>
 
 </body>
