@@ -5,8 +5,6 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  $Ace.autoload = false;
-
   abs = numeric.abs;
 
   complex = numeric.complex;
@@ -20,6 +18,8 @@
   EulerComputation = {};
 
   Figures = (function() {
+    Figures.prototype.aceUrl = "/puzlet/ace/ace.js";
+
     function Figures() {
       Complex = $blab.Complex;
       EulerComputation = $blab.EulerComputation;
@@ -31,8 +31,20 @@
       new FigureComplexMultiplication;
       new FigureEulerFormula;
       new ExerciseRotation;
-      $Ace.load($blab.resources);
+      this.loadAce();
     }
+
+    Figures.prototype.loadAce = function() {
+      this.resources = $blab.resources;
+      this.resources.add({
+        url: this.aceUrl
+      });
+      return this.resources.loadUnloaded((function(_this) {
+        return function() {
+          return typeof $Ace !== "undefined" && $Ace !== null ? $Ace.load(_this.resources) : void 0;
+        };
+      })(this));
+    };
 
     return Figures;
 

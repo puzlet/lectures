@@ -11,9 +11,6 @@
 # Close (x) button for exercises window.
 # Need a way to precompile complex.coffee - command line sci-coffee compiler.
 
-# Defer Ace loading.  See Figures constructor.
-$Ace.autoload = false
-
 # Math/numeric dependencies
 abs = numeric.abs
 complex = numeric.complex
@@ -32,6 +29,8 @@ class Figures
   
   # Exercises are instantiated within figure classes.
   
+  aceUrl: "/puzlet/ace/ace.js"
+  
   constructor: ->
     
     Complex = $blab.Complex
@@ -48,8 +47,13 @@ class Figures
     # Old exercise
     new ExerciseRotation
     
+    @loadAce()
+    
+  loadAce: ->
     # Ace after all figures rendered.
-    $Ace.load($blab.resources)
+    @resources = $blab.resources
+    @resources.add url: @aceUrl
+    @resources.loadUnloaded => $Ace?.load(@resources)
 
 
 # Base class
