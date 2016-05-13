@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
 <link rel='stylesheet' href='../css/style.css?v=1'>
 <link rel='stylesheet' href='style.css?v=1'>
+<base target="_blank">
 </head>
 
 <body>
@@ -17,7 +18,9 @@
 <div id='container'>
 
 <h1>Complex Numbers</h1>
-<p class='heading'>Martin Clark and Gary Ballantyne<br>May 2016</p>
+<h2 class='subtitle'>An Interactive Guide</h2>
+
+<!--p class='heading'>Martin Clark and Gary Ballantyne<br>May 2016</p-->
 <p class='heading highlight'>[This web page is currently under development.]</p>
 
 <h2>Vectors in a Plane</h2>
@@ -58,8 +61,8 @@ $$y = A \sin(\theta)$$
   </p>
 
   <p>
-    So $i$ represents the vertical axis, but does it have a value?
-    We'll see below that assiging a special (and somewhat weird) value to $i$ 
+    So $i$ represents the vertical axis, but does $i$ itself have a value?
+    We'll see below that assigning a special (and somewhat weird) value to $i$ 
     enables useful mathematical properties of complex numbers.
     In particular, we'll see that complex number <b><i>multiplication</i></b> 
     is equivalent to vector <b><i>rotation</i></b> in the plane.
@@ -221,6 +224,8 @@ $$y = A \sin(\theta)$$
 </div>
 
 <div class='clear'></div>
+</section>
+
 
 <h2>The Imaginary Unit</h2>
 
@@ -305,7 +310,7 @@ $$y = A \sin(\theta)$$
         <div data-eval='exercises/complex-unit-1.coffee' class='hide'></div>
         <div class='exercise-footer'>
           The editor above shows values for $z=i^0$ and $z=i^1$.
-          Append three more lines to include the results of $i^2$, $i^3$, and $i^4$.
+          Append three more lines for the results of $i^2$, $i^3$, and $i^4$.
           See the values plotted above.
         </div>
       </div>
@@ -313,26 +318,49 @@ $$y = A \sin(\theta)$$
       <div class='exercise' id='exercise-complex-unit-2'>
         <h2>Exercise 3.2</h2>
         <div class='code-buttons'></div>
-        <!-- <div data-file='exercises/complex2.coffee'></div>
-        <div data-eval='exercises/complex2.coffee' class='hide'></div> -->
+        <div data-file='exercises/complex-unit-2.coffee'></div>
+        <div data-eval='exercises/complex-unit-2.coffee' class='hide'></div>
         <div class='exercise-footer'>
+          Write the function for the angle (in radians) of $z^n$ as a function of $n$.
+          <i>Hint: use × and π buttons above.</i> 
         </div>
       </div>
       
-      <div class='exercise' id='exercise-to-implement-unit'>
-        <h2>Exercises to implement</h2>
-        <!--div class='code-buttons'></div-->
-        <!--div data-file='exercises/complex3.coffee'></div-->
+      <div class='exercise' id='exercise-complex-unit-3'>
+        <h2>Exercise 3.3</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-3.coffee'></div>
+        <div data-eval='exercises/complex-unit-3.coffee' class='hide'></div>
         <div class='exercise-footer'>
-          <ul>
-            <li>Click the button to see how multiplying by $i^n$ rotates by $n\pi/2$ radians.
-            <li>Multiplying by $-i$ (implement button above).
-              Code results for 
-              $1\times (-i)^n$, where $n=1,2,3,4$.
-              What angle is rotation?
-            <li>What if start vector is $z=A$?  Replace exercise below.
-              Multiply by $i$ four times; what is the result at each step?
-          </ul>
+          What happens if you multiply by $-i$?
+          Enter five lines in the editor for the results of
+          $(-i)^0$, $(-i)^1$, $(-i)^2$, $(-i)^3$, $(-i)^4$.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-4'>
+        <h2>Exercise 3.4</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-4.coffee'></div>
+        <div data-eval='exercises/complex-unit-4.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          If you multiply vector $z$ by $-i$, what is the angle of rotation (in radians)?
+          Enter the result above.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-5'>
+        <h2>Exercise 3.5</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-5.coffee'></div>
+        <div data-eval='exercises/complex-unit-5.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          <p>In the examples so far, each vector had a unit magnitude $A=1$.
+          What happens for other vector magnitudes?</p>
+          <p>Say we start with vector $z=A$. Then we multiply by $i$.
+          The result is $Ai$, as shown in the editor.
+          If we multiply by $i$ three more times, what is the result at each step?
+          Append the results above.</p>
         </div>
       </div>
       
@@ -344,7 +372,7 @@ $$y = A \sin(\theta)$$
     With this definition for $i$ in  mind, we can 
     <span id='multiply-by-i' class='text-button'>multiply by $i$&nbsp;</span>
     to rotate any of our four vectors by 90<sup>&deg;</sup>.
-    We'll see soon how it works for vectors of <i>any</i> magnitude and angle.
+    We'll see soon how this also works for vectors of <i>any</i> magnitude and angle.
     So, while $i$ doesn't have a real value,
     it does have useful mathematical properties for rotating a vector in a plane.
     
@@ -359,7 +387,7 @@ $$y = A \sin(\theta)$$
     </table-->
   </p>
   <p>
-    In general, an imaginary number is $iy$ where $y$ is any real value and $i$ is the <b>imaginary unit</b>.
+    In general, an imaginary number is $iy$ where $y$ is any real value and $i$ is the <b>imaginary unit</b> $\sqrt{-1}$.
     For example, $2i$ is an imaginary number with magnitude 2.  
   </p>
   <p>
@@ -370,12 +398,9 @@ $$y = A \sin(\theta)$$
 </div>
 
 <div class='clear'></div>
-
 </section>
 
-<div class='clear'></div>
-
-<hr>
+<!--hr>
 
 <div class='box-2-1'>
   <h3>Exercise</h3>
@@ -419,7 +444,7 @@ $$y = A \sin(\theta)$$
   <div id='exercise-rotation-result'></div>
 </div>
 
-<div class='clear'></div>
+<div class='clear'></div-->
 
 <hr>
 
@@ -736,6 +761,56 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
 
 <div class='clear'></div>
 -->
+
+<h2>References and Further Reading</h2>
+
+<ol>
+  <li>...
+</ol>
+
+<hr>
+
+<div id='page-footer' class='box-1-1'>
+  
+  <p>
+    <span class='last-update'>Last updated May 2016</span>
+    <!--TODO: Auto fetch date from github-->
+    | <a href='//github.com/puzlet/lectures' title='View source code for this web page.'>Source Code</a>
+    | <a href='//github.com/puzlet/lectures/issues' title='Comment on this web page.'>Comments</a>
+  </p>
+  
+  <p>
+    Developed by
+    <a href="//github.com/mvclark">Martin Clark</a> and
+    <a href="//github.com/garyballantyne">Gary Ballantyne</a>
+    (Haulashore Limited)
+    as part of the <a href='//puzlet.org'>Puzlet</a> project.
+    
+    <a href="//twitter.com/blabrnet"><img src="//puzlet.org/blab/img/TwitterLogo.png" 
+      height=24 style="vertical-align: middle"/>Follow us on Twitter</a>.<br>
+  </p>
+  
+  <p>
+    <a href='//blabr.org'>
+    <img src='//puzlet.org/blab/img/blabr-logo.png' height='20'/>Blabr</a> &mdash;
+    Create your own interactive computation directly in the browser.
+    <!--Get text from blabr.org-->
+  </p>
+  
+  <p>
+    Thanks to:
+    <a href='//ace.c9.io'>Ace</a>,
+    <a href='//coffeescript.org'>CoffeeScript</a>,
+    <a href='//mathjax.org'>MathJax</a>,
+    <a href='//khan.github.io/KaTeX/'>Katex</a>,
+    <a href='//numericjs.com'>numericjs</a>,
+    <a href='//d3js.org'>d3</a>,
+    <a href='//paperjs.org/reference/paperscript'>PaperScript</a>,
+    <a href='//jquery.com'>jQuery</a>,
+    <a href='//github.com'>GitHub</a>.
+  </p>
+  
+</div>
 
 </div>  <!--#container-->
 </div>  <!--#outer-container-->

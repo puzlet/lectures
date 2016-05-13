@@ -6,6 +6,14 @@ h1 {
   margin-bottom: 0px;
 }
 
+h2.subtitle {
+  text-align: center;
+  line-height: 100%;
+  margin-top: 10px;
+  font-size: 14pt;
+  font-weight: normal;
+}
+
 h2 {
   line-height: 100%;
   margin-bottom: 0px;
@@ -33,6 +41,34 @@ table, th, td {
 th, td {
   padding: 10px;
   text-align: center;
+}
+
+
+/********** Page footer **********/
+
+#page-footer {
+  font-size: 10pt;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+#page-footer p {
+  margin: 0 0;
+}
+
+#page-footer .last-update{
+  color: black;
+  font-weight: bold;
+}
+
+#page-footer img {
+  margin-right: 5px;
+  vertical-align: middle;
+  opacity: 0.5;
+}
+
+#page-footer a {
+ color: #aaa; 
 }
 
 /********** Exercise solutions **********/

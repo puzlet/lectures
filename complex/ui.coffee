@@ -5,6 +5,7 @@
 # Run button with title showing shoft-enter tip
 # Bug: scaling slider - label doesn't bounce back.
 # Vector addition: show resultant vector in plot.
+# Close (x) button for exercises window.
 
 #------------------------------------------------------#
 # Figures
@@ -914,18 +915,61 @@ class Exercise['exercise-complex-addition-3'] extends ExerciseBase
 
 class Exercise['exercise-complex-unit-1'] extends ExerciseBase
   
-  postamble: -> "\n" #"\n  null\n"
+  postamble: -> ""
     
   postProcess: (evals) ->
-    console.log "********* evals", evals
     
-    return unless evals.length
-    #f = evals[0]
-    #return unless f(0)?
+    console.log "********* evals1", evals
     
-    #console.log "**** complex unit exercise"
-    
+    return unless evals.length>3
+
+
+class Exercise['exercise-complex-unit-2'] extends ExerciseBase
+
+ postamble: -> ""
   
+ postProcess: (evals) ->
+  
+   console.log "********* evals2", evals
+   
+   return unless evals.length
+   f = evals[0]
+   return unless f(0)
+
+
+class Exercise['exercise-complex-unit-3'] extends ExerciseBase
+
+ postamble: -> ""
+  
+ postProcess: (evals) ->
+  
+   console.log "********* evals3", evals
+   
+   return unless evals.length>3
+
+
+class Exercise['exercise-complex-unit-4'] extends ExerciseBase
+
+ postamble: -> ""
+  
+ postProcess: (evals) ->
+  
+   console.log "********* evals3", evals
+   
+   return unless evals.length is 1
+
+class Exercise['exercise-complex-unit-5'] extends ExerciseBase
+
+ postamble: -> ""
+  
+ postProcess: (evals) ->
+  
+   console.log "********* evals3", evals
+   
+   return unless evals.length is 1
+
+
+
 
 class ExerciseRotation
   
