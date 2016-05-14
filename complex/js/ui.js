@@ -33,6 +33,7 @@
       new FigureComplexMultiplication;
       new FigureEulerFormula;
       new ExerciseRotation;
+      this.testServer();
       this.loadAce();
     }
 
@@ -46,6 +47,18 @@
           return typeof $Ace !== "undefined" && $Ace !== null ? $Ace.load(_this.resources) : void 0;
         };
       })(this));
+    };
+
+    Figures.prototype.testServer = function() {
+      var local, server;
+      local = window.location.hostname === "localhost";
+      server = local ? "//puzlet.mvclark.dev" : "//puzlet.mvclark.com";
+      $.get("" + server, function(data) {
+        return console.log(data);
+      });
+      return $.post("" + server + "/exercise/create", {}, function(data) {
+        return console.log(data);
+      });
     };
 
     return Figures;

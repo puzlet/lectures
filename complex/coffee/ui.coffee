@@ -48,6 +48,8 @@ class Figures
     # Old exercise
     new ExerciseRotation
     
+    @testServer()
+    
     @loadAce()
     
   loadAce: ->
@@ -55,6 +57,18 @@ class Figures
     @resources = $blab.resources
     @resources.add url: @aceUrl
     @resources.loadUnloaded => $Ace?.load(@resources)
+    
+  testServer: ->
+    
+    local = window.location.hostname is "localhost"
+    
+    server = if local then "//puzlet.mvclark.dev" else "//puzlet.mvclark.com"
+    
+    $.get "#{server}", (data) ->
+      console.log data
+      
+    $.post "#{server}/exercise/create", {}, (data) ->
+      console.log data
 
 
 # Base class
