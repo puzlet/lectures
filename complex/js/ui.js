@@ -53,10 +53,7 @@
       var local, server;
       local = window.location.hostname === "localhost";
       server = local ? "//puzlet.mvclark.dev" : "//puzlet.mvclark.com";
-      $.get("" + server, function(data) {
-        return console.log(data);
-      });
-      return $.post("" + server + "/exercise/create", {}, function(data) {
+      return $.get("" + server, function(data) {
         return console.log(data);
       });
     };

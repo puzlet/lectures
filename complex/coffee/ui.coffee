@@ -67,8 +67,8 @@ class Figures
     $.get "#{server}", (data) ->
       console.log data
       
-    $.post "#{server}/exercise/create", {}, (data) ->
-      console.log data
+    #$.post "#{server}/exercise/create", {}, (data) ->
+    #  console.log data
 
 
 # Base class
