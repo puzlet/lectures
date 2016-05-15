@@ -20,6 +20,22 @@
 <div id='outer-container'>
 <div id='container'>
 
+<div id='user-credentials'>
+  <input
+    class='group-id'
+    type='text' 
+    placeholder='Group key'
+    title='Enter ID for your user group.'>
+  </input>
+  <br>
+  <input
+    class='user-id hide'
+    type='text' 
+    placeholder='Your email address'
+    title='Enter your email address (user ID).'>
+  </input>
+</div>
+
 <h1>Complex Numbers</h1>
 <h2 class='subtitle'>An Interactive Guide</h2>
 
@@ -825,6 +841,7 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
 
 <script src="js/render-math.js"></script>
 <script src='../js/vendor.js'></script>
+<script src="//puzlet.org/puzlet/js/jquery.cookie.js"></script>  <!-- Move to vendor.js -->
 <script src='//puzlet.org/puzlet.js' data-puzlet data-resources='resources.coffee'></script>
 
 </body>

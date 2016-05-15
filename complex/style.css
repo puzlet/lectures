@@ -43,6 +43,24 @@ th, td {
   text-align: center;
 }
 
+/********** Group Id, User Id **********/
+
+#user-credentials {
+  position: absolute;
+  justify: right;
+  right: 0px;
+  width: 220px;
+  font-size: 10pt;
+}
+
+#user-credentials input {
+  width: 100%;
+  font-size: 10pt;
+  margin-bottom: 5px;
+  text-align: center;
+  color: #009933;
+  border: 1px solid #eee;
+}
 
 /********** Page footer **********/
 

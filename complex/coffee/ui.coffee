@@ -28,13 +28,14 @@ EulerComputation = {}
 
 class Server
   
+  @lectureId: "complex-numbers"  # TODO: settable in some other place
+  
   @local: "//puzlet.mvclark.dev"
   @public: "//puzlet.mvclark.com"
   
-  @lectureId: "complex-numbers"  # TODO: settable in some othet place
-  @groupId: "my-group"  # TODO: settable by user
-  @userId: "gary.ballantyne@haulashore.com"  # TODO: settable by user
-#  @userId: "martinclark@mac.com"  # TODO: settable by user
+  @ready: false
+  @groupId: null
+  @userId: null
   
   @isLocal: window.location.hostname is "localhost"
     
@@ -48,6 +49,9 @@ class Server
   
   # Fetch records for group/user/lecture.
   @fetch: (callback) ->
+    unless @ready and @groupId and @userId
+      callback?()
+      return
     ids =
       groupId: @groupId
       userId: @userId
@@ -58,6 +62,7 @@ class Server
   
   @put: (exerciseId, content) ->
     console.log "Exercises record", exerciseId, content
+    return unless @ready and @groupId and @userId
     record =
       groupId: @groupId
       userId: @userId
@@ -67,6 +72,61 @@ class Server
     $.post "#{@url}/exercise/create", record, (data) ->
       console.log "POST", data
 
+
+class User
+  
+  # TODO: if user changes, need to revert to default inputs first.  reload page?
+  # TODO: need a way to logout and reset editors.
+  # TODO: check valid group id - when first set.
+  
+  groupCookie: "group-id"
+  userCookie: "user-id"
+  
+  constructor: ->
+    
+    @groupInput = $(".group-id")
+    @userInput = $(".user-id")
+    
+    @groupId = $.cookie(@groupCookie)
+    if @groupId
+      @groupInput.val @groupId
+      @showUser()
+    
+    @userId = $.cookie(@userCookie)
+    if @userId
+      @userInput.val @userId
+      @showUser()
+    
+    if @groupId and @userId
+      @load()
+    
+    @groupInput.change (evt) =>
+      @groupId = evt.target.value
+      $.cookie(@groupCookie, @groupId) 
+      if @userId
+        #@load()
+        window.location.reload()
+      else
+        @showUser()
+        @userInput.focus()
+      
+    @userInput.change (evt) =>
+      @userId = evt.target.value
+      $.cookie(@userCookie, @userId) 
+      #@load()
+      window.location.reload()
+      
+  showUser: ->
+    @userInput.removeClass "hide"
+  
+  load: ->
+    Server.groupId = @groupId
+    Server.userId = @userId
+    Server.fetch (data) =>
+      $.event.trigger "exercisesDataLoaded", {exercises: data}
+
+
+new User
 
 #------------------------------------------------------#
 # Figures
@@ -91,6 +151,7 @@ class Figures
     new FigureComplexMultiplication
     new FigureEulerFormula
     
+    Server.ready = true
     Server.fetch (data) => @loadAce(data)
 #    Server.getAll (data) => @loadAce(data)
     
@@ -99,8 +160,9 @@ class Figures
     
   loadAce: (exercisesData)->
     # Ace after all figures rendered.
-    $(document).on "aceFilesLoaded", =>
-      $.event.trigger "exercisesDataLoaded", {exercises: exercisesData}
+    if exercisesData
+      $(document).on "aceFilesLoaded", =>
+        $.event.trigger "exercisesDataLoaded", {exercises: exercisesData}
     @resources = $blab.resources
     @resources.add url: @aceUrl
     @resources.loadUnloaded => $Ace?.load(@resources)
