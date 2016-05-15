@@ -26,6 +26,12 @@
 
     Server["public"] = "//puzlet.mvclark.com";
 
+    Server.lectureId = "complex-numbers";
+
+    Server.groupId = "my-group";
+
+    Server.userId = "gary.ballantyne@haulashore.com";
+
     Server.isLocal = window.location.hostname === "localhost";
 
     Server.url = Server.isLocal ? Server.local : Server["public"];
@@ -33,24 +39,34 @@
     Server.getAll = function(callback) {
       return $.get("" + this.url, function(data) {
         this.data = data;
-        console.log("All excercises from server", this.data);
+        console.log("All exercises from server", this.data);
         return typeof callback === "function" ? callback(this.data) : void 0;
       });
     };
 
-    Server.fetch = function(exerciseId, callback) {
-      return $.get("" + this.url + "/exercise/fetch", {
-        exerciseId: exerciseId
-      }, function(data) {
-        console.log("GET", data);
-        return typeof callback === "function" ? callback(data) : void 0;
-      });
+    Server.fetch = function(callback) {
+      var ids;
+      ids = {
+        groupId: this.groupId,
+        userId: this.userId,
+        lectureId: this.lectureId
+      };
+      return $.get("" + this.url + "/exercise/fetch", ids, (function(_this) {
+        return function(data) {
+          _this.data = data;
+          console.log("Exercises from server", ids, _this.data);
+          return typeof callback === "function" ? callback(_this.data) : void 0;
+        };
+      })(this));
     };
 
     Server.put = function(exerciseId, content) {
       var record;
       console.log("Exercises record", exerciseId, content);
       record = {
+        groupId: this.groupId,
+        userId: this.userId,
+        lectureId: this.lectureId,
         exerciseId: exerciseId,
         code: content
       };
@@ -76,7 +92,7 @@
       new FigureComplexScaling;
       new FigureComplexMultiplication;
       new FigureEulerFormula;
-      Server.getAll((function(_this) {
+      Server.fetch((function(_this) {
         return function(data) {
           return _this.loadAce(data);
         };

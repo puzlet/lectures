@@ -31,28 +31,42 @@ class Server
   @local: "//puzlet.mvclark.dev"
   @public: "//puzlet.mvclark.com"
   
+  @lectureId: "complex-numbers"  # TODO: settable in some othet place
+  @groupId: "my-group"  # TODO: settable by user
+  @userId: "gary.ballantyne@haulashore.com"  # TODO: settable by user
+#  @userId: "martinclark@mac.com"  # TODO: settable by user
+  
   @isLocal: window.location.hostname is "localhost"
     
   @url: if @isLocal then @local else @public
-    
+  
+  # To delete/change.
   @getAll: (callback) ->
     $.get "#{@url}", (@data) ->
-      console.log "All excercises from server", @data
+      console.log "All exercises from server", @data
       callback?(@data)
   
-  # Not used
-  @fetch: (exerciseId, callback) ->
-    $.get "#{@url}/exercise/fetch", {exerciseId}, (data) ->
-      console.log "GET", data
-      callback?(data)
+  # Fetch records for group/user/lecture.
+  @fetch: (callback) ->
+    ids =
+      groupId: @groupId
+      userId: @userId
+      lectureId: @lectureId
+    $.get "#{@url}/exercise/fetch", ids, (@data) =>
+      console.log "Exercises from server", ids, @data
+      callback?(@data)
   
   @put: (exerciseId, content) ->
     console.log "Exercises record", exerciseId, content
     record =
+      groupId: @groupId
+      userId: @userId
+      lectureId: @lectureId
       exerciseId: exerciseId
       code: content
     $.post "#{@url}/exercise/create", record, (data) ->
       console.log "POST", data
+
 
 #------------------------------------------------------#
 # Figures
@@ -77,7 +91,8 @@ class Figures
     new FigureComplexMultiplication
     new FigureEulerFormula
     
-    Server.getAll (data) => @loadAce(data)
+    Server.fetch (data) => @loadAce(data)
+#    Server.getAll (data) => @loadAce(data)
     
     # Old exercise
     new ExerciseRotation
