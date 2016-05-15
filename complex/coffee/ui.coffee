@@ -60,8 +60,8 @@ class Server
       console.log "Exercises from server", ids, @data
       callback?(@data)
   
-  @put: (exerciseId, content) ->
-    console.log "Exercises record", exerciseId, content
+  @put: (exerciseId, content, correct) ->
+    console.log "Exercises record", exerciseId, content, correct
     return unless @ready and @groupId and @userId
     record =
       groupId: @groupId
@@ -69,8 +69,27 @@ class Server
       lectureId: @lectureId
       exerciseId: exerciseId
       code: content
-    $.post "#{@url}/exercise/create", record, (data) ->
-      console.log "POST", data
+      correct: if correct then 1 else 0
+    console.log "PUT data", record
+    $.ajax
+      type: "POST"
+      url: "#{@url}/exercise/create"
+      data: record
+      dataType: 'json'
+      success: (data) ->
+        console.log "POST", data
+        return if data.ok
+        alert "Code not saved to server"
+        
+  @checkUser: (userId, callback) ->
+    ids =
+      groupId: @groupId
+      userId: userId
+      lectureId: @lectureId
+    $.get "#{@url}/checkuser", ids, (data) =>
+      console.log "User exists", ids, data
+      callback?(data.userExists)
+    
 
 
 class User
@@ -102,7 +121,7 @@ class User
     
     @groupInput.change (evt) =>
       @groupId = evt.target.value
-      $.cookie(@groupCookie, @groupId) 
+      $.cookie(@groupCookie, @groupId, {expires: 100}) 
       if @userId
         #@load()
         window.location.reload()
@@ -111,12 +130,30 @@ class User
         @userInput.focus()
       
     @userInput.change (evt) =>
-      @userId = evt.target.value
-      $.cookie(@userCookie, @userId) 
-      #@load()
-      window.location.reload()
+      
+      userId = evt.target.value
+      
+      Server.checkUser userId, (exists) =>
+        
+        if exists and window.location.hash isnt "#reset-user"
+          
+          # hash = reset-user is a temporary feature to reset user id.
+          
+          # Does not agree with cookie
+          alert("Username not authenticated")
+          @userInput.val @userId  # Revert value
+          
+          #window.location.reload()
+          
+        else
+          # New user - set up cookie.
+          @userId = userId
+          $.cookie(@userCookie, @userId, {expires: 100}) 
+          #@load()
+          window.location.href = window.location.href.split('#')[0]
       
   showUser: ->
+    #@groupInput.addClass "hide"
     @userInput.removeClass "hide"
   
   load: ->
@@ -875,6 +912,8 @@ class ExerciseBase
     
   """
   
+  runCode: false
+  
   constructor: (@id, @figure) ->
     @container = $("#"+@id)
     @url = @container.find('div[data-file]').data()?["file"]
@@ -901,16 +940,19 @@ class ExerciseBase
     $(document).on "runCode", (evt, data) =>
       return unless data.filename is @url
       console.log "*** RUN", @url
-      @saveToServer()  # save: will need to save "correct" status after computed
-      # ZZZ perhaps set flag - running.  But works because Run vent is after compile.
+      @runCode = true
+      #@saveToServer()  # save: will need to save "correct" status after computed
+      # ZZZ perhaps set flag - running.
   
   getEditor: ->
     resource = $blab.resources.find @url
     editor = resource.containers.fileNodes[0].editor
   
   saveToServer: ->
-    console.log "***** SAVE", @resource, @id, @resource.content
-    Server.put @id, @resource.content
+    return unless @runCode
+    console.log "***** SAVE", @resource, @id, @resource.content, @correct
+    Server.put @id, @resource.content, @correct
+    @runCode = false
     
   setCode: (code) ->
     @getEditor().set code
@@ -994,10 +1036,16 @@ class Exercise['exercise-complex-plane-1'] extends ExerciseBase
     z3 = Complex.polarToComplex(A, θ)
     
     @figure.step {z: z1, fill: "fill-green", t: 0}, =>
-      @ok Complex.isEqual(z1, z2)
+      ok1 = Complex.isEqual(z1, z2)
+      @ok ok1
       @figure.step {z: z2, fill: "fill-red"}, =>
         @figure.step {z: z3, fill: "fill-blue"}
-        @ok Complex.isEqual(z1, z3)
+        ok2 = Complex.isEqual(z1, z3)
+        @ok ok2
+        @correct = ok1 and ok2
+        @saveToServer()
+        
+    # Perhaps just have a "done" method.  pass correct flag.
 
 
 class Exercise['exercise-complex-plane-2'] extends ExerciseBase

@@ -68,9 +68,9 @@
       })(this));
     };
 
-    Server.put = function(exerciseId, content) {
+    Server.put = function(exerciseId, content, correct) {
       var record;
-      console.log("Exercises record", exerciseId, content);
+      console.log("Exercises record", exerciseId, content, correct);
       if (!(this.ready && this.groupId && this.userId)) {
         return;
       }
@@ -79,11 +79,38 @@
         userId: this.userId,
         lectureId: this.lectureId,
         exerciseId: exerciseId,
-        code: content
+        code: content,
+        correct: correct ? 1 : 0
       };
-      return $.post("" + this.url + "/exercise/create", record, function(data) {
-        return console.log("POST", data);
+      console.log("PUT data", record);
+      return $.ajax({
+        type: "POST",
+        url: "" + this.url + "/exercise/create",
+        data: record,
+        dataType: 'json',
+        success: function(data) {
+          console.log("POST", data);
+          if (data.ok) {
+            return;
+          }
+          return alert("Code not saved to server");
+        }
       });
+    };
+
+    Server.checkUser = function(userId, callback) {
+      var ids;
+      ids = {
+        groupId: this.groupId,
+        userId: userId,
+        lectureId: this.lectureId
+      };
+      return $.get("" + this.url + "/checkuser", ids, (function(_this) {
+        return function(data) {
+          console.log("User exists", ids, data);
+          return typeof callback === "function" ? callback(data.userExists) : void 0;
+        };
+      })(this));
     };
 
     return Server;
@@ -114,7 +141,9 @@
       this.groupInput.change((function(_this) {
         return function(evt) {
           _this.groupId = evt.target.value;
-          $.cookie(_this.groupCookie, _this.groupId);
+          $.cookie(_this.groupCookie, _this.groupId, {
+            expires: 100
+          });
           if (_this.userId) {
             return window.location.reload();
           } else {
@@ -125,9 +154,20 @@
       })(this));
       this.userInput.change((function(_this) {
         return function(evt) {
-          _this.userId = evt.target.value;
-          $.cookie(_this.userCookie, _this.userId);
-          return window.location.reload();
+          var userId;
+          userId = evt.target.value;
+          return Server.checkUser(userId, function(exists) {
+            if (exists && window.location.hash !== "#reset-user") {
+              alert("Username not authenticated");
+              return _this.userInput.val(_this.userId);
+            } else {
+              _this.userId = userId;
+              $.cookie(_this.userCookie, _this.userId, {
+                expires: 100
+              });
+              return window.location.href = window.location.href.split('#')[0];
+            }
+          });
         };
       })(this));
     }
@@ -1245,6 +1285,8 @@
       return "\nnull\n" + process + " " + this.processArgs + "\n";
     };
 
+    ExerciseBase.prototype.runCode = false;
+
     function ExerciseBase(id, figure) {
       var _ref;
       this.id = id;
@@ -1294,7 +1336,7 @@
             return;
           }
           console.log("*** RUN", _this.url);
-          return _this.saveToServer();
+          return _this.runCode = true;
         };
       })(this));
     }
@@ -1306,8 +1348,12 @@
     };
 
     ExerciseBase.prototype.saveToServer = function() {
-      console.log("***** SAVE", this.resource, this.id, this.resource.content);
-      return Server.put(this.id, this.resource.content);
+      if (!this.runCode) {
+        return;
+      }
+      console.log("***** SAVE", this.resource, this.id, this.resource.content, this.correct);
+      Server.put(this.id, this.resource.content, this.correct);
+      return this.runCode = false;
     };
 
     ExerciseBase.prototype.setCode = function(code) {
@@ -1463,16 +1509,22 @@
         t: 0
       }, (function(_this) {
         return function() {
-          _this.ok(Complex.isEqual(z1, z2));
+          var ok1;
+          ok1 = Complex.isEqual(z1, z2);
+          _this.ok(ok1);
           return _this.figure.step({
             z: z2,
             fill: "fill-red"
           }, function() {
+            var ok2;
             _this.figure.step({
               z: z3,
               fill: "fill-blue"
             });
-            return _this.ok(Complex.isEqual(z1, z3));
+            ok2 = Complex.isEqual(z1, z3);
+            _this.ok(ok2);
+            _this.correct = ok1 && ok2;
+            return _this.saveToServer();
           });
         };
       })(this));
