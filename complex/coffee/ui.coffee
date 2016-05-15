@@ -23,6 +23,38 @@ Complex = {}
 EulerComputation = {}
 
 #------------------------------------------------------#
+# Exercises server
+#------------------------------------------------------#
+
+class Server
+  
+  @local: "//puzlet.mvclark.dev"
+  @public: "//puzlet.mvclark.com"
+  
+  @isLocal: window.location.hostname is "localhost"
+    
+  @url: if @isLocal then @local else @public
+    
+  @getAll: (callback) ->
+    $.get "#{@url}", (@data) ->
+      console.log "All excercises from server", @data
+      callback?(@data)
+  
+  # Not used
+  @fetch: (exerciseId, callback) ->
+    $.get "#{@url}/exercise/fetch", {exerciseId}, (data) ->
+      console.log "GET", data
+      callback?(data)
+  
+  @put: (exerciseId, content) ->
+    console.log "Exercises record", exerciseId, content
+    record =
+      exerciseId: exerciseId
+      code: content
+    $.post "#{@url}/exercise/create", record, (data) ->
+      console.log "POST", data
+
+#------------------------------------------------------#
 # Figures
 #------------------------------------------------------#
 
@@ -45,30 +77,18 @@ class Figures
     new FigureComplexMultiplication
     new FigureEulerFormula
     
+    Server.getAll (data) => @loadAce(data)
+    
     # Old exercise
     new ExerciseRotation
     
-    @testServer()
-    
-    @loadAce()
-    
-  loadAce: ->
+  loadAce: (exercisesData)->
     # Ace after all figures rendered.
+    $(document).on "aceFilesLoaded", =>
+      $.event.trigger "exercisesDataLoaded", {exercises: exercisesData}
     @resources = $blab.resources
     @resources.add url: @aceUrl
     @resources.loadUnloaded => $Ace?.load(@resources)
-    
-  testServer: ->
-    
-    local = window.location.hostname is "localhost"
-    
-    server = if local then "//puzlet.mvclark.dev" else "//puzlet.mvclark.com"
-    
-    $.get "#{server}", (data) ->
-      console.log data
-      
-    #$.post "#{server}/exercise/create", {}, (data) ->
-    #  console.log data
 
 
 # Base class
@@ -783,17 +803,41 @@ class ExerciseBase
     @url = @container.find('div[data-file]').data()?["file"]
     return unless @url
     @initButtons()
+    
+    $(document).on "exercisesDataLoaded", (evt, data) =>
+      exerciseData = data.exercises.find (el) => el.exerciseId is @id
+      @setCode(exerciseData.code) if exerciseData 
+    
+    # Are there compile events associated with this specific resource?
     # Is there a way to process only if shift-enter or swipe?  i.e., so not processed initially.
     $blab.exercises[@id] = (data) => @process(data)
-    $(document).on "preCompileCoffee", (evt, data) => @preCompile(data.resource)
+    $(document).on "preCompileCoffee", (evt, data) =>
+      @preCompile(data.resource)
     
     $(document).on "compiledCoffeeScript", (evt, data) =>
       return unless data.url is @url
-      #console.log "*** Compiled", @url
+      console.log "*** Compiled", @url
       @resource = $blab.resources.find @url
       @resultArray = @resource?.resultArray
       @postProcess(@resultArray)
+      
+    $(document).on "runCode", (evt, data) =>
+      return unless data.filename is @url
+      console.log "*** RUN", @url
+      @saveToServer()  # save: will need to save "correct" status after computed
+      # ZZZ perhaps set flag - running.  But works because Run vent is after compile.
   
+  getEditor: ->
+    resource = $blab.resources.find @url
+    editor = resource.containers.fileNodes[0].editor
+  
+  saveToServer: ->
+    console.log "***** SAVE", @resource, @id, @resource.content
+    Server.put @id, @resource.content
+    
+  setCode: (code) ->
+    @getEditor().set code
+    
   process: (data) ->  # Override in subclass
     
   postProcess: (evals) ->  # Override in subclass
@@ -801,10 +845,10 @@ class ExerciseBase
   preCompile: (@coffee) ->
     
     return unless @coffee?.url is @url
-    #console.log "+++ Precompile", @url
+    console.log "+++ Precompile", @url
     
     # Hide syntax checks in margin
-    @editor = @coffee.containers.fileNodes[0].editor
+    @editor = @getEditor()
     @editor.session().setUseWorker false
     
     # Do only once - after Ace compiled?
@@ -827,7 +871,7 @@ class ExerciseBase
   codeButton: (label, char) ->
     new CodeButton
       container: @buttons
-      editor: => @editor.editor
+      editor: => @editor?.editor
       label: label
       char: char
       click: (char) =>
