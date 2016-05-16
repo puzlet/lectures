@@ -1315,6 +1315,7 @@
       })(this);
       $(document).on("preCompileCoffee", (function(_this) {
         return function(evt, data) {
+          _this.runCode = true;
           return _this.preCompile(data.resource);
         };
       })(this));
@@ -1558,10 +1559,14 @@
       z3 = complex(-1.8, -0.6);
       step = (function(_this) {
         return function(spec, next) {
-          var z;
+          var notOk, ok, z;
           z = spec.z;
           _this.text("Your A = " + round(A(z), 2));
-          _this.ok(Complex.isEqual(A(z), abs(z)));
+          ok = Complex.isEqual(A(z), abs(z));
+          _this.ok(ok);
+          if (!ok) {
+            notOk = true;
+          }
           return _this.figure.step({
             z: z,
             fill: "fill-green",
@@ -1571,6 +1576,7 @@
           });
         };
       })(this);
+      this.correct = !(typeof notOk !== "undefined" && notOk !== null);
       return step({
         z: z1,
         t: 0
@@ -1581,6 +1587,8 @@
           }, function() {
             return step({
               z: z3
+            }, function() {
+              return _this.saveToServer();
             });
           });
         };
@@ -1601,7 +1609,7 @@
     _Class.prototype.processArgs = "{z, z1, z2}";
 
     _Class.prototype.process = function(data) {
-      var c, z, z1, z2;
+      var c, ok, z, z1, z2;
       z = data.z, z1 = data.z1, z2 = data.z2;
       if (z1 == null) {
         return;
@@ -1618,7 +1626,10 @@
       this.figure.setOrigin2();
       this.figure.vector2.set(z2);
       this.figure.setMagnitude();
-      return this.ok(z1.x === z.x && z1.y === 0 && z2.x === 0 && z2.y === z.y);
+      ok = z1.x === z.x && z1.y === 0 && z2.x === 0 && z2.y === z.y;
+      this.ok(ok);
+      this.correct = ok;
+      return this.saveToServer();
     };
 
     return _Class;
@@ -1635,7 +1646,7 @@
     _Class.prototype.processArgs = "{z, z1, z2}";
 
     _Class.prototype.process = function(data) {
-      var c, z, z1, z2, zb;
+      var c, ok, z, z1, z2, zb;
       z = data.z, z1 = data.z1, z2 = data.z2;
       if (z1 == null) {
         return;
@@ -1652,7 +1663,10 @@
       this.figure.vector2.set(z2);
       this.figure.setMagnitude();
       zb = Complex.add(z1, z2);
-      return this.ok(Complex.isEqual(z, zb));
+      ok = Complex.isEqual(z, zb);
+      this.ok(ok);
+      this.correct = ok;
+      return this.saveToServer();
     };
 
     return _Class;
@@ -1688,12 +1702,16 @@
       console.log("Result", A(z1, z2));
       step = (function(_this) {
         return function(spec, next) {
-          var m, t;
+          var m, notOk, ok, t;
           z1 = spec.z1, z2 = spec.z2, t = spec.t;
           z = Complex.add(z1, z2);
           m = A(z1, z2);
           _this.text("Your A = " + round(m, 2));
-          _this.ok(Complex.isEqual(m, abs(z)));
+          ok = Complex.isEqual(m, abs(z));
+          _this.ok(ok);
+          if (!ok) {
+            notOk = true;
+          }
           _this.figure.vector1.set(z1);
           _this.figure.setOrigin2();
           _this.figure.vector2.set(z2);
@@ -1704,7 +1722,12 @@
         z1: z1,
         z2: z2,
         t: 0
-      });
+      }, (function(_this) {
+        return function() {
+          _this.correct = !(typeof notOk !== "undefined" && notOk !== null);
+          return _this.saveToServer();
+        };
+      })(this));
     };
 
     return _Class;

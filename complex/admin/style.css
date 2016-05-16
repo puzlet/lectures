@@ -1,0 +1,115 @@
+/********** Document elements **********/
+
+h1 {
+  text-align: center;
+  line-height: 100%;
+  margin-bottom: 0px;
+}
+
+h2.subtitle {
+  text-align: center;
+  line-height: 100%;
+  margin-top: 10px;
+  font-size: 14pt;
+  font-weight: normal;
+}
+
+h2 {
+  line-height: 100%;
+  margin-bottom: 0px;
+}
+
+p.heading {
+  text-align: center;
+}
+
+p.highlight {
+  color: red;
+  font-weight: bold;
+}
+
+table {
+  margin: 0 auto;
+  font-size: 12pt;
+}
+
+table, th, td {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+/********** Containers **********/
+
+/*#outer-container {
+  width: 980px;
+  padding: 0px 30px 10px 30px;
+  margin: 0 auto;
+}*/
+
+/*#container {
+  position: relative;
+	width: 960px;
+	margin: 0 auto;
+	margin-top: 40px;
+	font-size: 12pt;
+	line-height: 150%;
+  }*/
+
+body {
+  font-family: Verdana;
+}
+
+#container {
+  width: 100%;
+  text-align: center;
+}
+
+/********** Report elements **********/
+
+.user {
+  margin-top: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid gray;
+}
+
+.user-id {
+  font-size: 18pt;
+  margin-bottom: 10px;
+}
+
+.exercise {
+  display: inline-block;
+  width: 280px;
+  min-height: 150px;
+  vertical-align: top;
+  background: #eee;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.correct {
+  background: #cfc;
+}
+
+.incorrect {
+  background: #fcc;
+}
+
+.exercise-id {
+  font-weight: bold;
+}
+
+.exercise-code {
+  display: inline-block;
+  text-align: left;
+}
+
+.exercise-code pre {
+  font-family: Consolas, Menlo, DejaVu Sans Mono, Monaco, monospace;
+}

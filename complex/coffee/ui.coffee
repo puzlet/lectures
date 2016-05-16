@@ -928,6 +928,7 @@ class ExerciseBase
     # Is there a way to process only if shift-enter or swipe?  i.e., so not processed initially.
     $blab.exercises[@id] = (data) => @process(data)
     $(document).on "preCompileCoffee", (evt, data) =>
+      @runCode = true  # Potential for bug here?
       @preCompile(data.resource)
     
     $(document).on "compiledCoffeeScript", (evt, data) =>
@@ -1065,10 +1066,14 @@ class Exercise['exercise-complex-plane-2'] extends ExerciseBase
     step = (spec, next) =>
       z = spec.z
       @text "Your A = "+round(A(z), 2)
-      @ok Complex.isEqual(A(z), abs(z))
+      ok = Complex.isEqual(A(z), abs(z))
+      @ok ok
+      notOk = true unless ok
       @figure.step {z: z, fill: "fill-green", t: spec.t}, => next?()
+    
+    @correct = not(notOk?)
         
-    step {z: z1, t: 0}, => step {z: z2}, => step {z: z3}
+    step {z: z1, t: 0}, => step {z: z2}, => step {z: z3}, => @saveToServer()
 
 
 class Exercise['exercise-complex-addition-1'] extends ExerciseBase
@@ -1089,7 +1094,10 @@ class Exercise['exercise-complex-addition-1'] extends ExerciseBase
     @figure.setOrigin2()
     @figure.vector2.set z2
     @figure.setMagnitude()
-    @ok(z1.x is z.x and z1.y is 0 and z2.x is 0 and z2.y is z.y)
+    ok = z1.x is z.x and z1.y is 0 and z2.x is 0 and z2.y is z.y
+    @ok(ok)
+    @correct = ok
+    @saveToServer()
 
 
 class Exercise['exercise-complex-addition-2'] extends ExerciseBase
@@ -1110,7 +1118,10 @@ class Exercise['exercise-complex-addition-2'] extends ExerciseBase
     @figure.vector2.set z2
     @figure.setMagnitude()
     zb = Complex.add(z1, z2)
-    @ok(Complex.isEqual z, zb)
+    ok = Complex.isEqual z, zb
+    @ok(ok)
+    @correct = ok
+    @saveToServer()
 
 
 class Exercise['exercise-complex-addition-3'] extends ExerciseBase
@@ -1137,15 +1148,20 @@ class Exercise['exercise-complex-addition-3'] extends ExerciseBase
       z = Complex.add(z1, z2)
       m = A(z1, z2)
       @text "Your A = "+round(m, 2)
-      @ok Complex.isEqual(m, abs(z))
+      ok = Complex.isEqual(m, abs(z))
+      @ok ok
+      notOk = true unless ok
       # TODO: create method on figure.  Dup code.  Need to do without clipping.
       @figure.vector1.set z1
       @figure.setOrigin2()
       @figure.vector2.set z2
       @figure.setMagnitude()
       #@figure.step {z: z, fill: "fill-green", t: t}, => next?()
-        
-    step {z1: z1, z2: z2, t: 0} #, => step {z: z2}, => step {z: z3}
+    
+    step {z1: z1, z2: z2, t: 0}, =>
+      @correct = not(notOk?)
+      @saveToServer()
+       #, => step {z: z2}, => step {z: z3}
 
 
 class Exercise['exercise-complex-unit-1'] extends ExerciseBase
