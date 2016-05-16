@@ -26,7 +26,18 @@
   })();
 
   Admin = (function() {
-    Admin.prototype.exerciseIds = ['complex-plane-1', 'complex-plane-2', 'complex-addition-1', 'complex-addition-2', 'complex-addition-3', 'complex-unit-1', 'complex-unit-2', 'complex-unit-3', 'complex-unit-4', 'complex-unit-5'];
+    Admin.prototype.exerciseIds = {
+      '1.1': 'complex-plane-1',
+      '1.2': 'complex-plane-2',
+      '2.1': 'complex-addition-1',
+      '2.2': 'complex-addition-2',
+      '2.3': 'complex-addition-3',
+      '3.1': 'complex-unit-1',
+      '3.2': 'complex-unit-2',
+      '3.3': 'complex-unit-3',
+      '3.4': 'complex-unit-4',
+      '3.5': 'complex-unit-5'
+    };
 
     function Admin() {
       $(document).tooltip({
@@ -38,6 +49,7 @@
         return function(data) {
           _this.data = data;
           _this.model();
+          console.log("report", _this.report);
           _this.viewSummary();
           return _this.viewDetail();
         };
@@ -62,27 +74,37 @@
     };
 
     Admin.prototype.blankExerciseRecords = function(rec) {
-      var id, _i, _len, _ref, _results;
-      if (rec[this.exerciseIds[0]]) {
+      var ex, id, _ref, _results;
+      if (rec[this.exerciseIds['1.1']]) {
         return;
       }
       _ref = this.exerciseIds;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        id = _ref[_i];
+      for (ex in _ref) {
+        id = _ref[ex];
         _results.push(rec[id] = {});
       }
       return _results;
     };
 
     Admin.prototype.viewSummary = function() {
-      var a, e, exercise, exerciseId, summaryContainer, text, user, userContainer, userExercises, _ref, _results;
+      var a, e, ex, exercise, exerciseId, id, summaryContainer, text, user, userContainer, userExercises, _ref, _ref1, _results;
       this.container = $("#report");
       summaryContainer = this.div("summary", null, this.container);
-      _ref = this.report;
+      userContainer = this.div("user-summary", null, summaryContainer);
+      this.div("user-id-summary", null, userContainer);
+      _ref = this.exerciseIds;
+      for (ex in _ref) {
+        id = _ref[ex];
+        e = this.div("exercise-heading", ex, userContainer);
+        e.attr({
+          title: id
+        });
+      }
+      _ref1 = this.report;
       _results = [];
-      for (user in _ref) {
-        userExercises = _ref[user];
+      for (user in _ref1) {
+        userExercises = _ref1[user];
         userContainer = this.div("user-summary", null, summaryContainer);
         a = $("<a>", {
           href: "#" + user,
@@ -91,13 +113,13 @@
         });
         this.div("user-id-summary", a, userContainer);
         _results.push((function() {
-          var _ref1, _results1;
+          var _ref2, _results1;
           _results1 = [];
           for (exerciseId in userExercises) {
             exercise = userExercises[exerciseId];
             e = this.div("exercise-summary", null, userContainer);
             this.answer(e, exercise.correct);
-            text = this.summaryTextTemplate(exerciseId, (_ref1 = exercise.code) != null ? _ref1 : "No answer");
+            text = this.summaryTextTemplate(exerciseId, (_ref2 = exercise.code) != null ? _ref2 : "No answer");
             _results1.push(e.attr({
               title: text
             }));
@@ -132,7 +154,7 @@
             exercise = userExercises[exerciseId];
             correct = exercise.correct;
             if (correct == null) {
-              break;
+              continue;
             }
             exerciseContainer = this.div("exercise", null, userContainer);
             this.answer(exerciseContainer, correct);

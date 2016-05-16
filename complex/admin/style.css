@@ -145,6 +145,19 @@ body {
   border-radius: 4px;
 }
 
+.exercise-heading {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  margin-left: 5px;
+  line-height: 25px;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 8pt;
+  cursor: default;
+}
+
 .user {
   margin-top: 30px;
   padding-top: 30px;

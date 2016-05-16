@@ -22,18 +22,18 @@ class Server
 class Admin
   
   # TODO: Get from coffee file in /complex?
-  exerciseIds: [
-    'complex-plane-1'
-    'complex-plane-2'
-    'complex-addition-1'
-    'complex-addition-2'
-    'complex-addition-3'
-    'complex-unit-1'
-    'complex-unit-2'
-    'complex-unit-3'
-    'complex-unit-4'
-    'complex-unit-5'
-  ]
+  exerciseIds: {
+    '1.1': 'complex-plane-1'
+    '1.2': 'complex-plane-2'
+    '2.1': 'complex-addition-1'
+    '2.2': 'complex-addition-2'
+    '2.3': 'complex-addition-3'
+    '3.1': 'complex-unit-1'
+    '3.2': 'complex-unit-2'
+    '3.3': 'complex-unit-3'
+    '3.4': 'complex-unit-4'
+    '3.5': 'complex-unit-5'
+  }
   
   constructor: ->
     
@@ -42,6 +42,7 @@ class Admin
     
     Server.getAll (@data) =>
       @model()
+      console.log "report", @report
       @viewSummary()
       @viewDetail()
       
@@ -55,16 +56,25 @@ class Admin
         code: record.code
         
   blankExerciseRecords: (rec) ->
-    return if rec[@exerciseIds[0]]
-    rec[id] = {} for id in @exerciseIds
+    return if rec[@exerciseIds['1.1']]
+    rec[id] = {} for ex, id of @exerciseIds
   
   viewSummary: ->
     @container = $ "#report"
     summaryContainer = @div "summary", null, @container
+    
+    # Heading
+    userContainer = @div "user-summary", null, summaryContainer
+    #a = $ "<a>", href: "##{user}", target: "_self", text: "USER"
+    @div "user-id-summary", null, userContainer
+    for ex, id of @exerciseIds
+      e = @div "exercise-heading", ex, userContainer
+      e.attr title: id
+      
     for user, userExercises  of @report
       userContainer = @div "user-summary", null, summaryContainer
       a = $ "<a>", href: "##{user}", target: "_self", text: user
-      @div "user-id-summary", a, userContainer  # ZZZ a
+      @div "user-id-summary", a, userContainer
       for exerciseId, exercise of userExercises
         e = @div "exercise-summary", null, userContainer
         @answer e, exercise.correct
@@ -87,7 +97,7 @@ class Admin
       @div "user-id", user, userContainer
       for exerciseId, exercise of userExercises
         correct = exercise.correct
-        break unless correct?
+        continue unless correct?
         exerciseContainer = @div "exercise", null, userContainer
         @answer exerciseContainer, correct
         id = @div "exercise-id", exerciseId
