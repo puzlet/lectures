@@ -4,6 +4,9 @@
 
 class Complex
   
+  @complex: (z) ->
+    z + complex(0, 0)
+   
   @toPolar: (z) ->
     magnitude = abs(z)
     angle = z.arg()

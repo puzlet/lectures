@@ -10,6 +10,7 @@
 # Vector addition: show resultant vector in plot.
 # Close (x) button for exercises window.
 # Need a way to precompile complex.coffee - command line sci-coffee compiler.
+# Show "correct" status in each exercise, at top of execrcise set (n boxes), and top of lecture.
 
 # Math/numeric dependencies
 abs = numeric.abs
@@ -444,7 +445,31 @@ class FigureComplexUnit extends ComplexPlane
     @vector.set @z
     @highlightRow()
     callback?()
-    
+  
+  # Interface for exercises.
+  setToZ: (z, callback) ->
+    zStart = @z
+    @z = z
+    console.log "zStart, z", zStart, z
+    @animate zStart, =>
+      #@highlightRow()  # highlight only if z corresponds to row
+      callback?()
+      
+  # Interface for exercises.  Similar to animateAll.
+  animateSet: (zValues, callback) ->
+    idx = 0
+    next = =>
+      idx++
+      if idx<zValues.length
+        set()  # Recursion
+      else
+        callback?()
+    set = =>
+      @setToZ zValues[idx], =>
+        delay = if idx is 0 then 500 else 1000
+        setTimeout (-> next()), delay
+    set()
+  
   animateAll: (callback) ->
     @setEquation ""
     idx = 0
@@ -1164,61 +1189,95 @@ class Exercise['exercise-complex-addition-3'] extends ExerciseBase
        #, => step {z: z2}, => step {z: z3}
 
 
-class Exercise['exercise-complex-unit-1'] extends ExerciseBase
+# Base class for complex unit exercises
+class ExerciseComplexUnit extends ExerciseBase
   
   postamble: -> ""
+  
+  forwardVals: (A=1) ->
+    i = j
+    negi = Complex.diff(0, i)
+    (Complex.mul(A, z) for z in [1, i, -1, negi, 1])
     
+  reverseVals: ->
+    i = j
+    negi = Complex.diff(0, i)
+    [1, negi, -1, i, 1]
+  
+  complexVector: (vals) ->
+    vector = []
+    for v in vals
+      continue unless v
+      z = Complex.complex(v)
+      vector.push complex(round(z.x, 5), round(z.y, 5))
+    vector
+  
+  run: (userValues, correctValues) ->
+    
+    # User values
+    zValues = @complexVector userValues
+    
+    # Correct values
+    correctZ = @complexVector correctValues
+    
+    # Compare values
+    if zValues.length is correctValues.length
+      for z1, idx in zValues
+        z2 = correctZ[idx] ? null
+        ok = Complex.isEqual(z1, z2)
+        notOk = true unless ok
+      @correct = not(notOk?)
+    else
+      @correct = false
+    
+    # Animation
+    console.log "zValues", zValues
+    @figure.animateSet zValues, =>
+      @ok(@correct)
+      @saveToServer()
+  
+
+
+class Exercise['exercise-complex-unit-1'] extends ExerciseComplexUnit
+  
   postProcess: (evals) ->
-    
-    console.log "********* evals1", evals
-    
     return unless evals.length>3
+    @run evals, @forwardVals()
 
 
-class Exercise['exercise-complex-unit-2'] extends ExerciseBase
+class Exercise['exercise-complex-unit-2'] extends ExerciseComplexUnit
   
- postamble: -> ""
-  
- postProcess: (evals) ->
-  
-   console.log "********* evals2", evals
-   
-   return unless evals.length
-   f = evals[0]
-   return unless f(0)
+  postProcess: (evals) ->
+    return unless evals.length
+    angle = evals[0]
+    return unless angle(0)?
+    zValues = (Complex.polarToComplex(1, angle(n)) for n in [0..4])
+    @run zValues, @forwardVals()
 
 
-class Exercise['exercise-complex-unit-3'] extends ExerciseBase
+class Exercise['exercise-complex-unit-3'] extends ExerciseComplexUnit
   
- postamble: -> ""
-  
- postProcess: (evals) ->
-  
-   console.log "********* evals3", evals
-   
-   return unless evals.length>3
+  postProcess: (evals) ->
+    return unless evals.length>1
+    @run evals, @reverseVals()
 
 
-class Exercise['exercise-complex-unit-4'] extends ExerciseBase
+class Exercise['exercise-complex-unit-4'] extends ExerciseComplexUnit
   
- postamble: -> ""
-  
- postProcess: (evals) ->
-  
-   console.log "********* evals3", evals
-   
-   return unless evals.length is 1
+  postProcess: (evals) ->
+    console.log "**** evals", evals
+    angle = evals[0]
+    return if angle is ""
+    zValues = [1, Complex.polarToComplex(1, angle)]
+    @run zValues, [1, complex(0, -1)]
 
 
-class Exercise['exercise-complex-unit-5'] extends ExerciseBase
+class Exercise['exercise-complex-unit-5'] extends ExerciseComplexUnit
   
- postamble: -> ""
-  
- postProcess: (evals) ->
-  
-   console.log "********* evals3", evals
-   
-   return unless evals.length is 1
+  postProcess: (evals) ->
+    return unless evals.length>3
+    A = evals[0]
+    @run evals, @forwardVals(A)
 
 
 class ExerciseRotation
