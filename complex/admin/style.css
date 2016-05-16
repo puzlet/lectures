@@ -43,22 +43,12 @@ th, td {
   text-align: center;
 }
 
+pre {
+  font-family: Consolas, Menlo, DejaVu Sans Mono, Monaco, monospace;
+  font-size: 12pt;
+}
+
 /********** Containers **********/
-
-/*#outer-container {
-  width: 980px;
-  padding: 0px 30px 10px 30px;
-  margin: 0 auto;
-}*/
-
-/*#container {
-  position: relative;
-	width: 960px;
-	margin: 0 auto;
-	margin-top: 40px;
-	font-size: 12pt;
-	line-height: 150%;
-  }*/
 
 body {
   font-family: Verdana;
@@ -71,10 +61,52 @@ body {
 
 /********** Report elements **********/
 
+.summary {
+  display: inline-block;
+  width: 880px;
+  /*height: 300px;*/
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  font-size: 12pt;
+}
+
+.user-summary {
+}
+
+.user-id-summary {
+  display: inline-block;
+  min-width: 320px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.text-summary {
+  
+}
+
+.exercise-summary {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 3px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
 .user {
   margin-top: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid gray;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  border-top: 1px solid gray;
 }
 
 .user-id {
@@ -110,6 +142,3 @@ body {
   text-align: left;
 }
 
-.exercise-code pre {
-  font-family: Consolas, Menlo, DejaVu Sans Mono, Monaco, monospace;
-}

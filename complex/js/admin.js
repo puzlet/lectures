@@ -27,32 +27,76 @@
 
   Admin = (function() {
     function Admin() {
+      $(document).tooltip({
+        content: function() {
+          return $(this).prop('title');
+        }
+      });
       Server.getAll((function(_this) {
         return function(data) {
           _this.data = data;
           _this.model();
-          console.log("SERVER");
-          return _this.view();
+          _this.viewSummary();
+          return _this.viewDetail();
         };
       })(this));
     }
 
     Admin.prototype.model = function() {
-      var rec, record, _base, _i, _len, _name, _ref;
+      var rec, record, _base, _i, _len, _name, _ref, _results;
       this.report = {};
       _ref = this.data;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         record = _ref[_i];
         rec = (_base = this.report)[_name = record.userId] != null ? _base[_name] : _base[_name] = {};
-        rec[record.exerciseId] = {
+        _results.push(rec[this.trimExerciseId(record.exerciseId)] = {
           correct: record.correct,
           code: record.code
-        };
+        });
       }
-      return console.log("report", this.report);
+      return _results;
     };
 
-    Admin.prototype.view = function() {
+    Admin.prototype.viewSummary = function() {
+      var a, e, exercise, exerciseId, summaryContainer, text, user, userContainer, userExercises, _ref, _results;
+      this.container = $("#report");
+      summaryContainer = this.div("summary", null, this.container);
+      _ref = this.report;
+      _results = [];
+      for (user in _ref) {
+        userExercises = _ref[user];
+        userContainer = this.div("user-summary", null, summaryContainer);
+        a = $("<a>", {
+          href: "#" + user,
+          target: "_self"
+        });
+        userContainer.append(a);
+        this.div("user-id-summary", user, a);
+        _results.push((function() {
+          var _results1;
+          _results1 = [];
+          for (exerciseId in userExercises) {
+            exercise = userExercises[exerciseId];
+            e = this.div("exercise-summary", null, userContainer);
+            e.addClass(exercise.correct ? "correct" : "incorrect");
+            text = this.summaryTextTemplate(exerciseId, exercise.code);
+            _results1.push(e.attr({
+              title: text
+            }));
+          }
+          return _results1;
+        }).call(this));
+      }
+      return _results;
+    };
+
+    Admin.prototype.summaryTextTemplate = function(id, code) {
+      var text;
+      return text = "<div class='text-summary'>\n  <b>" + id + "</b>\n  <pre>" + code + "</pre>\n</div>";
+    };
+
+    Admin.prototype.viewDetail = function() {
       var code, exercise, exerciseContainer, exerciseId, id, user, userContainer, userExercises, _ref, _results;
       this.container = $("#report");
       _ref = this.report;
@@ -60,13 +104,15 @@
       for (user in _ref) {
         userExercises = _ref[user];
         userContainer = this.div("user", null, this.container);
+        userContainer.attr({
+          id: user
+        });
         this.div("user-id", user, userContainer);
         _results.push((function() {
           var _results1;
           _results1 = [];
           for (exerciseId in userExercises) {
             exercise = userExercises[exerciseId];
-            console.log("user/exId/correct/code", user, exerciseId, exercise.correct, exercise.code);
             exerciseContainer = this.div("exercise", null, userContainer);
             exerciseContainer.addClass(exercise.correct ? "correct" : "incorrect");
             id = this.div("exercise-id", exerciseId);
@@ -81,18 +127,25 @@
 
     Admin.prototype.div = function(cls, content, container) {
       var div;
-      console.log("div", cls, content, container);
       div = $("<div>", {
         "class": cls
       });
       if (content) {
         div.append(content);
       }
-      console.log("C", container);
       if (container) {
         container.append(div);
       }
       return div;
+    };
+
+    Admin.prototype.trimExerciseId = function(id) {
+      var prefix;
+      prefix = "exercise-";
+      if (id.indexOf(prefix) === 0) {
+        id = id.substr(prefix.length);
+      }
+      return id;
     };
 
     Admin.prototype.append = function(element) {
