@@ -44,18 +44,20 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     numbers it can appear that they have little practical use. This is
     far from true.</p>
   
-  <p>Differential equations are just about the most powerful
-    mathematical tool available. By themselves, they are too advanced
-    for us today. But, with complex numbers we can transform an
-    interesting (and useful) differential equation into a (much
-    easier) quadratic equation.</p>
+  <p>For example, <i>differential equations</i> are perhaps the most
+  powerful tool in mathematics; and complex numbers are essential to
+  their application. But, differential equations are not
+  easy. However, if we take a simple approach&mdash;focusing on what
+  we <i>can</i> do, rather than what we can't&mdash; we can appreciate
+  the importance of complex numbers in the real-world.</p>
 
 </div>
 
 <div class='box-2-2'>
-
-  comments
-  
+  <p>
+    Talk about what a differential equation actually is? Or leave
+    postponed?
+  </p>
 </div>
 
 <div class='clear'></div>
@@ -64,23 +66,23 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
   <h2>Extending Eulers equation</h2>
 
-  <p> Say we are designing some dynamic system&mdash;car suspension,
-    or electronics or whatever&mdash;something that changes with time
-    ($t$). Chances are, a solution to that equation is
+  <p> Say we are designing a car's suspension, of phone's electronics&mdash;some <i>dynamic system</i> that
+    changes with time ($t$). Chances are, the system is desribed by a
+    differential equation with a solution
 
     $$ y=e^{st} $$
 
-    Here $s=a+ib$ is a complex number that we have to somehow find.
+    Here $s=a+ib$ is a complex number that we have to (somehow) find.
 
     We can use Euler's equation to understand what $e^{st}$ looks like
 
-    $$
-    \begin{eqnarray}
-    y &=& e^{st} \\ 
-    &=& e^{a+ib} \\
-    &=& e^{a}e^{ib} \\
-    &=& e^{a} \left( \cos b + i\sin b \right)
-    \end{eqnarray}
+    $$ 
+    \begin{eqnarray} 
+    y &=& e^{st} \nonumber \\ 
+    &=& e^{(a+ib)t} \nonumber \\ 
+    &=& e^{at}e^{ibt} \nonumber \\ 
+    &=& e^{at} \left( \cos bt + i\sin bt \right) \nonumber
+    \end{eqnarray} 
     $$
 
   </p>
@@ -89,8 +91,10 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <div class='box-2-2'>
 
-  comments
-  
+  <p>
+    Illustrate graphically. Sliders for a and b perhaps. Show how real solution is found?
+    </p>
+
 </div>
 
 <div class='clear'></div>
@@ -100,29 +104,29 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
   <h2>Eigenstuff</h2>
 
-  The question is, how do we find the right complex number $s$?  Lets
-  consider our first (and the simplest) differential equation:
+  <p>
+    How do we find the right complex number $s$?  Lets consider our
+    first (and the simplest possible) differential equation:
 
-  $$ \frac{dy}{dt}=0 $$
+    $$ \frac{dy}{dt}=0 $$
+    
+    This equation just says that $y$ doesn't change with time.
+    Substituting $y=e^{st}$, we have
 
-  Substituting $y=e^{st}$, we have
-
-  $$ se^{st} = 0 $$
+    $$ se^{st} = 0 $$
   
-  You can easily see that this equation is solved by $s=0$, so a
-  solution is
+    This equation is solved by $s=0$, so a solution is
 
-  $$ y = e^{st} = e^{0t} = 1 $$
+    $$ y = e^{st} = e^{0t} = 1 $$
 
-  And, thats pretty much our recipe: substitute $y=e^{st}$ and solve for $s$.
-
+    And, that's our recipe: substitute $y=e^{st}$ and solve for $s$.
+    </p>
 
 </div>
 
 <div class='box-2-2'>
 
-  comments
-  
+ 
 </div>
 
 <div class='clear'></div>
@@ -132,49 +136,62 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
   <h2>Bridge</h2>
 
-  <p> Much more interesting problems can be solved with the same recipe&mdash; including the design
-    of bridges. Check out this  <a href='https://youtu.be/3mclp9QmCGs'>video</a>. In
-    engineering, through design choices (materials, structures, etc.)
-    sets the differential equation. In the case of this bridge, the
-    equation that describes the angle of the twist ($\phi$) is
+  <p> 
+    Much more interesting problems can be solved with the same
+    recipe&mdash;including the design of bridges. Check out this  
+    <a href='https://youtu.be/3mclp9QmCGs'>video</a>. In engineering,
+    design choices (materials, structures, etc.) determine the
+    differential equation. In the case of this bridge, the equation
+    that describes the angle of the twist ($y$) is
 
-    $$ \frac{d^2\phi}{dt^2} + 2\zeta\frac{d\phi}{dt} + \phi=0 $$
+    $$ \frac{d^2y}{dt^2} + 2\zeta\frac{dy}{dt} + y=0 $$
   
     Here $\zeta$ (zeta) is a <i>designed parameter</i>&mdash;engineers
-    chose it through their design choices.
+    selected it through their design choices. We can solve this
+    equation with the same recipe as above; substituing $y=e^{st}$ we
+    have
 
-    We can solve this equation with the same recipe as above;
-    substituing $y=e^{st}$ we have
-
-    $$
-    \begin{eqnarray}
-    s^2\cancel{e^{st}}+2\zeta s \cancel{e^{st}} +
-    \cancel{e^{st}} &=& 0 \\
-    s^2+2\zeta s + 1 &=& 0
-    \end{eqnarray}
+    $$ 
+    \begin{eqnarray} 
+    s^2\cancel{e^{st}}+2\zeta s \cancel{e^{st}} + \cancel{e^{st}} &=& 0 \nonumber \\ 
+    s^2+2\zeta s + 1 &=& 0 \nonumber 
+    \end{eqnarray} 
     $$
 
-    The solutuions for s are then
+    We can solve for $s$ by completing the square:
 
-    $$ s = -\zeta \pm \sqrt{\zeta^2-1} $$
+    $$ 
+    \begin{eqnarray} 
+    (s+\zeta)^2-\zeta^2+1&=&0 \nonumber \\ 
+    (s+\zeta)^2 &=& \pm \sqrt{\zeta^2-1} \nonumber \\ 
+    s &=& -\zeta \pm \sqrt{\zeta^2-1} \nonumber
+    \end{eqnarray} 
+    $$
 
-    Now, with hardly any further maths, we can see what happened to
-    the bridge. Say $\zeta$ is less than zero and greater than -1
-    ($-1<\zeta<0$). Then the square-root value is imaginary part of
-    $s$ (which we called $b$ above) and the real part of $s$ is
-    $\zeta$ ($a$ above), which is <b>positive</b>.
-
+    Now, with hardly any further math, we can see what happened to the
+    bridge. Say $\zeta$ is less than zero and greater than -1
+    ($-1<\zeta<0$). Then, the value of the square-root above is the
+    imaginary part of $s$ (i.e., $b$) and the real part of $s$ is
+    $-\zeta$ (i.e., $a$), which is <b>positive</b>.
+  </p>
     
-    $$
-    y = e^{st} = e^{at}e^{ibt} 
-    $$
+  <p>
+    Recalling that $ y = e^{st} = e^{at}e^{ibt}$&mdash;what happens to
+    $e^{at}$ as $t$ gets large (i.e., as time progresses)> What would
+    a better choice of $\zeta$ have been?
+  </p>
 
 </div>
 
 <div class='box-2-2'>
 
-  comments
-  
+  <p>
+  Explain more about design? I.e., equation is not given to us, rather
+  we get to say what it is.
+
+  Illustrate effect of a and b graphically.
+    <p>
+
 </div>
 
 <div class='clear'></div>
@@ -184,11 +201,14 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
   <h2>s-domain</h2>
   
-  <p>Engineers who often design dyanmic systems very often don't even
-  consider the differential equation directly&mdash;instead they
-  understand the behaviour via the values of $s$. These special
-  complex numbers are known as the "poles" and "zeros" of a
-  system&mdash;something to look forward to at engineering school.</p>
+  <p>
+    Many engineers hardly ever consider differential equations
+    directly (if at all). Instead, complex numbers allow them to focus
+    just on the critical values of $s$&mdash;since these determine the
+    behaviour of their system. Technically, these special complex
+    numbers are known as the "poles" and "zeros"&mdash;something to
+    look forward to at engineering school.
+  </p>
 
 
 </div>  <!-- .box-2-1 -->
