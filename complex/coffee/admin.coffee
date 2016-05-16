@@ -21,6 +21,20 @@ class Server
 
 class Admin
   
+  # TODO: Get from coffee file in /complex?
+  exerciseIds: [
+    'complex-plane-1'
+    'complex-plane-2'
+    'complex-addition-1'
+    'complex-addition-2'
+    'complex-addition-3'
+    'complex-unit-1'
+    'complex-unit-2'
+    'complex-unit-3'
+    'complex-unit-4'
+    'complex-unit-5'
+  ]
+  
   constructor: ->
     
     $(document).tooltip
@@ -35,22 +49,26 @@ class Admin
     @report = {} 
     for record in @data
       rec = @report[record.userId] ?= {}
+      @blankExerciseRecords(rec)
       rec[@trimExerciseId(record.exerciseId)] =
         correct: record.correct
         code: record.code
+        
+  blankExerciseRecords: (rec) ->
+    return if rec[@exerciseIds[0]]
+    rec[id] = {} for id in @exerciseIds
   
   viewSummary: ->
     @container = $ "#report"
     summaryContainer = @div "summary", null, @container
     for user, userExercises  of @report
       userContainer = @div "user-summary", null, summaryContainer
-      a = $ "<a>", href: "##{user}", target: "_self"
-      userContainer.append a
-      @div "user-id-summary", user, a
+      a = $ "<a>", href: "##{user}", target: "_self", text: user
+      @div "user-id-summary", a, userContainer  # ZZZ a
       for exerciseId, exercise of userExercises
         e = @div "exercise-summary", null, userContainer
-        e.addClass(if exercise.correct then "correct" else "incorrect")  # ZZZ helper function
-        text = @summaryTextTemplate exerciseId, exercise.code
+        @answer e, exercise.correct
+        text = @summaryTextTemplate exerciseId, (exercise.code ? "No answer")
         e.attr title: text
         
   summaryTextTemplate: (id, code) ->
@@ -68,9 +86,10 @@ class Admin
       userContainer.attr id: user
       @div "user-id", user, userContainer
       for exerciseId, exercise of userExercises
-        #console.log "user/exId/correct/code", user, exerciseId, exercise.correct, exercise.code
+        correct = exercise.correct
+        break unless correct?
         exerciseContainer = @div "exercise", null, userContainer
-        exerciseContainer.addClass(if exercise.correct then "correct" else "incorrect")
+        @answer exerciseContainer, correct
         id = @div "exercise-id", exerciseId
         code = @div "exercise-code", "<pre>"+exercise.code+"</pre>"
         exerciseContainer.append(id).append(code)
@@ -87,10 +106,12 @@ class Admin
       id = id.substr(prefix.length)
     id
     
-  append: (element) -> @container.append element
+  answer: (element, correct) ->
+    element.addClass(if correct? then (if correct then "correct" else "incorrect") else "not-done")
     
-      
-      
+  append: (element) -> @container.append element
+  
+
 new Admin
 
   

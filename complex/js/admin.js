@@ -26,6 +26,8 @@
   })();
 
   Admin = (function() {
+    Admin.prototype.exerciseIds = ['complex-plane-1', 'complex-plane-2', 'complex-addition-1', 'complex-addition-2', 'complex-addition-3', 'complex-unit-1', 'complex-unit-2', 'complex-unit-3', 'complex-unit-4', 'complex-unit-5'];
+
     function Admin() {
       $(document).tooltip({
         content: function() {
@@ -50,10 +52,25 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         record = _ref[_i];
         rec = (_base = this.report)[_name = record.userId] != null ? _base[_name] : _base[_name] = {};
+        this.blankExerciseRecords(rec);
         _results.push(rec[this.trimExerciseId(record.exerciseId)] = {
           correct: record.correct,
           code: record.code
         });
+      }
+      return _results;
+    };
+
+    Admin.prototype.blankExerciseRecords = function(rec) {
+      var id, _i, _len, _ref, _results;
+      if (rec[this.exerciseIds[0]]) {
+        return;
+      }
+      _ref = this.exerciseIds;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        id = _ref[_i];
+        _results.push(rec[id] = {});
       }
       return _results;
     };
@@ -69,18 +86,18 @@
         userContainer = this.div("user-summary", null, summaryContainer);
         a = $("<a>", {
           href: "#" + user,
-          target: "_self"
+          target: "_self",
+          text: user
         });
-        userContainer.append(a);
-        this.div("user-id-summary", user, a);
+        this.div("user-id-summary", a, userContainer);
         _results.push((function() {
-          var _results1;
+          var _ref1, _results1;
           _results1 = [];
           for (exerciseId in userExercises) {
             exercise = userExercises[exerciseId];
             e = this.div("exercise-summary", null, userContainer);
-            e.addClass(exercise.correct ? "correct" : "incorrect");
-            text = this.summaryTextTemplate(exerciseId, exercise.code);
+            this.answer(e, exercise.correct);
+            text = this.summaryTextTemplate(exerciseId, (_ref1 = exercise.code) != null ? _ref1 : "No answer");
             _results1.push(e.attr({
               title: text
             }));
@@ -97,7 +114,7 @@
     };
 
     Admin.prototype.viewDetail = function() {
-      var code, exercise, exerciseContainer, exerciseId, id, user, userContainer, userExercises, _ref, _results;
+      var code, correct, exercise, exerciseContainer, exerciseId, id, user, userContainer, userExercises, _ref, _results;
       this.container = $("#report");
       _ref = this.report;
       _results = [];
@@ -113,8 +130,12 @@
           _results1 = [];
           for (exerciseId in userExercises) {
             exercise = userExercises[exerciseId];
+            correct = exercise.correct;
+            if (correct == null) {
+              break;
+            }
             exerciseContainer = this.div("exercise", null, userContainer);
-            exerciseContainer.addClass(exercise.correct ? "correct" : "incorrect");
+            this.answer(exerciseContainer, correct);
             id = this.div("exercise-id", exerciseId);
             code = this.div("exercise-code", "<pre>" + exercise.code + "</pre>");
             _results1.push(exerciseContainer.append(id).append(code));
@@ -146,6 +167,10 @@
         id = id.substr(prefix.length);
       }
       return id;
+    };
+
+    Admin.prototype.answer = function(element, correct) {
+      return element.addClass(correct != null ? (correct ? "correct" : "incorrect") : "not-done");
     };
 
     Admin.prototype.append = function(element) {
