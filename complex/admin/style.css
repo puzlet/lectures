@@ -59,6 +59,43 @@ body {
   text-align: center;
 }
 
+/********** Page footer **********/
+
+.page-footer {
+  font-size: 10pt;
+  color: #666;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.page-footer p {
+  margin: 0 0;
+}
+
+.page-footer .last-update{
+  color: black;
+  font-weight: bold;
+}
+
+.page-footer img {
+  margin-right: 5px;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+.page-footer a {
+ color: #666; 
+}
+
+.credits {
+  color: #aaa;
+}
+
+.credits a {
+  color: #aaa;
+}
+
+
 /********** Report elements **********/
 
 .summary {
@@ -90,14 +127,13 @@ body {
 }
 
 .text-summary {
-  
 }
 
 .exercise-summary {
   display: inline-block;
   width: 20px;
   height: 20px;
-  margin-left: 3px;
+  margin-left: 5px;
   border: 1px solid #aaa;
   border-radius: 4px;
 }
