@@ -20,7 +20,6 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   });
 });
 </script>  
-  
 
 </head>
 
@@ -37,7 +36,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <div class='box-2-1'>
   
   <p>Complex numbers appear often in science and engineering. The
-    suspension of your car, the electronics in your phone, skyscrapers
+    suspension of a car, the electronics in a phone, skyscrapers
     and bridges all use complex numbers in their design.</p>
 
   <p>However, the most important (and interesting) examples are
@@ -45,94 +44,171 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     numbers it can appear that they have little practical use. This is
     far from true.</p>
   
-  <p>Differential equations are just about the most powerful
-    mathematical tool available. By themselves, they are too advanced
-    for us today. But, with complex numbers we can transform a
-    differential equation into a (much easier) quadratic equation.</p>
-  
-   <h2>Extending Eulers equation</h2>
+  <p>For example, <i>differential equations</i> are perhaps the most
+  powerful tool in mathematics; and complex numbers are essential to
+  their application. But, differential equations are not
+  easy. However, if we take a simple approach&mdash;focusing on what
+  we <i>can</i> do, rather than what we can't&mdash; we can appreciate
+  the importance of complex numbers in the real-world.</p>
 
-  <p>From Eulers equation you know that for an imaginary number $ib$
+</div>
 
-    $$ e^{ib} = \cos b + i\sin b $$
+<div class='box-2-2'>
+  <p>
+    Talk about what a differential equation actually is? Or leave
+    postponed?
+  </p>
+</div>
 
-    Its a small step so consider a complex number $a+ib$
+<div class='clear'></div>
 
-    $$ e^{a+ib} = e^{a}e^{ib} = e^{a} \left( \cos b + i\sin b
-    \right)$$
+<div class='box-2-1'>
 
-    And, just a hop to multiply the complex number by time, $t$
+  <h2>Extending Eulers equation</h2>
 
-    $$ e^{st} = e^{(a+ib)t} = e^{at}e^{ibt} = e^{at} \left( \cos bt +
-    i\sin bt \right)$$
+  <p> Say we are designing a car's suspension, of phone's electronics&mdash;some <i>dynamic system</i> that
+    changes with time ($t$). Chances are, the system is desribed by a
+    differential equation with a solution
 
-    It mightn't look like much, $e^{st}$ is the most important
-    solution to the most important class of differential equations
-    (which are the most important tool in all of mathematics). All you
-    need to do is work out what $s$ is.
+    $$ y=e^{st} $$
+
+    Here $s=a+ib$ is a complex number that we have to (somehow) find.
+
+    We can use Euler's equation to understand what $e^{st}$ looks like
+
+    $$ 
+    \begin{eqnarray} 
+    y &=& e^{st} \nonumber \\ 
+    &=& e^{(a+ib)t} \nonumber \\ 
+    &=& e^{at}e^{ibt} \nonumber \\ 
+    &=& e^{at} \left( \cos bt + i\sin bt \right) \nonumber
+    \end{eqnarray} 
+    $$
 
   </p>
 
+</div>
+
+<div class='box-2-2'>
+
+  <p>
+    Illustrate graphically. Sliders for a and b perhaps. Show how real solution is found?
+    </p>
+
+</div>
+
+<div class='clear'></div>
+
+<div class='box-2-1'>
+
+
   <h2>Eigenstuff</h2>
 
-  If you know anything about the function $f(x)=e^x$, you know that
-  differention doesn't affect it. Now, if you know the chain-rule
+  <p>
+    How do we find the right complex number $s$?  Lets consider our
+    first (and the simplest possible) differential equation:
+
+    $$ \frac{dy}{dt}=0 $$
+    
+    This equation just says that $y$ doesn't change with time.
+    Substituting $y=e^{st}$, we have
+
+    $$ se^{st} = 0 $$
   
-  $$\frac{d}{dt} e^{st} = se^{st}$$
+    This equation is solved by $s=0$, so a solution is
 
-  Lets consider our first (and the simplest) differential equation:
+    $$ y = e^{st} = e^{0t} = 1 $$
 
-  $$ \frac{dy}{dt}=0 $$
+    And, that's our recipe: substitute $y=e^{st}$ and solve for $s$.
+    </p>
 
-  To solve it, we assume $e^{st}$ is a solution for some value of
-  $s$. To find $s$, substitute $y=e^{st}$ above to find
+</div>
 
-  $$ se^{st} = 0 $$
-  
-  You can easily see that this equation is solved by $s=0$, so a solution is
+<div class='box-2-2'>
 
-  $$ y = e^{st} = e^{0t} = 1 $$
+ 
+</div>
+
+<div class='clear'></div>
+
+<div class='box-2-1'>
+
 
   <h2>Bridge</h2>
 
-  <p> Although we only solved a very simple differential equation, the <i>recipe</i> can
-  be applied to much more interesting problems. Including the design
-  of bridges. First watch this short
-  <a href='https://youtu.be/3mclp9QmCGs'>video</a>.  The design of
-  this bridge used the wrong complex number.</p>
+  <p> 
+    Much more interesting problems can be solved with the same
+    recipe&mdash;including the design of bridges. Check out this  
+    <a href='https://youtu.be/3mclp9QmCGs'>video</a>. In engineering,
+    design choices (materials, structures, etc.) determine the
+    differential equation. In the case of this bridge, the equation
+    that describes the angle of the twist ($y$) is
 
-  <p> The equation for the angle of twist ($\phi$) of the bridge is
-
-    $$ \frac{d^2\phi}{t^2} + 2\zeta\frac{d\phi}{dt} + \phi=0 $$
+    $$ \frac{d^2y}{dt^2} + 2\zeta\frac{dy}{dt} + y=0 $$
   
-    The equation has just one parameter $\zeta$ (zeta) for the
-    engineer to design. The problem is, what value should she choose?
+    Here $\zeta$ (zeta) is a <i>designed parameter</i>&mdash;engineers
+    selected it through their design choices. We can solve this
+    equation with the same recipe as above; substituing $y=e^{st}$ we
+    have
 
-    We can solve this equation with the same recipe as above: (1)
-    assume a $\phi=e^{st}$ is a solution; (2) substitute into the
-    differential equation to find an equation for $s$; (3) solve <i>that</i> equation
-    for $s$.
-
-    Step 1: $$ \phi = e^{st} $$
-
-    Step 2: $$ s^2\cancel{e^{st}}+2\zeta s \cancel{e^{st}} +
-    \cancel{e^{st}} = 0 $$
-
-    Step 3: $$ s = -\zeta \pm \sqrt{\zeta^2-1} $$
-
-    Now, with hardly any further maths, we can see what happened to
-    the bridge. Say $\zeta$ is less than zero and greater than -1
-    ($-1<\zeta<0$). Then the square-root value is imaginary part of $s$ (which we called $b$ above) and the
-    real part of $s$ is $\zeta$ ($a$ above), which is <b>positive</b>.
-
-    $$
-    y = e^{st} = e^{at}e^{ibt} 
+    $$ 
+    \begin{eqnarray} 
+    s^2\cancel{e^{st}}+2\zeta s \cancel{e^{st}} + \cancel{e^{st}} &=& 0 \nonumber \\ 
+    s^2+2\zeta s + 1 &=& 0 \nonumber 
+    \end{eqnarray} 
     $$
 
- 
-    </p>
+    We can solve for $s$ by completing the square:
 
+    $$ 
+    \begin{eqnarray} 
+    (s+\zeta)^2-\zeta^2+1&=&0 \nonumber \\ 
+    (s+\zeta)^2 &=& \pm \sqrt{\zeta^2-1} \nonumber \\ 
+    s &=& -\zeta \pm \sqrt{\zeta^2-1} \nonumber
+    \end{eqnarray} 
+    $$
+
+    Now, with hardly any further math, we can see what happened to the
+    bridge. Say $\zeta$ is less than zero and greater than -1
+    ($-1<\zeta<0$). Then, the value of the square-root above is the
+    imaginary part of $s$ (i.e., $b$) and the real part of $s$ is
+    $-\zeta$ (i.e., $a$), which is <b>positive</b>.
+  </p>
     
+  <p>
+    Recalling that $ y = e^{st} = e^{at}e^{ibt}$&mdash;what happens to
+    $e^{at}$ as $t$ gets large (i.e., as time progresses)? What would
+    a better choice of $\zeta$ have been?
+  </p>
+
+</div>
+
+<div class='box-2-2'>
+
+  <p>
+  Explain more about design? I.e., equation is not given to us, rather
+  we get to say what it is.
+
+  Illustrate effect of a and b graphically.
+    <p>
+
+</div>
+
+<div class='clear'></div>
+
+<div class='box-2-1'>
+
+
+  <h2>s-domain</h2>
+  
+  <p>
+    Many engineers hardly ever consider differential equations
+    directly (if at all). Instead, complex numbers allow them to focus
+    just on the critical values of $s$&mdash;since these determine the
+    behaviour of their system. Technically, these special complex
+    numbers are known as the "poles" and "zeros"&mdash;something to
+    look forward to at engineering school.
+  </p>
 
 
 </div>  <!-- .box-2-1 -->
