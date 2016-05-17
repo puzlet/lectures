@@ -834,7 +834,8 @@ multiply the real part $x$ and imaginary part $y$ by the same factor:
 </div>  <!--#outer-container-->
 
 <script>
-if (!console.log) console.log = function() {};
+if (!window.console) window.console = {};
+if (!window.console.log) window.console.log = function() {};
 </script>
 <script src="js/render-math.js"></script>
 <script src='../js/vendor.js'></script>
