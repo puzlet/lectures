@@ -123,9 +123,10 @@
     User.prototype.userCookie = "user-id";
 
     function User() {
+      var _ref;
       this.groupInput = $(".group-id");
       this.userInput = $(".user-id");
-      this.groupId = $.cookie(this.groupCookie);
+      this.groupId = (_ref = $.cookie(this.groupCookie)) != null ? _ref : 'public';
       if (this.groupId) {
         this.groupInput.val(this.groupId);
         this.showUser();
@@ -198,6 +199,11 @@
     Figures.prototype.aceUrl = "/puzlet/ace/ace.js";
 
     function Figures() {
+      $(document).tooltip({
+        content: function() {
+          return $(this).prop('title');
+        }
+      });
       Complex = $blab.Complex;
       EulerComputation = $blab.EulerComputation;
       new FigureComplexPlane;

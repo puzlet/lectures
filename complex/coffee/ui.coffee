@@ -107,7 +107,7 @@ class User
     @groupInput = $(".group-id")
     @userInput = $(".user-id")
     
-    @groupId = $.cookie(@groupCookie)
+    @groupId = $.cookie(@groupCookie) ? 'public'
     if @groupId
       @groupInput.val @groupId
       @showUser()
@@ -177,6 +177,9 @@ class Figures
   aceUrl: "/puzlet/ace/ace.js"
   
   constructor: ->
+    
+    $(document).tooltip
+      content: -> $(this).prop('title')
     
     Complex = $blab.Complex
     EulerComputation = $blab.EulerComputation

@@ -6,7 +6,7 @@ class Server
   @public: "//puzlet.mvclark.com"
   
   #@ready: false
-  #@groupId: "my-group"
+  #@groupId: "public"  # Not used yet
   #@userId: null
   
   @isLocal: window.location.hostname is "localhost"
@@ -38,7 +38,7 @@ class Admin
   constructor: ->
     
     $(document).tooltip
-      content: -> $(this).prop('title');
+      content: -> $(this).prop('title')
     
     Server.getAll (@data) =>
       @model()
