@@ -211,7 +211,7 @@ class Figures
     @resources.loadUnloaded => $Ace?.load(@resources)
     
   slides: ->
-    console.log "**** SLIDES", $("section").css "visibility"
+    #console.log "**** SLIDES", $("section").css "visibility"
     
     sections = $ "section"
     
@@ -222,21 +222,36 @@ class Figures
     
     $(sections[current]).show()
     
+    navigate = (d) ->
+      $(sections[current]).hide()
+      current++ if d>0 and current<sections.length-1
+      current-- if d<0 and current>0
+      $(sections[current]).show()
+      setNavButtons()
+    
     lecture =
-      doStep: =>
-        $(sections[current]).hide()
-        current++ if current<sections.length-1
-        $(sections[current]).show()
-      back: ->
-        $(sections[current]).hide()
-        current-- if current>0
-        $(sections[current]).show()
+      doStep: -> navigate(1)
+      back: -> navigate(-1)
       reset: ->
     
     KeyHandler.init lecture
     
-    $("#slide-navigation .next").click -> lecture.doStep()
-    $("#slide-navigation .prev").click -> lecture.back()
+    number = $ ".slide-navigation .slide-number"
+    next = $ ".slide-navigation .next"
+    prev = $ ".slide-navigation .prev"
+    
+    setNavButtons = ->
+      number.html "#{current+1} of #{sections.length}"
+      enable = (b, e=true) ->
+        b.toggleClass "nav-button-enable", e
+        b.toggleClass "nav-button-disable", not(e)
+      enable next, (current < sections.length-1)
+      enable prev, current > 0
+      
+    setNavButtons()
+    
+    next.click -> lecture.doStep()
+    prev.click -> lecture.back()
       
       
 class KeyHandler

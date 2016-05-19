@@ -247,8 +247,7 @@
     };
 
     Figures.prototype.slides = function() {
-      var current, lecture, sections;
-      console.log("**** SLIDES", $("section").css("visibility"));
+      var current, lecture, navigate, next, number, prev, sections, setNavButtons;
       sections = $("section");
       sections.hide();
       sections.css({
@@ -256,30 +255,48 @@
       });
       current = 0;
       $(sections[current]).show();
+      navigate = function(d) {
+        $(sections[current]).hide();
+        if (d > 0 && current < sections.length - 1) {
+          current++;
+        }
+        if (d < 0 && current > 0) {
+          current--;
+        }
+        $(sections[current]).show();
+        return setNavButtons();
+      };
       lecture = {
-        doStep: (function(_this) {
-          return function() {
-            $(sections[current]).hide();
-            if (current < sections.length - 1) {
-              current++;
-            }
-            return $(sections[current]).show();
-          };
-        })(this),
+        doStep: function() {
+          return navigate(1);
+        },
         back: function() {
-          $(sections[current]).hide();
-          if (current > 0) {
-            current--;
-          }
-          return $(sections[current]).show();
+          return navigate(-1);
         },
         reset: function() {}
       };
       KeyHandler.init(lecture);
-      $("#slide-navigation .next").click(function() {
+      number = $(".slide-navigation .slide-number");
+      next = $(".slide-navigation .next");
+      prev = $(".slide-navigation .prev");
+      setNavButtons = function() {
+        var enable;
+        number.html("" + (current + 1) + " of " + sections.length);
+        enable = function(b, e) {
+          if (e == null) {
+            e = true;
+          }
+          b.toggleClass("nav-button-enable", e);
+          return b.toggleClass("nav-button-disable", !e);
+        };
+        enable(next, current < sections.length - 1);
+        return enable(prev, current > 0);
+      };
+      setNavButtons();
+      next.click(function() {
         return lecture.doStep();
       });
-      return $("#slide-navigation .prev").click(function() {
+      return prev.click(function() {
         return lecture.back();
       });
     };
