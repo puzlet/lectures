@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<!-- Slides -->
+<html lang='en'>
+
+<head>
+<meta charset='utf-8'>
+<title>Complex Numbers</title>
+<link rel='icon' href='//puzlet.org/puzlet/images/favicon.ico'>
+<link rel='stylesheet' href='../../css/vendor.css'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+<link rel='stylesheet' href='../../css/style.css?v=1'>
+<link rel='stylesheet' href='../style.css?v=1'>
+<link rel='stylesheet' href='style.css?v=1'>
+<base target="_blank">
+<!-- Preload KaTeX to improve math rendering speed -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+<script src="../js/auto-render.js"></script>
+</head>
+
+<body class='slides'>
+
+<div id='outer-container'>
+<div id='container'>
+
+<section id='section-title'>
+<h1>Complex Numbers</h1>
+<h2 class='subtitle'>An Interactive Guide</h2>
+</section>
+
+<section id='section-complex-plane'>
+
+<h2>Vectors in a Plane</h2>
+
+<div class='box-2-1'>
+  
+  <p>
+  <table>
+  <tr><td>Cartesian<td>$z = (x, y)$
+  <tr><td>Polar<td>$z = A \angle \theta$
+  <tr><td>Complex<td>$z = x+iy$
+  </table>
+  </p>
+  
+  <div class='text-block'>
+  <p>
+  Examples:
+  <ul class='buttons'>
+  <li><span id='complex-12-plus-09i' class='text-button'> $1.2+0.9i$ </span>
+  <li><span id='complex-neg1-plus-i' class='text-button'>$-1+i$</span>
+  <li><span id='complex-neg1-plus-negi' class='text-button'>$-1-i$</span>
+  <li><span id='complex-negi' class='text-button'>$-i$</span>
+  </ul>
+  </p>
+  </div>
+  
+</div>  <!-- .box-2-1 -->
+
+<div id='figure-complex-plane' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='clear'></div>
+</section>
+
+<section id='section-complex-addition'>
+
+<h2>Addition</h2>
+
+<div class='box-2-1'>
+  <p>
+    $$z_1 = x + iy$$
+    $$z_2 = a + ib$$
+  </p>
+  <br>
+  <p>
+    $$
+    \begin{matrix}
+    z_1 + z_2 & = & (x + iy) + (a + ib) \\[2ex] & = & (x+a) + i(y+b)
+    \end{matrix}
+    $$
+  </p>
+</div>
+
+<div id='figure-complex-addition' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+    <div class='slider-2'></div>
+  </div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='clear'></div>
+</section>
+
+<section id='section-complex-unit'>
+
+<h2>The Imaginary Unit</h2>
+
+<div class='box-2-1'>
+  
+  <p>
+    <table id='table-complex-unit'>
+    <tr><th>$z$<th>$(x,y)$<th>$\theta$
+    <tr><td>$1$<td>$(1,0)$<td>$0$
+    <tr><td>$i$<td>$(0,1)$<td>$\frac{\pi}{2}$
+    <tr><td>$-1$<td>$(-1,0)$<td>$\pi$
+    <tr><td>$-i$<td>$(0,-1)$<td>$-\frac{\pi}{2}$
+    </table>
+  </p>
+  
+  <div class='text-block'>
+  
+    <p>
+    <span id="show-vectors" class='text-button'>Cycle through vectors</span>
+    </p>
+  
+    <h3>180<sup>&deg;</sup> rotation</h3>
+  
+    <ul class='buttons'>
+      <li><span id='multiply-by-negative-1' class='text-button'>Multiply $z$ by $-1$</span>
+    </ul>
+  
+    <h3>90<sup>&deg;</sup> rotation</h3>
+
+    <ul class='buttons'>
+    <li><span id='z1' class='text-button'>$z=1$</span>
+    <li><span id='multiply-1-by-i' class='text-button'>Multiply by $z=1$ by $i$</span>
+    <li><span id='multiply-i-by-i' class='text-button'>Multiply $z=i$ by $i$</span> 
+    <li><span id='multiply-by-i' class='text-button'>Multiply by $i$</span> 
+    <li><span id='multiply-by-negative-i' class='text-button'>Multiply by $-i$</span> 
+    </ul>
+  
+  </div>
+  
+</div>
+
+<div id='figure-complex-unit' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='equation'></div>
+  </div>
+</div>
+
+<div class='clear'></div>
+</section>
+
+<section id='section-complex-unit-multiply'>
+
+<h2>The Imaginary Unit</h2>
+
+<div class='box-2-1'>
+
+  <p>
+    $$z = 1+i$$
+    $$z = z_1 + z_2$$
+    $$z_1 = 1$$
+    $$z_2 = i$$
+  </p>
+
+  <div class='text-block'>
+    <ul class='buttons'>
+    <li><span id='multiply-by-i' class='text-button'>Multiply by $i$</span>
+    <li><span id='multiply-by-negative-i' class='text-button'>Multiply by $-i$ </span>
+    </ul>
+  </div>
+  
+</div>
+
+<div id='figure-complex-unit-multiply' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+    <!--div class='equation'>$ $</div-->
+  </div>
+</div>
+
+<div class='clear'></div>
+
+</section>
+
+<section id='section-complex-scaling'>
+
+<h2>Scaling</h2>
+
+<div class='box-2-1'>
+<p>
+  $$az = a(x+iy) = ax + iay$$
+</p>
+
+<div class='text-block'>
+<ul>
+  <li>$a>0$: scaling in direction of vector
+  <li>$a < 0$: vector rotated 180<sup>&deg;</sup>
+</ul>
+</div>
+
+</div>
+
+<div id='figure-complex-scaling' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  <div class='slider-scale-factor'></div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='clear'></div>
+
+</section>
+
+<section id='section-complex-multiplication'>
+
+<h2>Multiplication</h2>
+
+<div class='box-2-1'>
+  
+<p>
+  $$z=x+iy$$
+  $$z_2 = a+ib$$
+  $$ z z_2 = z(a+ib) = az + ibz$$
+  
+  Add two vectors:
+  <ol>
+    <li>$z$ scaled by $a$
+    <li>$z$ scaled by $b$, rotated by 90<sup>&deg;</sup>
+  </ol>
+  Assume $|z|=1$.
+  Vectors form right-angle triangle
+  stacked on top of vector $z$.
+  <ul>
+  <li>base = $a$
+  <li>height = $b$
+  <li>angle = angle of $a+ib$
+  </ul>
+  Angle of result = angle of $z$ + angle of $z_2$
+</p>
+<p>
+<b>Multiply complex numbers:<br>add their angles</b>
+</p>
+
+</div>
+
+<div id='figure-complex-multiplication' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+</div>
+
+<div class='clear'></div>
+
+</section>
+
+<section id='section-complex-power'>
+
+<h2>Power and Euler's Formula</h2>
+
+<div class='box-2-1'>
+  <p>
+    
+  <span style='color:red'>Red</span> triangles:
+  $$\begin{matrix} z^n & = & (\cos(\theta/n) + i\sin(\theta/n))^n\\ & = & \cos(\theta) + i\sin(\theta) \end{matrix} $$
+  <ul>
+    <li>Starting vector: $z^0=1$
+    <li>First triangle: $z^1=z$
+    <li>Second triangle: $z^2$
+  </ul>
+  For large $n$:
+  $$ \left(\cos(\theta/n) + i\sin(\theta/n)\right)^n \approx \left( 1 + \frac{i\theta}{n} \right)^n $$
+  
+  <span style='color:blue'>Blue</span> triangles:
+  $$ \left( 1 + \frac{i\theta}{n} \right)^n $$
+  <ul>
+    <li>Starting vector: $z^0=1$
+    <li>First triangle: $1+i\theta/n$
+    <li>Second triangle: $(1+i\theta/n)^2$
+  </ul>
+  $$ e^{i\theta} = \lim_{n \to \infty} \left( 1 + \frac{i\theta}{n} \right)^n = \cos(\theta) + i\sin(\theta) $$
+  
+  </p>
+  
+</div>
+
+<div id='figure-euler-formula' class='box-2-2'>
+  <div class='figure-outer figure-outer-large loading'>
+    <div class='figure-surface'></div>
+    <div id='math' class='angle-text'></div>
+  </div>
+  <div id='slider-theta'></div>
+  <div id='slider-n'></div>
+</div>
+
+<div class='clear'></div>
+
+</section>
+
+</div>  <!--#container-->
+</div>  <!--#outer-container-->
+
+<script>
+if (!window.console) window.console = {};
+if (!window.console.log) window.console.log = function() {};
+</script>
+<script src="../js/render-math.js"></script>
+<script src='../../js/vendor.js'></script>
+<script src="//puzlet.org/puzlet/js/jquery.cookie.js"></script>  <!-- Move to vendor.js -->
+<script src='//puzlet.org/puzlet.js' data-puzlet data-resources='resources.coffee'></script>
+
+</body>
+
+</html>

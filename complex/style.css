@@ -414,6 +414,10 @@ th, td {
   height: 100px;
 }
 
+#slider-n {
+  margin-top: 10px;
+}
+
 /********** Exercises, Code button **********/
 
 .exercises-wrapper {

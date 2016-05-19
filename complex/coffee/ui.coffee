@@ -199,6 +199,8 @@ class Figures
     # Old exercise
     new ExerciseRotation
     
+    @slides() if $(document.body).hasClass "slides"
+    
   loadAce: (exercisesData)->
     # Ace after all figures rendered.
     if exercisesData
@@ -207,6 +209,54 @@ class Figures
     @resources = $blab.resources
     @resources.add url: @aceUrl
     @resources.loadUnloaded => $Ace?.load(@resources)
+    
+  slides: ->
+    console.log "**** SLIDES", $("section").css "visibility"
+    
+    sections = $ "section"
+    
+    sections.hide()
+    sections.css visibility: "visible"
+    
+    current = 0
+    
+    $(sections[current]).show()
+    
+    lecture =
+      doStep: =>
+        $(sections[current]).hide()
+        current++ if current<sections.length-1
+        $(sections[current]).show()
+      back: ->
+        $(sections[current]).hide()
+        current-- if current>0
+        $(sections[current]).show()
+      reset: ->
+    
+    KeyHandler.init lecture
+      
+      
+class KeyHandler
+  
+  @lecture: null
+  
+  @init: (lecture) ->
+    KeyHandler.lecture = lecture
+    handler = (evt) => KeyHandler.keyDown(evt)
+    $("body").unbind "keydown", handler
+    $("body").bind "keydown", handler
+  
+  @keyDown: (evt) ->
+    lecture = KeyHandler.lecture
+    return unless evt.target.tagName is "BODY"
+    return unless lecture
+    if evt.keyCode is 37
+      lecture?.back()
+    else if evt.keyCode is 39
+      lecture?.doStep()
+    else if evt.keyCode is 27  # Escape
+      lecture?.reset()
+      lecture = null  # ZZZ better way?
 
 
 # Base class
@@ -763,7 +813,7 @@ class FigureEulerFormula extends ComplexPlane
       @sliderTheta = new Slider
         container: $("#slider-theta")
         prompt: "$\\theta$"
-        unit: "$\\pi$ radians"
+        unit: "$\\pi$"
         init: theta/pi
         min: 0
         max: 2
@@ -771,7 +821,7 @@ class FigureEulerFormula extends ComplexPlane
         
       @sliderN = new Slider
         container: $("#slider-n")
-        prompt: "N"
+        prompt: "$n$"
         unit: ""
         init: N
         min: 1
