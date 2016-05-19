@@ -33,76 +33,96 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 <p class='heading highlight'>[This web page is currently under development.]</p>
 
 
-<div class='box-2-1'>
+<div class='box-1-1'>
   
   <p>Complex numbers appear often in science and engineering. The
-    suspension of a car, the electronics in a phone, skyscrapers
-    and bridges all use complex numbers in their design.</p>
+    suspension of a car, the electronics in a phone, skyscrapers and
+    bridges all use complex numbers in their design.</p>
 
   <p>However, the most important (and interesting) examples are
     advanced&mdash;so, when you <i>start</i> learning about complex
     numbers it can appear that they have little practical use. This is
     far from true.</p>
   
-  <p>For example, <i>differential equations</i> are perhaps the most
-  powerful tool in mathematics; and complex numbers are essential to
-  their application. But, differential equations are not
-  easy. However, if we take a simple approach&mdash;focusing on what
-  we <i>can</i> do, rather than what we can't&mdash; we can appreciate
-  the importance of complex numbers in the real-world.</p>
-
-</div>
-
-<div class='box-2-2'>
-  <p>
-    Talk about what a differential equation actually is? Or leave
-    postponed?
-  </p>
+  <p>For example, complex numbers have a pivotal role in differential
+    equations&mdash;perhaps the most powerful tool in
+    mathematics. But, differential equations are not easy, and, for
+    most, their first serious encounter will be at university. However,
+    if we take a simple approach&mdash;focusing on what we <i>can</i> do,
+    rather than what we can't&mdash; we can see why complex numbers
+    are so important in the real-world.</p>
+  
 </div>
 
 <div class='clear'></div>
 
-<div class='box-2-1'>
+<div class='box-1-1'>
 
   <h2>Extending Eulers equation</h2>
 
-  <p> Say we are designing a car's suspension, of phone's
+  <p> Say we are designing a car's suspension, or phone's
     electronics&mdash;some <i>dynamic system</i> that changes with
-    time ($t$). The system is likely desribed by a differential
+    time ($t$). That system is very likely described by a differential
     equation: that is, an equation involving differentials of some
-    quantity (say $y$). And, more often than not, a solution to that
-    equation is
+    quantity (say $y$). Just for example:</p>
+  
+  $$
+  \frac{dy}{dt}+y=0
+  $$
+    
+  <p>Let's first think carefully about what this equation says. There
+    is a function of time, $y=y(t)$; we don't know what it is; we only
+    know that the sum of the function and its first derivative is
+    zero.</p>
+  
+  <p>Now, more often than not, a solution to the differential
+    equations you'll encounter (including the one above) is</p>
 
-    $$ y=e^{st} $$
+  $$ 
+  y=e^{st} 
+  $$
 
-    Here $s=\sigma+i\omega$ is a complex number that we have to (somehow)
-    find. To understand what $e^{st}$ looks like, consider
+  <p> where $s=\sigma+i\omega$ is a <b>complex</b> number that we have
+    to (somehow) find. For example, say $s=-1+i0$, then</p>
 
-    $$ 
-    \begin{eqnarray} 
-    y &=& e^{st} \nonumber \\ 
-    &=& e^{(\sigma+i\omega)t} \nonumber \\ 
-    &=& e^{\sigma t}e^{i\omega t} \nonumber \\ 
-    \end{eqnarray} 
-    $$
-
-    From and <a>earlier lecture</a> you alreay know how $e^{i\omega
-    t}$ behaves. Recall that $e^{i\theta}$ is a point in the complex
-    plane at angle $\theta$ and modulus of one&mdash; so $e^{i\omega
-    t}$ is a point whose angle changes as time $t$ changes (with a
-    constant modulus).
+  $$
+  \begin{eqnarray}
+  \frac{dy}{dt}+y &=& se^{st}+e^{st} \nonumber \\
+  &=& -1e^{-t}+e^{t} \nonumber \\
+  &=& 0
+  \end{eqnarray}
+  $$
 
 
-  </p>
+  <p>In other words, $y(t) = e^{-t}$ is a solution to our problem. To
+    understand what $e^{st}$ looks like, consider</p>
 
-</div>
+  $$ \begin{eqnarray} y &=& e^{st} \nonumber \\ &=&
+  e^{(\sigma+i\omega)t} \nonumber \\ &=& e^{\sigma t}e^{i\omega t}
+  \nonumber \\ \end{eqnarray} $$
 
-<div class='box-2-2'>
+  <p> We know how $e^{i\omega t}$ behaves from an <a>earlier lecture</a>. Recall
+    that $e^{i\theta}$ is a point in the complex plane at angle
+    $\theta$ and modulus of one&mdash; so $e^{i\omega t}$ is a point
+    whose angle ($\omega t$) changes as time $t$ increases. In other
+    words, $e^{i\omega t}$ draws a circle in the complex plane.</p>
 
-  <p>
-    Illustrate graphically. Sliders for a and b perhaps. Show how real solution is found?
-  </p>
+    <div id='lecture-slider-t'></div>
+    <div id='lecture-plot-w'></div>
 
+    <p> On the other hand, $e^{at}$ is just a regular exponential
+    function. For positive values of $a$, as $t$ increases, $e^{at}$ will get bigger,
+    and for negative values, $e^{at}$ will get smaller.
+    </p>
+
+    <div id='lecture-slider-a'></div>
+    <div id='lecture-plot-a'></div>
+    
+    <p>When we multiply $e^{i\omega t}$ and $e^{i\sigma t}$ together
+      to get $e^{st}$, we combine both behaviours&mdash;the first term
+      gives us a rotation in the complex plane, and the second term
+      changes the modulus.</p>
+    
     <div id='lecture-slider-real'></div>
     <div id='lecture-slider-imag'></div>
     <div id='lecture-plot-s'>
@@ -111,105 +131,80 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
 <div class='clear'></div>
 
-<div class='box-2-1'>
+<div class='box-1-1'>
 
 
   <h2>Eigenstuff</h2>
 
-  <p>
-    How do we find the right complex number $s$?  Lets consider our
-    first (and the simplest possible) differential equation:
+  <p> How did we know that the right value of $s$ above was $s=-1$?
+  All we had to do was substitute $y=e^{st}$ into the differential
+  equation and solve for $s$:</p>
 
-    $$ \frac{dy}{dt}=0 $$
-    
-    This equation just says that $y$ doesn't change with time.
-    Substituting $y=e^{st}$, we have
+  $$
+  \begin{eqnarray}
+  \frac{dy}{dt} + y = 0 \nonumber \\
+  s e^{st} + e^{st} = 0 \nonumber \\
+  s \cancel{e^{st}} + \cancel{e^{st}} = 0 \nonumber \\
+  s + 1 = 0 \nonumber
+  \end{eqnarray}
+  $$
 
-    $$ se^{st} = 0 $$
-  
-    This equation is solved by $s=0$, so a solution is
-
-    $$ y = e^{st} = e^{0t} = 1 $$
-
-    And, that's our recipe: substitute $y=e^{st}$ and solve for $s$.
-    </p>
-
-</div>
-
-<div class='box-2-2'>
-
- 
-</div>
-
-<div class='clear'></div>
-
-<div class='box-2-1'>
+  <p> Obviously, then, the solution is $s=-1$. And, so our recipe is:
+    substitute $y=e^{st}$ and solve for $s$. </p>
 
 
   <h2>Bridge</h2>
+  
 
-  <p> 
-    Much more interesting problems can be solved with the same
-    recipe&mdash;including the design of bridges. Check out this  
-    <a href='https://youtu.be/3mclp9QmCGs'>video</a>. In engineering,
-    design choices (materials, structures, etc.) determine the
-    differential equation. In the case of this bridge, the equation
-    that describes the angle of the twist ($y$) is
+  <p>Important problems, such as 
+    <a href='https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling'>Newton's
+      law of cooling</a> are close cousins of the differential
+    equation above. But, we need to go a little further&mdash;be just
+    a little more ambitious&mdash; to find a problem that needs a
+    genuinely complex value for $s$.</p>
+    
+ 
+  <p>Check out this <a href='https://youtu.be/3mclp9QmCGs'>video</a>. The
+    equation that describes the angle of the twist ($y$) of the bridge
+    is </p>
 
     $$ \frac{d^2y}{dt^2} + 2\zeta\frac{dy}{dt} + y=0 $$
   
-    Here $\zeta$ (zeta) is a <i>designed parameter</i>&mdash;engineers
-    selected it through their design choices. We can solve this
-    equation with the same recipe as above; substituing $y=e^{st}$ we
-    have
+  <p>where $\zeta$ (zeta) is a <i>designed parameter</i>&mdash;engineers
+      selected it through their design choices. We can solve this
+      equation with the same recipe as above; substituting $y=e^{st}$
+      we have</p>
 
-    $$ 
-    \begin{eqnarray} 
-    s^2\cancel{e^{st}}+2\zeta s \cancel{e^{st}} + \cancel{e^{st}} &=& 0 \nonumber \\ 
-    s^2+2\zeta s + 1 &=& 0 \nonumber 
-    \end{eqnarray} 
-    $$
+  $$ \begin{eqnarray} s^2\cancel{e^{st}}+2\zeta s \cancel{e^{st}} +
+  \cancel{e^{st}} &=& 0 \nonumber \\ s^2+2\zeta s + 1 &=& 0
+  \nonumber \end{eqnarray} $$
 
-    We can solve for $s$ by completing the square:
-
-    $$ 
-    \begin{eqnarray} 
-    (s+\zeta)^2-\zeta^2+1&=&0 \nonumber \\ 
-    (s+\zeta)^2 &=& \pm \sqrt{\zeta^2-1} \nonumber \\ 
-    s &=& -\zeta \pm \sqrt{\zeta^2-1} \nonumber
-    \end{eqnarray} 
-    $$
-
-    Now, with hardly any further math, we can see what happened to the
-    bridge. Say $\zeta$ is less than zero and greater than -1
-    ($-1<\zeta<0$). Then, the value of the square-root above is the
-    imaginary part of $s$ (i.e., $b$) and the real part of $s$ is
-    $-\zeta$ (i.e., $a$), which is <b>positive</b>.
+  <p>Now solve for $s$ by completing the square:
   </p>
     
-  <p>
-    Recalling that $ y = e^{st} = e^{at}e^{ibt}$&mdash;what happens to
-    $e^{at}$ as $t$ gets large (i.e., as time progresses)? What would
-    a better choice of $\zeta$ have been?
+  $$ \begin{eqnarray} (s+\zeta)^2-\zeta^2+1&=&0 \nonumber \\
+  (s+\zeta)^2 &=& \pm \sqrt{\zeta^2-1} \nonumber \\ s &=& -\zeta \pm
+  \sqrt{\zeta^2-1} \nonumber \end{eqnarray} $$
+
+  <p> Now, lets say $\zeta$ is less than zero and greater than -1
+    ($-1<\zeta<0$). Then, the value of the square-root above is the
+    imaginary part of $s$, and its real part is</p>
+
+  $$
+  \sigma = -\zeta \nonumber \\
+  $$
+
+  <p> Can you see what happened to the bridge? Note that $\sigma>0$,
+    because $\zeta<0$&mdash;that is, $\sigma$ is <b>positive</b>.
+    Recalling that $ y = e^{st} = e^{\sigma t}e^{i\omega
+    t}$&mdash;what happens to $e^{\sigma t}$ as $t$ gets large (i.e.,
+    as time progresses)?
   </p>
 
-</div>
-
-<div class='box-2-2'>
-
   <p>
-  Explain more about design? I.e., equation is not given to us, rather
-  we get to say what it is.
-
-  Illustrate effect of a and b graphically.
-    <p>
-
-</div>
-
-<div class='clear'></div>
-
-<div class='box-2-1'>
-
+    If you were the engineer that designed the bridge, what value of
+    $\zeta$ would you choose?
+  </p>
 
   <h2>s-domain</h2>
   
@@ -221,7 +216,7 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     numbers are known as the "poles" and "zeros"&mdash;something to
     look forward to at engineering school.
   </p>
-
+  
 
 </div>  <!-- .box-2-1 -->
 
