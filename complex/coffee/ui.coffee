@@ -257,9 +257,9 @@ class KeyHandler
       lecture?.back()
     else if evt.keyCode is 39
       lecture?.doStep()
-    else if evt.keyCode is 27  # Escape
-      lecture?.reset()
-      lecture = null  # ZZZ better way?
+    #else if evt.keyCode is 27  # Escape
+    #  lecture?.reset()
+    #  lecture = null  # ZZZ better way?
 
 
 # Base class
