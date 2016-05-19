@@ -234,6 +234,9 @@ class Figures
       reset: ->
     
     KeyHandler.init lecture
+    
+    $("#slide-navigation .next").click -> lecture.doStep()
+    $("#slide-navigation .prev").click -> lecture.back()
       
       
 class KeyHandler

@@ -275,7 +275,13 @@
         },
         reset: function() {}
       };
-      return KeyHandler.init(lecture);
+      KeyHandler.init(lecture);
+      $("#slide-navigation .next").click(function() {
+        return lecture.doStep();
+      });
+      return $("#slide-navigation .prev").click(function() {
+        return lecture.back();
+      });
     };
 
     return Figures;

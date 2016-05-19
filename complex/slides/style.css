@@ -1,6 +1,6 @@
 body {
   font-family: Verdana, 'DejaVu Sans', sans-serif;
-  font-size: 16pt;
+  font-size: 14pt;
 }
 
 .ui-slider .ui-slider-handle {
@@ -14,19 +14,19 @@ section {
 }
 
 div {
-  font-size: 16pt;
+  font-size: 14pt;
 }
 
 p {
-  font-size: 16pt;
+  font-size: 14pt;
 }
 
 table {
-  font-size: 16pt;
+  font-size: 14pt;
 }
 
 ul {
-  font-size: 16pt;
+  font-size: 14pt;
 }
 
 ul.buttons li {
@@ -34,12 +34,12 @@ ul.buttons li {
 }
 
 li {
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 h1 {
   font-size: 40pt;
-  margin-top: 300px;
+  margin-top: 200px;
 }
 
 h2.subtitle {
@@ -48,7 +48,8 @@ h2.subtitle {
 }
 
 h2 {
-  margin-bottom: 40px;
+  margin-top: 20px;
+  margin-bottom: 30px;
   text-align: center;
   font-size: 30pt;
 }
@@ -56,7 +57,7 @@ h2 {
 /* Main container */
 
 #outer-container {
-  width: 1200px; /* 980px; */
+  width: 1000px; /* 980px; */
   padding: 0px 0px 10px 0px;
   margin: 0 auto;
   /*background: gray;*/
@@ -64,7 +65,7 @@ h2 {
 
 #container {
   position: relative;
-	width: 1200px; /* 960px; */
+	width: 1000px; /* 960px; */
 	margin: 0 auto;
 	margin-top: 40px; /* if NO background */
 	font-size: 12pt;
@@ -72,16 +73,39 @@ h2 {
   /*background: #aaa;*/
 }
 
+#slide-navigation {
+  position: fixed;
+  width: 100px;
+  height: 30px;
+  bottom: 10px;
+  right: 10px;
+  font-size: 10pt;
+  text-align: center;
+}
+
+#slide-navigation div {
+  display: inline-block;
+  font-size: 10pt;
+  user-select: none;
+  cursor: pointer;
+  color: blue;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 .box-2-1 {
   float: left;
-  width: 490px;
+  width: 400px;
   /*background: #aff;*/
 }
 
 .box-2-2 {
   float: right;
-  padding-right: 100px;
-  width: 600px;
+  padding-right: 110px;
+  width: 480px;
   /*background: #ffa;*/
 }
 
@@ -93,8 +117,8 @@ h2 {
 
 .figure-outer {
   position: relative;
-  width: 600px;  /* see .box-2-2 */
-  height: 600px;
+  width: 480px;  /* see .box-2-2 */
+  height: 480px;
   margin: 20px auto;
   background: #ddd;
   border: 1px solid black;
@@ -102,6 +126,25 @@ h2 {
 }
 
 #figure-complex-unit .equation {
-  width: 600px;
+  width: 550px;
 }
 
+#figure-complex-addition .slider-2 {
+  display: none;;
+}
+
+.slider-angle-text {
+  height: 150px;
+}
+
+.angle-text {
+  font-size: 10pt;
+}
+
+.angle-text-special {
+  font-size: 16pt;
+}
+
+.angle-text-negative {
+  /*font-size: 10pt;*/
+}
