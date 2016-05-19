@@ -56,14 +56,37 @@ slider_count = new Slider
 
 slider_real = new Slider
   container: $("#lecture-slider-real")
-  prompt: null
+  prompt: "a"
   unit: null
-  init: 0
+  init: -0.1
   min: -0.5
   max: 0.5
   step: 0.05
 
+slider_imag = new Slider
+  container: $("#lecture-slider-imag")
+  prompt: "b"
+  unit: null
+  init: 5
+  min: 1
+  max: 10
+  step: 1
 
-$blab.computation "compute.coffee", {slider_real}
+#plot_s = new $blab.components.Plot
+plot_s = new Plot
+  container: $("#lecture-plot-s")
+  title: "complex exponential: $e^{st}$"
+  width: 300, height: 300
+  xlabel: "$\Re{s} = e^{at}\cos bt$"
+  ylabel: "$\Im{s} = e^{at}\sin bt$"
+  xaxis: {min: -2, max: 2}
+  yaxis: {min: -2, max: 2}
+  series: {lines: lineWidth: 2}
+  colors: ["red", "blue"]
+  grid: {backgroundColor: "white"}
+
+
+  
+$blab.computation "compute.coffee", {slider_real, slider_imag, plot_s}
 
 

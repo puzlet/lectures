@@ -66,24 +66,32 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
 
   <h2>Extending Eulers equation</h2>
 
-  <p> Say we are designing a car's suspension, of phone's electronics&mdash;some <i>dynamic system</i> that
-    changes with time ($t$). Chances are, the system is desribed by a
-    differential equation with a solution
+  <p> Say we are designing a car's suspension, of phone's
+    electronics&mdash;some <i>dynamic system</i> that changes with
+    time ($t$). The system is likely desribed by a differential
+    equation: that is, an equation involving differentials of some
+    quantity (say $y$). And, more often than not, a solution to that
+    equation is
 
     $$ y=e^{st} $$
 
-    Here $s=a+ib$ is a complex number that we have to (somehow) find.
-
-    We can use Euler's equation to understand what $e^{st}$ looks like
+    Here $s=\sigma+i\omega$ is a complex number that we have to (somehow)
+    find. To understand what $e^{st}$ looks like, consider
 
     $$ 
     \begin{eqnarray} 
     y &=& e^{st} \nonumber \\ 
-    &=& e^{(a+ib)t} \nonumber \\ 
-    &=& e^{at}e^{ibt} \nonumber \\ 
-    &=& e^{at} \left( \cos bt + i\sin bt \right) \nonumber
+    &=& e^{(\sigma+i\omega)t} \nonumber \\ 
+    &=& e^{\sigma t}e^{i\omega t} \nonumber \\ 
     \end{eqnarray} 
     $$
+
+    From and <a>earlier lecture</a> you alreay know how $e^{i\omega
+    t}$ behaves. Recall that $e^{i\theta}$ is a point in the complex
+    plane at angle $\theta$ and modulus of one&mdash; so $e^{i\omega
+    t}$ is a point whose angle changes as time $t$ changes (with a
+    constant modulus).
+
 
   </p>
 
@@ -95,7 +103,9 @@ MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
     Illustrate graphically. Sliders for a and b perhaps. Show how real solution is found?
   </p>
 
-    <div id="#lecture-slider-real"></div>
+    <div id='lecture-slider-real'></div>
+    <div id='lecture-slider-imag'></div>
+    <div id='lecture-plot-s'>
 
 </div>
 
