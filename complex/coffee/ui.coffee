@@ -1582,7 +1582,7 @@ class VectorWithCircle
     @circle.set(x: x0+x, y: y0+y, r: @radius)
     
     xMargin = "0.3em"
-    yMargin = "0.3em"
+    yMargin = "0.6em"
     
     xo = zOriginal.x
     yo = zOriginal.y

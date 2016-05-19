@@ -2404,7 +2404,7 @@
         r: this.radius
       });
       xMargin = "0.3em";
-      yMargin = "0.3em";
+      yMargin = "0.6em";
       xo = zOriginal.x;
       yo = zOriginal.y;
       xl = x0 + x;
