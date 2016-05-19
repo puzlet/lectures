@@ -1611,7 +1611,7 @@ class VectorWithCircle
     @zText?.text
       .attr "fill", (if real and x>=0 or imag and y>=0 then "black" else "red")
       .attr "text-anchor", "middle"
-      .attr "dy", (if real or y<0 then "1.2em" else "-0.6em")
+      .attr "dy", (if real or y<0 then "1.5em" else "-0.8em")
     
     # ZZZ arc won't work if @origin
     

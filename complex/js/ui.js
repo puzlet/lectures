@@ -2481,7 +2481,7 @@
         });
       }
       if ((_ref16 = this.zText) != null) {
-        _ref16.text.attr("fill", (real && x >= 0 || imag && y >= 0 ? "black" : "red")).attr("text-anchor", "middle").attr("dy", (real || y < 0 ? "1.2em" : "-0.6em"));
+        _ref16.text.attr("fill", (real && x >= 0 || imag && y >= 0 ? "black" : "red")).attr("text-anchor", "middle").attr("dy", (real || y < 0 ? "1.5em" : "-0.8em"));
       }
       show = this.magnitude > 0.4;
       if ((_ref17 = this.angleArc) != null) {
