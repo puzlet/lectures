@@ -7,13 +7,13 @@
 <title>Complex Numbers</title>
 <link rel='icon' href='//puzlet.org/puzlet/images/favicon.ico'>
 <link rel='stylesheet' href='../../css/vendor.css'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
 <link rel='stylesheet' href='../../css/style.css?v=1'>
 <link rel='stylesheet' href='../style.css?v=1'>
 <link rel='stylesheet' href='style.css?v=1'>
 <base target="_blank">
 <!-- Preload KaTeX to improve math rendering speed -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.js"></script>
 <script src="../js/auto-render.js"></script>
 </head>
 
@@ -83,9 +83,9 @@
   <br>
   <p>
     $$
-    \begin{matrix}
-    z_1 + z_2 & = & (x + iy) + (a + ib) \\[2ex] & = & (x+a) + i(y+b)
-    \end{matrix}
+    \begin{aligned}
+    z_1 + z_2 & = (x + iy) + (a + ib) \\[2ex] & = (x+a) + i(y+b)
+    \end{aligned}
     $$
   </p>
 </div>
@@ -266,7 +266,7 @@
 
 <div class='box-2-1'>
   <span style='color:red'>Red</span> triangles:
-  $$\begin{matrix} z^n & = & (\cos(\theta/n) + i\sin(\theta/n))^n\\ & = & \cos(\theta) + i\sin(\theta) \end{matrix} $$
+  $$\begin{aligned} z^n & =(\cos(\theta/n) + i\sin(\theta/n))^n\\ & = \cos(\theta) + i\sin(\theta) \end{aligned} $$
   <ul>
     <li>Starting vector: $z^0=1$
     <li>First triangle: $z^1=z$
