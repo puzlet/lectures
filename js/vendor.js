@@ -1,3 +1,5 @@
+// jQuery, jQuery UI, jQuery touch-punch, d3
+
 //ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 
 /*! jQuery v1.11.1 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */
