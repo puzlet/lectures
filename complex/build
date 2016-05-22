@@ -1,0 +1,3 @@
+#!/bin/bash
+
+php page.php > index.html

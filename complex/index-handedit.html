@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+<meta charset='utf-8'>
+<title>Complex Numbers</title>
+<link rel='icon' href='//puzlet.org/puzlet/images/favicon.ico'>
+<link rel='stylesheet' href='//puzlet.org/puzlet/css/vendor.css'>
+<link rel='stylesheet' href='../css/style.css?v=1'>
+<link rel='stylesheet' href='style.css?v=1'>
+<!-- Preload KaTeX to improve math rendering speed -->
+<script src='//puzlet.org/puzlet/js/katex.js'></script>
+<base target="_blank">
+</head>
+
+<body>
+
+<div id='outer-container'>
+<div id='container'>
+
+<div id='user-credentials'>
+  <input
+    class='group-id'
+    type='text' 
+    placeholder='Group key'
+    title='Enter ID for your user group.'>
+  </input>
+  <br>
+  <input
+    class='user-id hide'
+    type='text' 
+    placeholder='Your email address'
+    title='Enter your email address (user ID).'>
+  </input>
+</div>
+
+<h1>Complex Numbers</h1>
+<h2 class='subtitle'>An Interactive Guide</h2>
+<h2 class='subtitle'><a href='./slides'>Go to slides version<a></h2>
+
+<!--p class='heading'>Martin Clark and Gary Ballantyne<br>May 2016</p-->
+<p class='heading highlight'>[This web page is currently under development.]</p>
+
+<h2>Vectors in a Plane</h2>
+
+<section id='section-complex-plane'>
+
+<div class='box-2-1'>
+
+<p>Many applications in science and engineering model phenomena as a two-dimensional (2D) vector in a plane.</p>
+
+<p>We can express a vector $z$ in a couple of ways:
+  <table>
+  <tr><td>Cartesian<td>$z = (x, y)$
+  <tr><td>Polar<td>$z = A \angle \theta$
+  </table>
+  
+where
+
+$$x = A \cos(\theta)$$
+$$y = A \sin(\theta)$$
+</p>
+
+  <p>
+  Another way to express the vector $z$ is as a <i><b>complex number</b></i>:
+  
+  $$z = x+iy$$
+  
+  Here, $i$ represents the vertical-axis in the plane.
+  Click the following buttons to see examples of vector $z$ in the plot:
+  <span id='complex-12-plus-09i' class='text-button'> $1.2+0.9i$</span>,
+  <span id='complex-neg1-plus-i' class='text-button'>$-1+i$</span>,
+  <span id='complex-neg1-plus-negi' class='text-button'>$-1-i$</span>,
+  <span id='complex-negi' class='text-button'>$-i$</span>.
+  Or set vector $z$ by dragging the green circle or the angle slider.
+  Click the Excerises button on the right for more.
+  
+  <!--For now, just think of $z = x+iy$ as another notation for a 2D vector $z = (x, y)$ in a plane.-->
+  </p>
+
+  <p>
+    So $i$ represents the vertical axis, but does $i$ itself have a value?
+    We'll see below that assigning a special (and somewhat weird) value to $i$ 
+    enables useful mathematical properties of complex numbers.
+    In particular, we'll see that complex number <b><i>multiplication</i></b> 
+    is equivalent to vector <b><i>rotation</i></b> in the plane.
+    The mathematics of rotating vectors is important in
+    electrical circuits, telecommunication signals, mechanical oscillation,
+    and many other areas.
+  </p>
+
+  <!--we'll see that this complex number form has useful mathematical properties.-->
+  
+  <!--p>
+    But for now, just think of $z = x+iy$ as another notation for a 2D vector $z = (x, y)$ in a plane.
+  </p-->
+  
+  <!--It turns out that this special value is the <i>imaginary</i> unit, $i=\sqrt{-1}$.  We'll see why.-->
+  
+  <!--p>
+    [Discussion of applications here, e.g., electrical circuits/impedance.
+    Show animated rotating vector, modulated with signal?  QPSK?]
+  </p-->
+
+</div>  <!-- .box-2-1 -->
+
+<div id='figure-complex-plane' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='box-2-2'>
+  
+  <div id='exercises-complex-plane' class='exercises-wrapper'>
+    
+    <div class='exercises-button'>Exercises</div>
+    
+    <div class='exercises hide'>
+      
+      <div class='exercise-navigation'>
+        <div class='previous button'>Prev</div> | <div class='next button'>Next</div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-plane-1'>
+        <h2>Exercise 1.1</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-plane-1.coffee'></div>
+        <div data-eval='exercises/complex-plane-1.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          For the complex vector $z$ in the editor above,
+          fill in the related values ($x$ and $y$ coordinates, magnitude $A$, and angle $\theta$).
+          See the values plotted above &mdash;
+          <span style='color:green'>green for $z$</span>,
+          <span style='color:red'>red for ($x$, $y$)</span>,
+          and <span style='color:blue'>blue for $A \angle \theta$</span>.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-plane-2'>
+        <h2>Exercise 1.2</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-plane-2.coffee'></div>
+        <div data-eval='exercises/complex-plane-2.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          Fill in the function to compute the magnitude $A$ given $x$ and $y$.
+          See your function's result for a few vectors plotted above. 
+          <i>Hint: use square and square root buttons above.</i>
+        </div>
+      </div>
+      
+    </div> <!-- .exercises -->
+    
+  </div> <!-- #exercises-complex-plane -->
+
+</div>
+
+<div class='clear'></div>
+
+<h2>Addition</h2>
+
+<div class='box-2-1'>
+  <p>Before we get into complex number multiplication, or even defining the value of $i$,
+    let's look at simple <i>addition</i> of vectors in the plane. 
+  <p>
+  To add vectors&mdash;and thus add complex numbers&mdash;just 
+  add the $x$ coordinates to get the new $x$-coordinate; and add the $y$ coordinates to get the new $y$-coordinate:
+    $$z_1 = x + iy$$
+    $$z_2 = a + ib$$
+    $$z_1 + z_2 = (x + iy) + (a + ib) = (x+a) + i(y+b)$$
+  </p>
+  <p>
+    The plot represents a vector sum by stacking two vectors end-to-end:
+    $z_1$ starts at the plot's origin; and $z_2$ starts at the end of $z_1$.
+    The vector sum $z_1+z_2$ is the resultant vector from the origin of $z_1$ to the end of $z_2$.
+    The plot shows $x$ and $y$ values, and magnitude $A$, of the vector sum.
+    Try adjusting $z_1$ and $z_2$ by dragging the green circles or angle sliders.
+  </p>
+</div>
+
+<div id='figure-complex-addition' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+    <div class='slider-2'></div>
+  </div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='box-2-2'>
+  
+  <div id='exercises-complex-addition' class='exercises-wrapper'>
+    
+    <div class='exercises-button'>Exercises</div>
+    
+    <div class='exercises hide'>
+      
+      <div class='exercise-navigation'>
+        <div class='previous button'>Prev</div> | <div class='next button'>Next</div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-addition-1'>
+        <h2>Exercise 2.1</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-addition-1.coffee'></div>
+        <div data-eval='exercises/complex-addition-1.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          You have two vectors: $z_1$ lies along the $x$-axis; and $z_2$ lies along the $y$-axis. 
+          What vectors $z_1$ and $z_2$ add up to the vector $z$ in the editor above?
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-addition-2'>
+        <h2>Exercise 2.2</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-addition-2.coffee'></div>
+        <div data-eval='exercises/complex-addition-2.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          <b>Complex subtraction.</b>
+          Find vector $z_2$ so that $z = z_1 + z_2$.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-addition-3'>
+        <h2>Exercise 2.3</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-addition-3.coffee'></div>
+        <div data-eval='exercises/complex-addition-3.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          The editor contains an incomplete function for computing the magnitude of the vector sum $z_1+z_2$.
+          Fill in the last line.
+          <!--Expression for magnitude of sum: $\sqrt{(x+a)^2 + (y+b)^2}$-->
+        </div>
+      </div>
+      
+    </div> <!-- .exercises -->
+    
+  </div> <!-- #exercises-complex-addition -->
+
+</div>
+
+<div class='clear'></div>
+</section>
+
+
+<h2>The Imaginary Unit</h2>
+
+<section id='section-complex-unit'>
+
+<div class='box-2-1'>
+  
+  <p>
+    Consider the following four cases for $z$:
+    <table id='table-complex-unit'>
+    <tr><th>$z$<th>$(x,y)$<th>$\theta$
+    <tr><td>$1$<td>$(1,0)$<td>$0$
+    <tr><td>$i$<td>$(0,1)$<td>$\frac{\pi}{2}$
+    <tr><td>$-1$<td>$(-1,0)$<td>$\pi$
+    <tr><td>$-i$<td>$(0,-1)$<td>$-\frac{\pi}{2}$
+    </table>
+  </p>
+
+  <p>
+    The figure shows <span id="show-vectors" class='text-button'>each vector $z$</span>.
+    (Click this green button to see the vectors, or click any white circle in the figure.)
+    Each vector lies along an axis and has a unit magnitude $A=1$.
+  </p>
+
+  <p>
+    If we <span id='multiply-by-negative-1' class='text-button'>multiply a vector $z$ by $-1$</span>,
+    we get a 180<sup>&deg;</sup> rotation ($\pi$ radians).
+    Try with any vector $z$ as the starting point (click white circle in figure).
+    Multiplying <i>twice</i> by $-1$ returns to the original vector.
+  </p>
+
+  <p>
+    What about a 90<sup>&deg;</sup> rotation?
+    Can it be accomplished by multiplying $z$ by some value?
+    Well, consider the starting point <span id='z1' class='text-button'>$z=1$</span>.
+    If we <span id='multiply-1-by-i' class='text-button'>multiply by $i$</span>, 
+    we get a 90<sup>&deg;</sup> rotation to $z=i$ (because $1 \times i = i$).
+  </p>
+
+  <p>
+    If we multiply <i>again</i> by $i$, we get $z=i \times i$.
+    We know we want the result to be
+    <span id='multiply-i-by-i' class='text-button'>$z=-1$</span> 
+    (90<sup>&deg;</sup> from $z=i$).  And so for this operation to work, we need
+  
+    $$i \times i = i^2 = -1$$
+  </p>
+
+  <p>
+    The solution to this equation is $i=\sqrt{-1}$.
+    There's no real number solution!
+    (The square of any real number is always positive, or zero.)
+    For this reason, $i$
+    is called an <i><b>imaginary</b></i> number.
+  </p>
+  
+</div>
+
+<div id='figure-complex-unit' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='equation'></div>
+  </div>
+</div>
+
+<div class='box-2-2'>
+  
+  <div id='exercises-complex-unit' class='exercises-wrapper'>
+    
+    <div class='exercises-button'>Exercises</div>
+    
+    <div class='exercises hide'>
+      
+      <div class='exercise-navigation'>
+        <div class='previous button'>Prev</div> | <div class='next button'>Next</div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-1'>
+        <h2>Exercise 3.1</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-1.coffee'></div>
+        <div data-eval='exercises/complex-unit-1.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          The editor above shows values for $z=i^0$ and $z=i^1$.
+          Append three more lines for the results of $i^2$, $i^3$, and $i^4$.
+          See the values plotted above.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-2'>
+        <h2>Exercise 3.2</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-2.coffee'></div>
+        <div data-eval='exercises/complex-unit-2.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          What is the angle (in radians) of $i^n$ as a function of $n$?
+          <i>Hint: use × and π buttons above.</i> 
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-3'>
+        <h2>Exercise 3.3</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-3.coffee'></div>
+        <div data-eval='exercises/complex-unit-3.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          What happens if you multiply by $-i$?
+          Enter five lines in the editor for the results of
+          $(-i)^0$, $(-i)^1$, $(-i)^2$, $(-i)^3$, $(-i)^4$.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-4'>
+        <h2>Exercise 3.4</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-4.coffee'></div>
+        <div data-eval='exercises/complex-unit-4.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          If you multiply vector $z$ by $-i$, what is the angle of rotation (in radians)?
+          Enter the result above.
+        </div>
+      </div>
+      
+      <div class='exercise' id='exercise-complex-unit-5'>
+        <h2>Exercise 3.5</h2>
+        <div class='code-buttons'></div>
+        <div data-file='exercises/complex-unit-5.coffee'></div>
+        <div data-eval='exercises/complex-unit-5.coffee' class='hide'></div>
+        <div class='exercise-footer'>
+          <p>In the examples so far, each vector had a unit magnitude $A=1$.
+          What happens for other vector magnitudes?</p>
+          <p>Say we start with vector $z=A$. Then we multiply by $i$.
+          The result is $Ai$, as shown in the editor.
+          If we multiply by $i$ three more times, what is the result at each step?
+          Append the results above.</p>
+        </div>
+      </div>
+      
+    </div> <!-- .exercises -->
+    
+  </div> <!-- #exercises-complex-unit -->
+  
+  <p>
+    With this definition for $i$ in  mind, we can 
+    <span id='multiply-by-i' class='text-button'>multiply by $i$&nbsp;</span>
+    to rotate any of our four vectors by 90<sup>&deg;</sup>.
+    We'll see soon how this also works for vectors of <i>any</i> magnitude and angle.
+    So, while $i$ doesn't have a real value,
+    it does have useful mathematical properties for rotating a vector in a plane.
+    
+    <!--we get the following operations:-->
+    <!--table>
+    <tr>
+      <td>Rotate 90<sup>&deg;</sup> $\left(\frac{\pi}{2}\right)$
+      <td><span id='multiply-by-i' class='text-button'>Multiply by $i$</span>
+    <tr>
+      <td>Rotate -90<sup>&deg;</sup> $\left(-\frac{\pi}{2}\right)$
+      <td><span id='multiply-by-negative-i' class='text-button'>Multiply by $-i$</span><br>
+    </table-->
+  </p>
+  <p>
+    In general, an imaginary number is $iy$ where $y$ is any real value and $i$ is the <b>imaginary unit</b> $\sqrt{-1}$.
+    For example, $2i$ is an imaginary number with magnitude 2.  
+  </p>
+  <p>
+    What about rotating the vector by -90<sup>&deg;</sup> (clockwise)?
+    Complete the exercises above to explore this and other cases.
+  </p>
+
+</div>
+
+<div class='clear'></div>
+</section>
+
+<!--hr>
+
+<div class='box-2-1'>
+  <h3>Exercise</h3>
+  <p>
+  In the example above, each vector had a unit magnitude $A=1$.  What happens for other vector magnitudes?
+  </p>
+  
+  <p>
+  Say we start with vector $z=A$.  Then we multiply by $i$.  What is the result?
+  If we multiply by $i$ three more times, what is the result at each step?
+  </p>
+  
+</div>
+
+<div class='box-2-2'>
+  <h3>Solution</h3>
+  <div class='solution-button'>
+    Click here for solution.
+  </div>
+  <div class='solution'>
+  <table>
+    <tr><th>Start<th>Operation<th>Result
+    <tr><td>$z=A$<td>$\times i$<td>$iA$
+    <tr><td>$z=iA$<td>$\times i$<td>$i^2A = -A$
+    <tr><td>$z=-A$<td>$\times i$<td>$-iA$
+    <tr><td>$z=-iA$<td>$\times i$<td>$-i^2A = A$
+  </table>
+  <p>
+  With any vector magnitude $A$, multiplying by $i$ rotates the vector 90<sup>&deg;</sup>.
+  </p>
+  </div>
+</div>
+
+<div class='clear'></div>
+
+<div class='box-2-1'>
+  <div data-file='exercises/rotation.coffee'></div>
+</div>
+<div class='box-2-2'>
+  <div data-eval='exercises/rotation.coffee'></div>
+  <div id='exercise-rotation-result'></div>
+</div>
+
+<div class='clear'></div-->
+
+<hr>
+
+<section id='section-complex-unit-multiply'>
+
+<div class='box-2-1'>
+<p>
+  So, we see that multiplying a vector $z$ by the imaginary unit $i$ rotates $z$ by 90<sup>&deg;</sup>.
+  But we demonstrated this for only four vector angles (vectors lying along an axis).
+  In general, a complex number has the form
+  $$z = x + iy$$
+  We refer to $x$ as the <em><strong>real part </strong></em> and $y$ as the <em><strong>imaginary part</strong></em>.
+</p>
+
+<p>
+  Consider the case where the real part is 1 ($x=1$) and the imaginary part is also 1 ($y=1$):
+  $$z = 1+i$$
+  We can think of this vector as the sum of two component vectors:
+  $$z = z_1 + z_2$$
+  $$z_1 = 1$$
+  $$z_2 = i$$
+  The figure shows these two component vectors as blue lines.
+  Each component lies along an axis and has a unit magnitude,
+  just like the vectors in the previous section.
+</p>
+<p>
+  <span id='multiply-by-i' class='text-button'>Multiplying $z$ by $i$</span>
+  is equivalent to multiplying each component ($z_1$ and $z_2$) by $i$,
+  and summing the results.
+  From the previous section, 
+  we know that this is equivalent to <b>rotating</b> each component by 90<sup>&deg;</sup>.
+  And so multiplying $z$ by $i$ must also rotate it by 90<sup>&deg;</sup>.
+</p>
+</div>
+
+<div id='figure-complex-unit-multiply' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+    <!--div class='equation'>$ $</div-->
+  </div>
+</div>
+
+<div class='box-2-2'>
+  <p>What happens for other values of $x$ and $y$?
+    Try adjusting the vector $z=x+iy$ in the figure, and then<br>
+     <span id='multiply-by-i' class='text-button'>multiply by $i$</span>.
+    What happens if you
+    <span id='multiply-by-negative-i' class='text-button'>multiply by $-i$</span>?
+  </p>
+  
+  <div class='todo'>
+    <h3>Exercises to implement</h3>
+    <ul>
+      <li>
+        Write expression for multiplying $z=x+iy$ by $i$.
+        Answer:
+        $$i(x+iy) = ix + i^2y = -y + ix$$
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class='clear'></div>
+
+</section>
+
+<h2>Scaling</h2>
+
+<div class='box-2-1'>
+<p>
+To scale a complex vector $z = x+iy$,
+multiply the real part $x$ and imaginary part $y$ by the same factor:
+  $$az = a(x+iy) = ax + iay$$
+</p>
+<p>
+  When $a$ is a positive number, scaling operates in the direction of the vector.
+</p>
+<p>
+  When $a$ is a <i>negative</i> number, the vector is rotated 180<sup>&deg;</sup> ($\pi$ radians).
+<p>
+  [To implement: buttons in text to set original vector to $1+i$, and scale factor to $-1$, $2$, $-i$, $2i$, $0.5i$, etc.]
+</p>
+
+<p>
+  What about multiplying a complex number by $ib$?
+  This is the same as scaling by $b$ (as above), and then rotating by 90<sup>&deg;</sup>
+  (as in previous section).
+</p>
+
+</div>
+
+<div id='figure-complex-scaling' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  <div class='slider-scale-factor'></div>
+  <div class='magnitude'></div>
+</div>
+
+<div class='clear'></div>
+
+<h2>Multiplication</h2>
+
+<div class='box-2-1'>
+  
+<p>So, we know how to multiply a complex number $z=x+iy$ by $a$ or by $ib$.
+  What about multiplying a complex number $z=x+iy$ by another complex number $z_2 = a+ib$?
+  This is equivalent to
+  $$ z z_2 = z(a+ib) = az + ibz$$
+  That is, add two vectors:
+  <ul>
+    <li>the first vector is $z$ scaled by $a$.
+    <li>the second vector is $z$ scaled by $b$ and rotated by 90<sup>&deg;</sup>.
+  </ul>
+  You can think of these two vectors as forming a right-angle triangle
+  stacked on top of vector $z$ (see figure).
+  If $z$ has a unit magnitude ($A=1$):
+  <ul>
+  <li>the base of the triangle has length $a$ [color?].
+  <li>the height of the triangle is $b$.
+  <li>the angle of the triangle is the angle of the complex number $a+ib$.
+  <li>the angle of the result is the sum of the angle of $z$ and the angle of $z_2$.
+  </ul>
+  In other words, <b>multiplying complex numbers adds their angles</b>.
+</p>
+
+</div>
+
+<div id='figure-complex-multiplication' class='box-2-2'>
+  <div class='figure-outer loading'>
+    <div class='figure-surface'></div>
+    <div class='slider'></div>
+  </div>
+  
+  <div class='todo'>
+    <h3>Exercises to implement</h3>
+    <p>What if the magnitude of $z$ is not 1?  Can we still add the angles?
+        What is the magnitude of the result?<br>
+        Answer:
+        <ul>
+        <li>$z$ has magnitude $A=\sqrt{x^2 + y^2}$ and angle $\theta$.
+        <li>$z_2$ has magnitude $A_2=\sqrt{a^2 + b^2}$ and angle $\phi$.
+        <li>the triangle has base length $aA$ and height $bA$.
+        <li>this triangle is similar for any value of $A$, and so it has angle $\phi$.
+        <li>the resulting vector $zz_2$ has angle $\theta + \phi$.
+        <li>$zz_2$ has a magnitude equal to the hypotenuse of the triangle: $\sqrt{(aA)^2 + (bA)^2} = AA_2$.
+        </ul>
+      </p>
+  </div>
+</div>
+
+<div class='clear'></div>
+
+<h2>Power</h2>
+
+<div class='box-2-1'>
+  <p>
+  Let's summarize multiplication of complex numbers.  Say we have two complex numbers:
+  <ul>
+    <li>$z_1 = x_1+iy_1 = A_1(\cos(\theta_1) + i\sin(\theta_1))$
+    <li>$z_2 = x_2+iy_2 = A_2(\cos(\theta_2) + i\sin(\theta_2))$
+  </ul>
+  Their product is
+  $$z_1 z_2 = A_1 A_2 (\cos(\theta_1 + \theta_2) + i\sin(\theta_1 + \theta_2))$$
+  Exercise: Prove this using trig identities.
+  </p>
+  
+  <p>
+  Consider now a complex number $z$ with a unit magnitude $A=1$ and angle $\phi$.
+  The <i>square</i> of $z$ is
+  $$ z^2 = (\cos(\phi) + i\sin(\phi))^2 = \cos(2\phi) + i\sin(2\phi) $$
+  The angle of $z^2$ is thus $\theta = 2\phi$.
+  </p>
+  
+  <!--
+  In the case where the complex numbers each have a unit magnitude ($A_1=1$ and $A_2=1$), we have
+  $$z_1 z_2 = \cos(\theta_1 + \theta_2) + i\sin(\theta_1 + \theta_2)$$
+  </p>
+  
+  <p>
+    Now that we know the product of two complex numbers, what is the $n$th power of a complex number?
+    Say we have a complex number $z$ with unit magnitude ($A=1$) and angle $\phi$.
+    The $n$th power of $z$ is
+    $$ z^n = (\cos(\phi) + i\sin(\phi))^n = \cos(n\phi) + i\sin(n\phi) $$
+  </p>
+  
+  <p>
+    Say we have $N$ complex numbers $z_1, z_2, \ldots z_N$, each with a unit magnitude $A_n=1$
+    and each with the same angle $\theta_n = \theta/N$.  The product of these complex numbers is
+    $$\prod_{n=1}^N{z_n} = (\cos(\theta/N) + i\sin(\theta/N))^N = \cos(\theta) + i\sin(\theta)$$
+    That is, $\theta$ is the sum of angles of all the complex numbers.
+    See red triangles in figure below for various $\theta$ and $N$.
+  </p -->
+</div>
+
+<div class='box-2-2'>
+  <p>
+  Further, the <i>$n$th power</i> of $z$ is
+  $$ z^n = (\cos(\phi) + i\sin(\phi))^n = \cos(n\phi) + i\sin(n\phi) $$
+  The angle of $z^n$ is thus $\theta = n\phi$.
+  </p>
+  <p>
+  See red triangles in figure below for specified $\theta$ and $n$ (and $\phi = \theta/n$).
+  The starting vector is $z^0=1$.  The first triangle is $z^1=z$.
+  The second triangle is for $z^2$, and so on.
+  </p>
+  
+</div>
+
+<div class='clear'></div>
+
+<div id='figure-euler-formula' class='box-1-1'>
+  <div class='figure-outer figure-outer-large loading'>
+    <div class='figure-surface'></div>
+    <div id='math' class='angle-text'></div>
+  </div>
+  <div id='slider-theta'></div>
+  <div id='slider-n'></div>
+</div>
+
+<div class='clear'></div>
+
+<h2>Euler's Formula</h2>
+
+<div class='box-2-1'>
+  <p>
+    From the section above, we can write the relationship
+    $$ (\cos(\theta/n) + i\sin(\theta/n))^n = \cos(\theta) + i\sin(\theta)$$
+    
+    For some value of $\theta$, what happens when $n$ becomes large 
+    and thus $\phi=\theta/n$ becomes small?
+    For small $\phi$, we have:
+    <ul>
+      <li>$\cos(\phi) \rightarrow 1$
+      <li>$\sin(\phi) \rightarrow \phi$ (for angle in radians)
+    </ul>
+    And so
+    $$ \lim_{n \to \infty} \left( 1 + \frac{i\theta}{n} \right)^n = \cos(\theta) + i\sin(\theta) $$
+  </p>
+  <p>
+    The blue triangles in the figure above show the left hand side of the equation for specified $\theta$ and $n$.
+    As $n$ becomes large, the trajectory of the blue triangles approximates that of the red triangles.
+  </p>
+</div>
+
+<div class='box-2-2'>
+  <p>
+    Note that the definition of the <i>exponential function</i> is
+    $$ e^x = \lim_{n \to \infty} \left(1 + \frac{x}{n} \right)^n $$
+    And so it follows that (while not a rigorous proof)
+    $$ e^{i\theta} = \cos(\theta) + i\sin(\theta)$$
+    This is <a href='https://en.wikipedia.org/wiki/Euler%27s_formula'><i>Euler's formula</i></a>, 
+    and has been referred to as "the most remarkable formula in mathematics."
+  </p>
+  <p>[Intuitive explanation of exponential function of imaginary number.  What does it mean to "grow" in orthogonal direction, rather than same/real direction in usual exponential form?]
+  </p>
+  <p>
+    Based on Euler's formula, a complex number can be represented as
+    $$ z = A e^{i\theta} $$
+    The product of two complex numbers $z_1 = A_1 e^{i\theta_1}$  and $z_2 = A_2 e^{i\theta_2}$ is
+    $$ z_1 z_2 = A_1 A_2 e^{i\theta_1}e^{i\theta_2} = A_1 A_2 e^{i(\theta_1 + \theta_2)}$$
+    That is, Euler's formula is consistent with the notion of adding angles for the product of complex numbers.
+  </p>
+  
+</div>
+
+<div class='clear'></div>
+
+<h2>Other Stuff</h2>
+
+<ul>
+  <li>Conjugate.
+  <li>Division.
+  <li>Quadratic/polynomial solutions.
+  <li>Using Euler's form in applications.
+</ul>
+
+
+<!--ui.coffee-->
+<!--div class='box-1-1'>
+  <div id='angle'></div>
+  <div id='math-outer'>
+    <div id='math-surface'></div>
+    <div id='math' class='angle-text'></div>
+  </div>
+</div-->
+
+<!--
+
+<div class='box-2-1'>
+  <div id='input' class='input-container'></div>
+  <div id='result'></div>
+</div>
+
+<div class='box-2-2'>
+  <div id='plot' class='plot-container'></div>
+</div>
+
+<div class='clear'></div>
+
+<div class="left">
+  <div data-file="compute.coffee"></div>
+</div>
+
+<div class="right">
+  <div data-eval="compute.coffee"></div>
+</div>
+
+<div class='clear'></div>
+-->
+
+<h2>References and Further Reading</h2>
+
+<ol>
+  <li><a href='//betterexplained.com/articles/a-visual-intuitive-guide-to-imaginary-numbers'>A
+    Visual, Intuitive Guide to Imaginary Numbers</a> &mdash; Kalid Azad
+  <li><a href='//betterexplained.com/articles/understanding-why-complex-multiplication-works/'>Understanding 
+    Why Complex Multiplication Works</a> &mdash; Kalid Azad
+  <li><a href='//slesinsky.org/brian/misc/eulers_identity.html'>How To 
+    explain Euler's identity using triangles and spirals</a> &mdash; Brian Slesinsky
+</ol>
+
+<div class='page-footer' class='box-1-1'>
+  
+  <hr>
+  
+  <p>
+    <span class='last-update'>Last updated May 2016</span>
+    <!--TODO: Auto fetch date from github-->
+    | <a href='//github.com/puzlet/lectures' title='View source code for this web page.'>Source Code</a>
+    | <a href='//github.com/puzlet/lectures/issues' title='Comment on this web page.'>Comments</a>
+  </p>
+  
+  <p>
+    Developed by
+    <a href="//github.com/mvclark">Martin Clark</a> and
+    <a href="//github.com/garyballantyne">Gary Ballantyne</a>
+    (Haulashore Limited)
+    as part of the <a href='//puzlet.org'>Puzlet</a> project.
+  </p>
+  
+  <p class='credits'>
+    Thanks to:
+    <a href='//ace.c9.io'>Ace</a>,
+    <a href='//coffeescript.org'>CoffeeScript</a>,
+    <!--a href='//mathjax.org'>MathJax</a>, -->
+    <a href='//khan.github.io/KaTeX/'>KaTeX</a>,
+    <a href='//numericjs.com'>numericjs</a>,
+    <a href='//d3js.org'>d3</a>,
+    <a href='//paperjs.org/reference/paperscript'>PaperScript</a>,
+    <a href='//jquery.com'>jQuery</a>,
+    <a href='//github.com'>GitHub</a>.
+  </p>
+  
+  <p>
+    <a href='//blabr.org'>
+    <img src='//puzlet.org/blab/img/blabr-logo.png' height='20'/>Blabr</a> &mdash;
+    Create your own interactive computation directly in the browser.
+    <a href="//twitter.com/blabrnet"><img src="//puzlet.org/blab/img/TwitterLogo.png" 
+      height=24 style="vertical-align: middle"/>Follow us on Twitter</a>.<br>
+  </p>
+  
+</div>
+
+</div>  <!--#container-->
+</div>  <!--#outer-container-->
+
+<!--script>
+$mathRendering = ["katex", "mathjax"];
+</script-->
+<script src="//puzlet.org/puzlet/js/render-math.js"></script>
+<script src='//puzlet.org/puzlet/js/vendor.js'></script>
+<script src='//puzlet.org/puzlet.js' data-puzlet data-resources='resources.coffee'></script>
+
+</body>
+
+</html>
