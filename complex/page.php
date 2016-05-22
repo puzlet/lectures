@@ -2,6 +2,7 @@
 # php page.php > index.html
 # fswatch -o *.php | xargs -n1 ./build
 require('templates.php');
+require('figures.php');
 head('Complex Numbers');
 ?>
 
@@ -53,13 +54,8 @@ head('Complex Numbers');
 
 </div>
 
-<div id='figure-complex-plane' class='box-2-2'>
-  <div class='figure-outer loading'>
-    <div class='figure-surface'></div>
-    <div class='slider'></div>
-  </div>
-  <div class='magnitude'></div>
-</div>
+
+<?= figureComplexPlane('box-2-2') ?>
 
 <div class='box-2-2'>
   
@@ -108,14 +104,7 @@ head('Complex Numbers');
 
 </div>
 
-<div id='figure-complex-addition' class='box-2-2'>
-  <div class='figure-outer loading'>
-    <div class='figure-surface'></div>
-    <div class='slider'></div>
-    <div class='slider-2'></div>
-  </div>
-  <div class='magnitude'></div>
-</div>
+<?= figureComplexAddition('box-2-2') ?>
 
 <div class='box-2-2'>
   
@@ -187,12 +176,7 @@ head('Complex Numbers');
   
 </div>
 
-<div id='figure-complex-unit' class='box-2-2'>
-  <div class='figure-outer loading'>
-    <div class='figure-surface'></div>
-    <div class='equation'></div>
-  </div>
-</div>
+<?= figureComplexUnit('box-2-2') ?>
 
 <div class='box-2-2'>
   
@@ -286,13 +270,7 @@ head('Complex Numbers');
 
 </div>
 
-<div id='figure-complex-unit-multiply' class='box-2-2'>
-  <div class='figure-outer loading'>
-    <div class='figure-surface'></div>
-    <div class='slider'></div>
-    <!--div class='equation'>$ $</div-->
-  </div>
-</div>
+<?= figureComplexUnitMultiply('box-2-2') ?>
 
 <div class='box-2-2'>
   
@@ -339,14 +317,7 @@ head('Complex Numbers');
   
 </div>
 
-<div id='figure-complex-scaling' class='box-2-2'>
-  <div class='figure-outer loading'>
-    <div class='figure-surface'></div>
-    <div class='slider'></div>
-  </div>
-  <div class='slider-scale-factor'></div>
-  <div class='magnitude'></div>
-</div>
+<?= figureComplexScaling('box-2-2') ?>
 
 <?= sectionEnd() ?>
 
@@ -377,13 +348,9 @@ head('Complex Numbers');
 
 </div>
 
-<div id='figure-complex-multiplication' class='box-2-2'>
-  
-  <div class='figure-outer loading'>
-    <div class='figure-surface'></div>
-    <div class='slider'></div>
-  </div>
-  
+<?= figureComplexMultiplication('box-2-2') ?>
+
+<div class='box-2-2'>  
   <div class='todo'>
     <h3>Exercises to implement</h3>
     
@@ -440,14 +407,7 @@ head('Complex Numbers');
 
 <div class='clear'></div>
 
-<div id='figure-euler-formula' class='box-1-1'>
-  <div class='figure-outer figure-outer-large loading'>
-    <div class='figure-surface'></div>
-    <div id='math' class='angle-text'></div>
-  </div>
-  <div id='slider-theta'></div>
-  <div id='slider-n'></div>
-</div>
+<?= figureComplexEuler('box-1-1') ?>
 
 <?= sectionEnd() ?>
 

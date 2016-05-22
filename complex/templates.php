@@ -1,6 +1,10 @@
 <?php
 
-function head($title) {
+function head($title, $type=null) {
+$slides = $type=='slides';
+$path = $slides ? '../' : '';
+$css = $slides ? 'style.css' : '';
+$bodyClass = $slides ? "slides" : null;
 ob_start("process");
 ?><!DOCTYPE html>
 <html lang='en'>
@@ -10,18 +14,20 @@ ob_start("process");
 <title><?=$title;?></title>
 <link rel='icon' href='//puzlet.org/puzlet/images/favicon.ico'>
 <link rel='stylesheet' href='//puzlet.org/puzlet/css/vendor.css'>
-<link rel='stylesheet' href='../css/style.css?v=1'>
-<link rel='stylesheet' href='style.css?v=1'>
+<link rel='stylesheet' href='<?=$path?>../css/style.css?v=1'>
+<link rel='stylesheet' href='<?=$path?>style.css?v=1'>
+<?php if ($css) echo "<link rel='stylesheet' href='$css?v=1'>\n" ?>
 <!-- Preload KaTeX to improve math rendering speed -->
 <script src='//puzlet.org/puzlet/js/katex.js'></script>
 <base target="_blank">
 </head>
 
-<body>
+<body<?php if ($bodyClass) echo(" class='$bodyClass'"); ?>>
 
 <div id='outer-container'>
 <div id='container'>
 <?php
+if ($slides) slideNavigation();
 }
 
 function foot() {
@@ -124,6 +130,15 @@ function userCredentials() {
   <?php
 }
 
+function slideNavigation() {
+  ?>
+  <div class='slide-navigation'>
+  <div class='slide-number'>&nbsp;</div>
+  <div class='nav-button prev'>Prev</div> | <div class='nav-button next'>Next</div>
+  </div>
+  <?php
+}
+
 function pageFooter() {
   $updated = date('j F Y');
   ?>
@@ -190,7 +205,7 @@ function paragraphs($buffer) {
   $blocks = explode("\n\n", $text);
   
   # Paragraphs
-  $pattern = '/^[A-Z]/';
+  $pattern = '/^[A-Z$]/';
   foreach ($blocks as $idx => $block) {
     preg_match($pattern, $block, $matches);
     if (count($matches)) {
