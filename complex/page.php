@@ -1,7 +1,7 @@
 <?php
 # php page.php > index.html
 # fswatch -o *.php | xargs -n1 ./build
-require('templates.php');
+require('../lib/php/templates.php');
 require('figures.php');
 head('Complex Numbers');
 ?>

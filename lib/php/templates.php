@@ -3,7 +3,7 @@
 function head($title, $type=null) {
 $slides = $type=='slides';
 $path = $slides ? '../' : '';
-$css = $slides ? 'style.css' : '';
+#$css = $slides ? 'style.css' : '';
 $bodyClass = $slides ? "slides" : null;
 ob_start("process");
 ?><!DOCTYPE html>
@@ -16,7 +16,12 @@ ob_start("process");
 <link rel='stylesheet' href='//puzlet.org/puzlet/css/vendor.css'>
 <link rel='stylesheet' href='<?=$path?>../css/style.css?v=1'>
 <link rel='stylesheet' href='<?=$path?>style.css?v=1'>
-<?php if ($css) echo "<link rel='stylesheet' href='$css?v=1'>\n" ?>
+<?php
+if ($slides) {
+  echo "<link rel='stylesheet' href='../../lib/css/slides.css?v=1'>\n";
+  echo "<link rel='stylesheet' href='style.css?v=1'>\n";
+}
+?>
 <!-- Preload KaTeX to improve math rendering speed -->
 <script src='//puzlet.org/puzlet/js/katex.js'></script>
 <base target="_blank">

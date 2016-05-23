@@ -178,8 +178,8 @@ class Figures
   
   constructor: ->
     
-    $(document).tooltip
-      content: -> $(this).prop('title')
+    #$(document).tooltip
+    #  content: -> $(this).prop('title')
     
     Complex = $blab.Complex
     EulerComputation = $blab.EulerComputation
@@ -199,7 +199,7 @@ class Figures
     # Old exercise
     new ExerciseRotation
     
-    @slides() if $(document.body).hasClass "slides"
+    new $blab.Slides #if $(document.body).hasClass "slides"
     
   loadAce: (exercisesData)->
     # Ace after all figures rendered.
@@ -210,72 +210,6 @@ class Figures
     @resources.add url: @aceUrl
     @resources.loadUnloaded => $Ace?.load(@resources)
     
-  slides: ->
-    #console.log "**** SLIDES", $("section").css "visibility"
-    
-    sections = $ "section"
-    
-    sections.hide()
-    sections.css visibility: "visible"
-    
-    current = 0
-    
-    $(sections[current]).show()
-    
-    navigate = (d) ->
-      $(sections[current]).hide()
-      current++ if d>0 and current<sections.length-1
-      current-- if d<0 and current>0
-      $(sections[current]).show()
-      setNavButtons()
-    
-    lecture =
-      doStep: -> navigate(1)
-      back: -> navigate(-1)
-      reset: ->
-    
-    KeyHandler.init lecture
-    
-    number = $ ".slide-navigation .slide-number"
-    next = $ ".slide-navigation .next"
-    prev = $ ".slide-navigation .prev"
-    
-    setNavButtons = ->
-      number.html "#{current+1} of #{sections.length}"
-      enable = (b, e=true) ->
-        b.toggleClass "nav-button-enable", e
-        b.toggleClass "nav-button-disable", not(e)
-      enable next, (current < sections.length-1)
-      enable prev, current > 0
-      
-    setNavButtons()
-    
-    next.click -> lecture.doStep()
-    prev.click -> lecture.back()
-      
-      
-class KeyHandler
-  
-  @lecture: null
-  
-  @init: (lecture) ->
-    KeyHandler.lecture = lecture
-    handler = (evt) => KeyHandler.keyDown(evt)
-    $("body").unbind "keydown", handler
-    $("body").bind "keydown", handler
-  
-  @keyDown: (evt) ->
-    lecture = KeyHandler.lecture
-    return unless evt.target.tagName is "BODY"
-    return unless lecture
-    if evt.keyCode is 37
-      lecture?.back()
-    else if evt.keyCode is 39
-      lecture?.doStep()
-    #else if evt.keyCode is 27  # Escape
-    #  lecture?.reset()
-    #  lecture = null  # ZZZ better way?
-
 
 # Base class
 class ComplexPlane
