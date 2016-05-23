@@ -122,6 +122,6 @@ class Admin
   append: (element) -> @container.append element
   
 
-new Admin
 
+new Admin
   
