@@ -1,0 +1,23 @@
+#figure-complex-unit .equation {
+  width: 480px;
+}
+
+#figure-complex-addition .slider-2 {
+  display: none;;
+}
+
+.slider-angle-text {
+  height: 150px;
+}
+
+.angle-text {
+  font-size: 10pt;
+}
+
+.angle-text-special {
+  font-size: 16pt;
+}
+
+.angle-text-negative {
+  /*font-size: 10pt;*/
+}
