@@ -47,6 +47,16 @@ slider_z = new Slider
   max: 1
   step: 0.05
 
+slider_quad = new Slider
+  container: $("#lecture-slider-quad")
+  prompt: "$\\zeta$"
+  unit: null
+  init: 0
+  min: -0.95
+  max: 0.95
+  step: 0.05
+
+
 plot_w = new Plot
   container: $("#lecture-plot-w")
   title: null
@@ -68,7 +78,7 @@ plot_a = new Plot
   xlabel: "$t$"
   ylabel: "$exp(\\sigma t)$"
   xaxis: {min: 0, max: 10}
-  yaxis: {min: 0, max: 10}
+  yaxis: {min: -2, max: 4}
   series: {lines: lineWidth: 2}
   points: {show: false}
   colors: ["red", "blue"]
@@ -90,10 +100,22 @@ plot_z = new Plot
   container: $("#lecture-plot-z")
   title: "$y(t)$"
   width: 300, height: 300
-  xlabel: "$t$"
-  ylabel: "$y$"
+  xlabel: "time"
+  ylabel: "twist (%)"
   xaxis: {min: 0, max: 20}
-  yaxis: {min: -3, max: 3}
+  yaxis: {min: -300, max: 300}
+  series: {lines: lineWidth: 2}
+  colors: ["red", "blue"]
+  grid: {backgroundColor: "white"}
+
+plot_quad = new Plot
+  container: $("#lecture-plot-quad")
+  title: "quadratic"
+  width: 300, height: 300
+  xlabel: "$\\Re{s}=\\sigma$"
+  ylabel: "$q$"
+  xaxis: {min: -2, max: 2}
+  yaxis: {min: 0, max: 5}
   series: {lines: lineWidth: 2}
   colors: ["red", "blue"]
   grid: {backgroundColor: "white"}
@@ -105,6 +127,6 @@ table_z = new Table
   headings: ['$\\sigma$', '$\\omega$']
   widths: 200
  
-$blab.computation "compute.coffee", {slider_z, slider_real, slider_imag, slider_t, slider_a, plot_z, plot_s, plot_w, plot_a, table_z}
+$blab.computation "compute.coffee", {slider_quad, slider_z, slider_real, slider_imag, slider_t, slider_a, plot_z, plot_s, plot_w, plot_a, plot_quad, table_z}
 
 

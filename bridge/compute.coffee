@@ -1,5 +1,4 @@
 
-
 t = linspace 0, 20, 1000
 
 # sigma = Re(s)
@@ -22,6 +21,13 @@ plot_s  s2.x, s2.y
 zeta = slider_z()
 sigma = -zeta
 omega = sqrt(1-zeta**2)
-plot_z t, exp(sigma*t)*cos(omega*t)
+plot_z t, 100*exp(sigma*t)*cos(omega*t)
 console.log "??", zeta, sigma, omega
 table_z [sigma], [omega]
+
+# quadratic
+zeta_quad = slider_quad()
+sr = linspace -5, 5, 50
+q = sr.pow(2) + 2*zeta_quad*sr + 1
+plot_quad sr, q
+

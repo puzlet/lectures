@@ -33,26 +33,29 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
 
 <div class='box-1-1'>
   
-  <p>Complex numbers appear often in engineering; the suspension of a
+  <p>Complex numbers often appear in engineering; the suspension of a
   car, the electronics in a phone, skyscrapers and bridges all use
   complex numbers in their design. However, the most important (and
   interesting) examples are advanced&mdash;so, when you <i>start</i>
   learning about complex numbers it can appear that they have little
-  practical use. This is far from true.</p>
-  
-  <p>The two pillars of engineering mathematics are differential
-  equations and linear algebra; complex numbers feature in both. Below
-  we investigate the <a href='https://youtu.be/3mclp9QmCGs'>
-  self-destruction of a bridge</a> and the differential equation that
-  shows us what went wrong. If you've never seen a differential
-  equation, don't worry; we'll take small steps. If you know what
-  $\frac{dy}{dt}$ means, you'll be fine.<p>
+  practical use.</p>
 
-  <p> Say we are designing some <i>dynamic system</i>&mdash;something
-  that changes with time, like a car's suspension when it hits a
-  bump. That system is likely descibed by a differential
-  equation. That is, an equation involving differentials of some
-  quantity (say $y$). Just for example, consider</p>
+  <p>Here we show the role complex numbers play in the <a
+  href='https://youtu.be/3mclp9QmCGs'> self-destruction of a
+  bridge</a> (i.e., a failure of design). Although it is an <a
+  href='http://ocw.mit.edu/courses/mathematics/18-03-differential-equations-spring-2010/readings/supp_notes/MIT18_03S10_Appendix_B.pdf'>
+  advanced example, </a> we only assume you know about
+  differentiation. Some details we will hurry past, and other
+  important aspects we will not even glance at. Nevertheless, it will
+  give you a taste of the place of complex numbers in actual
+  engineering.</p>
+  
+  <p>Differentiation is about <i>change</i>, and systems that change
+  with <i>time</i> are known as <b>dynamic systems</b> (for example, a
+  car's suspension when it hits a bump). Dynamic systems are described
+  by differential equations&mdash;that is, an equation involving
+  differentials of some quantity (say $y$). Just for example,
+  consider</p>
   
   $$ \frac{dy}{dt}+y=0 $$
     
@@ -81,10 +84,12 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   \end{eqnarray}
   $$
 
-  <p>In other words, $y=e^{st}$, with $s=-1$ is $y=e^{-t}$ and is a
-  solution to the differential equation. More generally though, what
-  does $y=e^{st}$ look like for a genuinely complex value of $s$?
-  Consider:</p>
+  <p>In other words, $y=e^{st}$, with $s=-1$ is $y=e^{-t}$, which is a
+  solution to the differential equation above.</p>
+
+  <p>Before we consider a differential equation that requires a
+  genuinely complex $s$, let's first consider what $y=e^{st}$ looks
+  like. Substituting $s=\sigma+i\omega$: </p>
 
   $$ 
   \begin{eqnarray} 
@@ -94,12 +99,14 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   &=& e^{\sigma t}e^{i\omega t} \nonumber 
   \end{eqnarray} $$
 
-  <p> We know how $e^{i\omega t}$ behaves from an <a href=''>earlier
-  lecture</a>. Recall that $e^{i\theta}$ is a point in the complex
-  plane at angle $\theta$ and modulus of one&mdash;so $e^{i\omega t}$
-  is a point whose angle ($\omega t$) changes as time $t$
-  increases. In other words, $e^{i\omega t}$ draws a circle in the
-  complex plane.</p>
+  <p> So, $y=e^{st}$ is the product of <i>two</i>
+  exponentials&mdash;one real, and one complex. We know how the
+  complex exponential ($e^{i\omega t}$) behaves from an <a href=''>
+  earlier lecture </a>. Recall that $e^{i\theta}$ is a point in the
+  complex plane at angle $\theta$ and modulus (distance from the
+  origin) of one&mdash;so $e^{i\omega t}$ is a point whose angle
+  ($\omega t$) changes as time $t$ increases. In other words,
+  $e^{i\omega t}$ draws a circle in the complex plane.</p>
 
   <div id='lecture-slider-t'></div>
   <div id='lecture-plot-w'></div>
@@ -151,8 +158,10 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   $$ \frac{d^2y}{dt^2} + 2\zeta\frac{dy}{dt} + y=0 $$
   
   <p>Here $\zeta$ (zeta) is a <i>designed
-  parameter</i>&mdash;engineers selected it through their selection of
-  the bridges materials and structure. We can solve this equation with
+  parameter</i>&mdash;engineers selected it through their choice of
+  the bridges materials, structures and their assumptions about the
+  environment (including the wide). Let's say $\zeta$ is greater than
+  -1 but less than 1 ($-1<\zeta<1$). We can solve this equation with
   the same recipe as above; substituting $y=e^{st}$ we have</p>
 
   $$ \begin{eqnarray} 
@@ -161,7 +170,18 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   \end{eqnarray} 
   $$
 
-  <p>Now solve for $s$ by completing the square: </p>
+  <p>The equation above is a <i>quadratic equation</i>&mdash;we seek
+  the two values of $s$ for which the left-hand side (LHS) equals
+  zero. It's worthwhile considering what the LHS looks like for
+  <i>real</i> values of $s$: </p>
+
+  <div id='lecture-plot-quad'></div>
+  <div id='lecture-slider-quad'></div>
+
+  <p>Note that (in the range of $\zeta$ we're considering), for
+  real $s$, the LHS is never zero. So, to get a solution, we need to
+  look for <i>complex</i> $s$. Solve for $s$ by completing the square:
+  </p>
     
   $$ 
   \begin{eqnarray} 
@@ -175,9 +195,8 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   \end{eqnarray} 
   $$
 
-  <p> Let's say $\zeta$ is greater than -1 but less than zero
-  ($-1<\zeta<0$). Then, the value inside the square-root above is
-  <i>negative</i>, and so the square-root itself is the
+  <p>Here, the value inside the square-root above is <i>negative</i>
+  (since $-1<\zeta<1$), and so the square-root itself is the
   <b>imaginary</b> part of $s$. The <b>real</b> part of $s$ is the bit
   that <i>isn't</i> in the square root:</p>
 
@@ -185,13 +204,11 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   \sigma = -\zeta
   $$
 
-  <p> Can you see what happened to the bridge? Note that $\sigma$ is
-  <i>positive</i> because $\zeta$ is <i>negative</i>. Recalling that $
-  y = e^{st} = e^{\sigma t}e^{i\omega t}$&mdash;what happens to
-  $e^{\sigma t}$ as $t$ gets large (i.e., as time progresses)?</p>
-
-  <p> If you were the engineer that designed the bridge, what value of
-  $\zeta$ would you choose? (Hint: consider $0<\zeta<1$).</p>
+  <p>So, if $\zeta$ is negative ($\zeta<0$), then $\sigma$ is positive
+  ($\sigma>0$). Recalling that $y=e^{st}=e^{\sigma t}e^{i\omega
+  t}$&mdash;can you see what happened to the bridge? If you were the
+  engineer that designed the bridge, what value of $\zeta$ would you
+  choose?</p>
 
   <p>Many engineers hardly ever consider differential equations
   directly (if at all). Instead, complex numbers allow them to focus
@@ -205,16 +222,15 @@ MathJax.Hub.Insert(MathJax.InputJax.TeX.Definitions.macros,{ cancel:
   square root)&mdash;call them $s_1$ and $s_2$. By themselves,
   $e^{s_1t}$ and $e^{s_2}t$ are complex&mdash;but the twist of the
   bridge is <i>real</i>. The trick is to use <b>both</b> values for
-  $s$: $y=e^{s_1t}+e^{s_2t}$. We'll skip the detail, but the plot
-  shows the result (the initial value of $y$, at $t=0$, is normalized
-  to the initial twist).</p>
+  $s$&mdash; $y=e^{s_1t}+e^{s_2t}$. We'll skip the detail, but the
+  plot shows the result (the $y$-axis shows the percentage of the
+  initial twist).</p>
 
   <div id='lecture-slider-z'></div>
   <div id='lecture-table-z'></div>
   <div id='lecture-plot-z'></div>
 
 </div>
-
 
 </div>  <!--#container-->
 </div>  <!--#outer-container-->
